@@ -16,8 +16,8 @@ const Login = React.lazy(() => import('./views/pages/login/Login'))
 const Register = React.lazy(() => import('./views/pages/register/Register'))
 const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
 const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
-const OrganizersPage = React.lazy(() => import('./views/pages/main/OrganizersPage'))
-const VotersPage = React.lazy(() => import('./views/pages/main/VotersPage'))
+const OrganizersPage = React.lazy(() => import('./views/pages/main/orginizers/OrganizersPage'))
+const VotersPage = React.lazy(() => import('./views/pages/main/voters/VotersPage'))
 
 class App extends Component {
   render() {

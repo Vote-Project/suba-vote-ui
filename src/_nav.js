@@ -9,6 +9,7 @@ import {
   cilDrop,
   cilNotes,
   cilPencil,
+  cilPeople,
   cilPuzzle,
   cilSpeedometer,
   cilStar,
@@ -20,7 +21,11 @@ const _nav = [
     component: CNavItem,
     name: 'Dashboard',
     to: '/dashboard',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavTitle,
+    name: 'Managment',
   },
   {
     component: CNavItem,
@@ -32,7 +37,7 @@ const _nav = [
     component: CNavItem,
     name: 'Voters',
     to: '/voters',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilPeople} customClassName="nav-icon" />,
   },
   {
     component: CNavTitle,
@@ -262,20 +267,6 @@ const _nav = [
     ],
   },
   {
-    component: CNavItem,
-    name: 'Widgets',
-    to: '/widgets',
-    icon: <CIcon icon={cilCalculator} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-      text: 'NEW',
-    },
-  },
-  {
-    component: CNavTitle,
-    name: 'Extras',
-  },
-  {
     component: CNavGroup,
     name: 'Pages',
     icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
@@ -301,13 +292,7 @@ const _nav = [
         to: '/500',
       },
     ],
-  },
-  {
-    component: CNavItem,
-    name: 'Docs',
-    href: 'https://coreui.io/react/docs/templates/installation/',
-    icon: <CIcon icon={cilDescription} customClassName="nav-icon" />,
-  },
+  }
 ]
 
 export default _nav
