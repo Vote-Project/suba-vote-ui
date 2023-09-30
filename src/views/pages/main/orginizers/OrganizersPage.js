@@ -16,6 +16,7 @@ import {
 } from '@coreui/react'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { COLORS } from 'src/common/const'
 
 function OrganizersPage() {
   const navigate = useNavigate()
@@ -24,10 +25,15 @@ function OrganizersPage() {
       <CCard className="mb-4">
         <CCardHeader style={{ display: 'flex', justifyContent: 'space-between' }}>
           <h5>Orginzers Managment</h5>
-          <CButton onClick={() => navigate('/organizers/add/1')}>ADD NEW</CButton>
+          <CButton
+            onClick={() => navigate('/organizers/add/1')}
+            style={{ backgroundColor: COLORS.MAIN, border: '0px' }}
+          >
+            ADD NEW
+          </CButton>
         </CCardHeader>
         <CCardBody>
-          <CTable hover small >
+          <CTable hover small>
             <CTableHead>
               <CTableRow>
                 <CTableHeaderCell scope="col">ID</CTableHeaderCell>
@@ -62,13 +68,15 @@ function OrganizersPage() {
               </CTableRow>
             </CTableBody>
           </CTable>
-          <CPagination className='mt-2' aria-label="Page navigation example">
-            <CPaginationItem>Previous</CPaginationItem>
-            <CPaginationItem>1</CPaginationItem>
-            <CPaginationItem>2</CPaginationItem>
-            <CPaginationItem>3</CPaginationItem>
-            <CPaginationItem>Next</CPaginationItem>
+          <div style={{ color: COLORS.MAIN }}>
+          <CPagination className="mt-2" aria-label="Page navigation example">
+            <CPaginationItem style={{ color: COLORS.MAIN }}>Previous</CPaginationItem>
+            <CPaginationItem style={{ color: COLORS.MAIN }}>1</CPaginationItem>
+            <CPaginationItem style={{ color: COLORS.MAIN }}>2</CPaginationItem>
+            <CPaginationItem style={{ color: COLORS.MAIN }}>3</CPaginationItem>
+            <CPaginationItem style={{ color: COLORS.MAIN }}>Next</CPaginationItem>
           </CPagination>
+          </div>
         </CCardBody>
       </CCard>
     </div>

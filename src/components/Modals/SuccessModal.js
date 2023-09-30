@@ -3,6 +3,7 @@ import CIcon from '@coreui/icons-react'
 import { CButton, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from '@coreui/react'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { COLORS } from 'src/common/const'
 
 function SuccessModal({ title, description, rediretUrl, open, onOpen, addAnother }) {
   const navigate = useNavigate()
@@ -33,6 +34,7 @@ function SuccessModal({ title, description, rediretUrl, open, onOpen, addAnother
         </CButton>
         <CButton
           color="primary"
+          style={{ backgroundColor: COLORS.MAIN, border: "0px" }}
           onClick={() => {
             addAnother()
             onOpen(false)
@@ -40,7 +42,7 @@ function SuccessModal({ title, description, rediretUrl, open, onOpen, addAnother
         >
           Add Another
         </CButton>
-        <CButton  color="primary" onClick={() => navigate(rediretUrl)}>
+        <CButton style={{ backgroundColor: COLORS.MAIN, border: "0px" }} color="primary" onClick={() => navigate(rediretUrl)}>
           Go To Carousal <CIcon icon={cilArrowRight} size='md' />
         </CButton>
       </CModalFooter>

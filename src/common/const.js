@@ -4,3 +4,9 @@ export const MODAL_MSGES = {
     },
     ERROR_MSG: "Somthing Went Wrong!!"
 }
+
+
+export const COLORS = {
+    MAIN: "#C36302",
+    LIGHT: "#FFF4EB"
+}

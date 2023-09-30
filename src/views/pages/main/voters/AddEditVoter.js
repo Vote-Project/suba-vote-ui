@@ -17,7 +17,7 @@ import React, { useState } from 'react'
 import Select from 'react-select'
 import DatePicker from 'rsuite/DatePicker'
 import 'rsuite/dist/rsuite.min.css'
-import { MODAL_MSGES } from 'src/common/const'
+import { COLORS, MODAL_MSGES } from 'src/common/const'
 import SuccessModal from 'src/components/Modals/SuccessModal'
 
 const INITIAL_VALUE = ''
@@ -31,7 +31,7 @@ function AddEditVoter() {
   const [occupation, setOccupation] = useState(INITIAL_VALUE)
   const [civilStatus, setCivilStatus] = useState(INITIAL_VALUE)
   const [address, setAddress] = useState(INITIAL_VALUE)
-  const [dob, setDob] = useState(INITIAL_VALUE)
+  const [dob, setDob] = useState(new Date())
   const [isNJP, setIsNJP] = useState(false)
   const [mobileNo, setMobileNo] = useState(INITIAL_VALUE)
   const [mobileNoTwo, setMobileNoTwo] = useState(INITIAL_VALUE)
@@ -107,10 +107,12 @@ function AddEditVoter() {
       </CCardHeader>
       <CCardBody>
         <CRow className="mb-4">
-          <h6>Add New Voter</h6>
+          <h6 style={{ color: COLORS.MAIN }}>Add New Voter</h6>
         </CRow>
-        <span style={{ color: 'grey', fontWeight: 'bold' }}>Personal Information</span>
-        <hr style={{ borderTop: '2px solid #000' }} />
+        <span style={{ color: 'grey', fontWeight: 'bold', color: COLORS.MAIN }}>
+          Personal Information
+        </span>
+        <hr style={{ borderTop: '2px solid ' + COLORS.MAIN }} />
         <CRow className="mb-2">
           <CCol md={2}>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
@@ -251,8 +253,10 @@ function AddEditVoter() {
             />
           </CCol>
         </CRow>
-        <span style={{ color: 'grey', fontWeight: 'bold' }}>Contact Information</span>
-        <hr style={{ borderTop: '2px solid #000' }} />
+        <span style={{ color: 'grey', fontWeight: 'bold', color: COLORS.MAIN }}>
+          Contact Information
+        </span>
+        <hr style={{ borderTop: '2px solid ' + COLORS.MAIN }} />
         <CRow className="mb-2">
           <CCol>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
@@ -305,147 +309,249 @@ function AddEditVoter() {
             />
           </CCol>
         </CRow>
-        <span style={{ color: 'grey', fontWeight: 'bold' }}>Location Identification</span>
-        <hr style={{ borderTop: '2px solid #000' }} />
+        <span style={{ color: 'grey', fontWeight: 'bold', color: COLORS.MAIN }}>
+          Location Identification
+        </span>
+        <hr style={{ borderTop: '2px solid ' + COLORS.MAIN }} />
         <CRow className="mb-2">
-          <CCol>
-            <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              District
-            </CFormLabel>
-            <CFormInput type="text" id="exampleFormControlInput1" placeholder="District" />
+          <CCol md={6} className="p-3">
+            <CRow className="mb-2">
+              <CCol>
+                <CFormLabel htmlFor="staticEmail" className="col-form-label">
+                  District
+                </CFormLabel>
+                <Select
+                  type="text"
+                  id="exampleFormControlInput1"
+                  size="sm"
+                  options={[
+                    { label: 'Male', value: 'Male' },
+                    { label: 'Female', value: 'Female' },
+                    { label: 'Not Specify', value: 'Not Specify' },
+                  ]}
+                  value={district}
+                  onChange={(e) => setDistrict(e.target.value)}
+                ></Select>
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol>
+                <CFormLabel htmlFor="staticEmail" className="col-form-label">
+                  Seat
+                </CFormLabel>
+                <Select
+                  type="text"
+                  id="exampleFormControlInput1"
+                  size="sm"
+                  options={[
+                    { label: 'Male', value: 'Male' },
+                    { label: 'Female', value: 'Female' },
+                    { label: 'Not Specify', value: 'Not Specify' },
+                  ]}
+                  value={seat}
+                  onChange={(e) => setSeat(e.target.value)}
+                ></Select>
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol>
+                <CFormLabel htmlFor="staticEmail" className="col-form-label">
+                  Local Authority
+                </CFormLabel>
+                <Select
+                  type="text"
+                  id="exampleFormControlInput1"
+                  size="sm"
+                  options={[
+                    { label: 'Male', value: 'Male' },
+                    { label: 'Female', value: 'Female' },
+                    { label: 'Not Specify', value: 'Not Specify' },
+                  ]}
+                  value={localAuthority}
+                  onChange={(e) => setLocalAuthority(e.target.value)}
+                ></Select>
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol>
+                <CFormLabel htmlFor="staticEmail" className="col-form-label">
+                  Ward
+                </CFormLabel>
+                <Select
+                  type="text"
+                  id="exampleFormControlInput1"
+                  size="sm"
+                  options={[
+                    { label: 'Male', value: 'Male' },
+                    { label: 'Female', value: 'Female' },
+                    { label: 'Not Specify', value: 'Not Specify' },
+                  ]}
+                  value={ward}
+                  onChange={(e) => setWard(e.target.value)}
+                ></Select>
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol>
+                <CFormLabel htmlFor="staticEmail" className="col-form-label">
+                  Street Village
+                </CFormLabel>
+                <Select
+                  type="text"
+                  id="exampleFormControlInput1"
+                  size="sm"
+                  options={[
+                    { label: 'Male', value: 'Male' },
+                    { label: 'Female', value: 'Female' },
+                    { label: 'Not Specify', value: 'Not Specify' },
+                  ]}
+                  value={streetVillage}
+                  onChange={(e) => setStreetVillage(e.target.value)}
+                ></Select>
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol>
+                <CFormLabel htmlFor="staticEmail" className="col-form-label">
+                  GN Division
+                </CFormLabel>
+                <Select
+                  type="text"
+                  id="exampleFormControlInput1"
+                  size="sm"
+                  options={[
+                    { label: 'Male', value: 'Male' },
+                    { label: 'Female', value: 'Female' },
+                    { label: 'Not Specify', value: 'Not Specify' },
+                  ]}
+                  value={gnDivision}
+                  onChange={(e) => setGnDivision(e.target.value)}
+                ></Select>
+              </CCol>
+            </CRow>
           </CCol>
-          <CCol>
-            <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Seat
-            </CFormLabel>
-            <CFormInput type="text" id="exampleFormControlInput1" placeholder="Seat" />
+          <CCol style={{ backgroundColor: COLORS.LIGHT, borderRadius: '10px' }} className="p-3">
+            <CRow className="mb-2">
+              <CCol>
+                <CFormLabel htmlFor="staticEmail" className="col-form-label">
+                  District Organizer
+                </CFormLabel>
+                <CFormInput
+                  type="text"
+                  id="exampleFormControlInput1"
+                  size="md"
+                  placeholder="District Organizer"
+                  disabled={true}
+                  value={districtOrganizer}
+                  onChange={(e) => setDistrictOrganizer(e.target.value)}
+                />
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol>
+                <CFormLabel htmlFor="staticEmail" className="col-form-label">
+                  Seat Organizer
+                </CFormLabel>
+                <CFormInput
+                  type="text"
+                  id="exampleFormControlInput1"
+                  size="md"
+                  placeholder="Seat Organizer"
+                  disabled={true}
+                  value={seatOrganizer}
+                  onChange={(e) => setSeatOrganizer(e.target.value)}
+                />
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol>
+                <CFormLabel htmlFor="staticEmail" className="col-form-label">
+                  Local Authority Organizer
+                </CFormLabel>
+                <CFormInput
+                  type="text"
+                  id="exampleFormControlInput1"
+                  size="md"
+                  placeholder="Local Organizer"
+                  disabled={true}
+                  value={localAuthorityOrganizer}
+                  onChange={(e) => setLocalAuthorityOrganizer(e.target.value)}
+                />
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol>
+                <CFormLabel htmlFor="staticEmail" className="col-form-label">
+                  Ward Organizer
+                </CFormLabel>
+                <CFormInput
+                  type="text"
+                  id="exampleFormControlInput1"
+                  size="md"
+                  placeholder="Ward Organizer"
+                  disabled={true}
+                  value={wardOrganizer}
+                  onChange={(e) => setWardOrganizer(e.target.value)}
+                />
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol>
+                <CFormLabel htmlFor="staticEmail" className="col-form-label">
+                  Street Village Organizer
+                </CFormLabel>
+                <CFormInput
+                  type="text"
+                  id="exampleFormControlInput1"
+                  size="md"
+                  placeholder="Street Village Organizer"
+                  disabled={true}
+                  value={streetVillageOrganizer}
+                  onChange={(e) => setStreetVillageOrganizer(e.target.value)}
+                />
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol>
+                <CFormLabel htmlFor="staticEmail" className="col-form-label">
+                  GN Division Organizer
+                </CFormLabel>
+                <CFormInput
+                  type="text"
+                  id="exampleFormControlInput1"
+                  size="md"
+                  placeholder="GN Division Organizer"
+                  disabled={true}
+                  value={gnDivisionOrganizer}
+                  onChange={(e) => setGnDivisionOrganizer(e.target.value)}
+                />
+              </CCol>
+            </CRow>
           </CCol>
         </CRow>
+        <span style={{ color: 'grey', fontWeight: 'bold', color: COLORS.MAIN }}>
+          Authentication
+        </span>
+        <hr style={{ borderTop: '2px solid ' + COLORS.MAIN }} />
         <CRow className="mb-2">
           <CCol md={6}>
-            <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Local Authority
-            </CFormLabel>
-            <CFormInput type="text" id="exampleFormControlInput1" placeholder="Local Authority" />
-          </CCol>
-          <CCol>
-            <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Ward
-            </CFormLabel>
-            <Select
-              type="text"
-              id="exampleFormControlInput1"
-              size="sm"
-              options={[
-                { label: 'Male', value: 'Male' },
-                { label: 'Female', value: 'Female' },
-                { label: 'Not Specify', value: 'Not Specify' },
-              ]}
-            ></Select>
-          </CCol>
-        </CRow>
-        <CRow className="mb-2">
-          <CCol>
-            <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Street Village
-            </CFormLabel>
-            <Select
-              type="text"
-              id="exampleFormControlInput1"
-              size="sm"
-              options={[
-                { label: 'Male', value: 'Male' },
-                { label: 'Female', value: 'Female' },
-                { label: 'Not Specify', value: 'Not Specify' },
-              ]}
-            ></Select>
-          </CCol>
-          <CCol>
-            <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              GN Division
-            </CFormLabel>
-            <Select
-              type="text"
-              id="exampleFormControlInput1"
-              size="sm"
-              options={[
-                { label: 'Male', value: 'Male' },
-                { label: 'Female', value: 'Female' },
-                { label: 'Not Specify', value: 'Not Specify' },
-              ]}
-            ></Select>
-          </CCol>
-        </CRow>
-
-        <CRow className="mb-2">
-          <CCol>
-            <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              District Organizer
-            </CFormLabel>
-            <Select
-              type="text"
-              id="exampleFormControlInput1"
-              size="sm"
-              options={[
-                { label: 'Male', value: 'Male' },
-                { label: 'Female', value: 'Female' },
-                { label: 'Not Specify', value: 'Not Specify' },
-              ]}
-            ></Select>
-          </CCol>
-          <CCol md={6}>
-            <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Street Village Organizer
-            </CFormLabel>
-            <Select
-              type="text"
-              id="exampleFormControlInput1"
-              size="sm"
-              options={[
-                { label: 'Male', value: 'Male' },
-                { label: 'Female', value: 'Female' },
-                { label: 'Not Specify', value: 'Not Specify' },
-              ]}
-            ></Select>
-          </CCol>
-        </CRow>
-        <CRow className="mb-2">
-          <CCol>
-            <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Seat Organizer
-            </CFormLabel>
-            <Select
-              type="text"
-              id="exampleFormControlInput1"
-              size="sm"
-              options={[
-                { label: 'Male', value: 'Male' },
-                { label: 'Female', value: 'Female' },
-                { label: 'Not Specify', value: 'Not Specify' },
-              ]}
-            ></Select>
-          </CCol>
-          <CCol>
-            <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Local Authority Organizer
-            </CFormLabel>
-            <Select
-              type="text"
-              id="exampleFormControlInput1"
-              size="sm"
-              options={[
-                { label: 'Male', value: 'Male' },
-                { label: 'Female', value: 'Female' },
-                { label: 'Not Specify', value: 'Not Specify' },
-              ]}
-            ></Select>
-          </CCol>
-        </CRow>
-        <CRow className="mb-2">
-          <CCol>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
               Ward Organizer
             </CFormLabel>
+            <CFormInput
+              type="text"
+              id="exampleFormControlInput1"
+              size="md"
+              placeholder="Ward Organizer"
+              disabled={true}
+            />
+          </CCol>
+        </CRow>
+        <CRow className="mb-2">
+          <CCol>
+            <CFormLabel htmlFor="staticEmail" className="col-form-label">
+              Category of Programmes
+            </CFormLabel>
             <Select
               type="text"
               id="exampleFormControlInput1"
@@ -459,7 +565,7 @@ function AddEditVoter() {
           </CCol>
           <CCol>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              GN Division Organizer
+              Programme
             </CFormLabel>
             <Select
               type="text"
@@ -471,6 +577,35 @@ function AddEditVoter() {
                 { label: 'Not Specify', value: 'Not Specify' },
               ]}
             ></Select>
+          </CCol>
+        </CRow>
+        <CRow className="mb-2">
+          <CCol>
+            <CFormLabel htmlFor="staticEmail" className="col-form-label">
+              Location
+            </CFormLabel>
+            <Select
+              type="text"
+              id="exampleFormControlInput1"
+              size="sm"
+              options={[
+                { label: 'Male', value: 'Male' },
+                { label: 'Female', value: 'Female' },
+                { label: 'Not Specify', value: 'Not Specify' },
+              ]}
+            ></Select>
+          </CCol>
+          <CCol>
+            <CFormLabel htmlFor="staticEmail" className="col-form-label">
+              Date of Programme Conducted
+            </CFormLabel>
+            <DatePicker
+              size="md"
+              placeholder="Select..."
+              style={{ width: 400, display: 'block', marginBottom: 10 }}
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
+            />
           </CCol>
         </CRow>
 
@@ -486,14 +621,14 @@ function AddEditVoter() {
             <CButton
               disabled={loading}
               color="primary"
-              style={{ width: '100%' }}
+              style={{ width: '100%', backgroundColor: COLORS.MAIN, border: '0px' }}
               onClick={() => addVoter()}
             >
               Submit
             </CButton>
           </CCol>
           <CCol md={1}>
-            <CSpinner hidden={!loading} color="primary" />
+            <CSpinner hidden={!loading} style={{ color: COLORS.MAIN }} />
           </CCol>
         </CRow>
       </CCardBody>
