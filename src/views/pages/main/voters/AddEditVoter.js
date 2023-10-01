@@ -17,8 +17,10 @@ import React, { useState } from 'react'
 import Select from 'react-select'
 import DatePicker from 'rsuite/DatePicker'
 import 'rsuite/dist/rsuite.min.css'
+import { jsonToSelectBox } from 'src/common/common'
 import { COLORS, MODAL_MSGES } from 'src/common/const'
 import SuccessModal from 'src/components/Modals/SuccessModal'
+import OccupationList from 'src/data/Occupations.json'
 
 const INITIAL_VALUE = ''
 
@@ -141,16 +143,18 @@ function AddEditVoter() {
           </CCol>
           <CCol>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              NIC Number
+              Date of Birth
             </CFormLabel>
-            <CFormInput
-              type="text"
-              id="exampleFormControlInput1"
-              placeholder="Ex: 9837......"
-              value={nic}
-              onChange={(e) => setNic(e.target.value)}
+            <DatePicker
+
+              size="md"
+              placeholder="Select..."
+              style={{ width: "auto", display: 'block', marginBottom: 10, zIndex: "no" }}
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
             />
           </CCol>
+        
         </CRow>
         <CRow className="mb-2">
           <CCol md={2}>
@@ -167,7 +171,7 @@ function AddEditVoter() {
                 { label: 'Not Specify', value: 'Not Specify' },
               ]}
               value={gender}
-              onChange={(e) => setGender(e.target.value)}
+              onChange={(e) => setGender(e)}
             ></Select>
           </CCol>
           <CCol>
@@ -178,9 +182,9 @@ function AddEditVoter() {
               type="text"
               id="exampleFormControlInput1"
               size="sm"
-              options={[{ label: 'Mr.', value: 'Mr.' }]}
+              options={jsonToSelectBox(OccupationList, 'title')}
               value={occupation}
-              onChange={(e) => setOccupation(e.target.value)}
+              onChange={(e) => setOccupation(e)}
             ></Select>
           </CCol>
           <CCol>
@@ -196,7 +200,7 @@ function AddEditVoter() {
                 { label: 'Married', value: 'Married' },
               ]}
               value={civilStatus}
-              onChange={(e) => setCivilStatus(e.target.value)}
+              onChange={(e) => setCivilStatus(e)}
             ></Select>
           </CCol>
         </CRow>
@@ -216,14 +220,15 @@ function AddEditVoter() {
           </CCol>
           <CCol>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Date of Birth
+              NIC Number
             </CFormLabel>
-            <DatePicker
-              size="md"
-              placeholder="Select..."
-              style={{ width: 200, display: 'block', marginBottom: 10 }}
-              value={dob}
-              onChange={(e) => setDob(e.target.value)}
+            <CFormInput
+              type="text"
+              id="exampleFormControlInput1"
+              placeholder="Ex: 9837......"
+              value={nic}
+              style={{zIndex: 100}}
+              onChange={(e) => setNic(e.target.value)}
             />
           </CCol>
           <CCol>
@@ -330,7 +335,7 @@ function AddEditVoter() {
                     { label: 'Not Specify', value: 'Not Specify' },
                   ]}
                   value={district}
-                  onChange={(e) => setDistrict(e.target.value)}
+                  onChange={(e) => setDistrict(e)}
                 ></Select>
               </CCol>
             </CRow>
@@ -349,7 +354,7 @@ function AddEditVoter() {
                     { label: 'Not Specify', value: 'Not Specify' },
                   ]}
                   value={seat}
-                  onChange={(e) => setSeat(e.target.value)}
+                  onChange={(e) => setSeat(e)}
                 ></Select>
               </CCol>
             </CRow>
@@ -368,7 +373,7 @@ function AddEditVoter() {
                     { label: 'Not Specify', value: 'Not Specify' },
                   ]}
                   value={localAuthority}
-                  onChange={(e) => setLocalAuthority(e.target.value)}
+                  onChange={(e) => setLocalAuthority(e)}
                 ></Select>
               </CCol>
             </CRow>
@@ -387,7 +392,7 @@ function AddEditVoter() {
                     { label: 'Not Specify', value: 'Not Specify' },
                   ]}
                   value={ward}
-                  onChange={(e) => setWard(e.target.value)}
+                  onChange={(e) => setWard(e)}
                 ></Select>
               </CCol>
             </CRow>
@@ -406,7 +411,7 @@ function AddEditVoter() {
                     { label: 'Not Specify', value: 'Not Specify' },
                   ]}
                   value={streetVillage}
-                  onChange={(e) => setStreetVillage(e.target.value)}
+                  onChange={(e) => setStreetVillage(e)}
                 ></Select>
               </CCol>
             </CRow>
@@ -425,7 +430,7 @@ function AddEditVoter() {
                     { label: 'Not Specify', value: 'Not Specify' },
                   ]}
                   value={gnDivision}
-                  onChange={(e) => setGnDivision(e.target.value)}
+                  onChange={(e) => setGnDivision(e)}
                 ></Select>
               </CCol>
             </CRow>
@@ -565,19 +570,17 @@ function AddEditVoter() {
           </CCol>
           <CCol>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Programme
+              Date of Programme Conducted
             </CFormLabel>
-            <Select
-              type="text"
-              id="exampleFormControlInput1"
-              size="sm"
-              options={[
-                { label: 'Male', value: 'Male' },
-                { label: 'Female', value: 'Female' },
-                { label: 'Not Specify', value: 'Not Specify' },
-              ]}
-            ></Select>
+            <DatePicker
+              size="md"
+              placeholder="Select..."
+              style={{ width: 400, display: 'block', marginBottom: 10 }}
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
+            />
           </CCol>
+          
         </CRow>
         <CRow className="mb-2">
           <CCol>
@@ -597,15 +600,18 @@ function AddEditVoter() {
           </CCol>
           <CCol>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Date of Programme Conducted
+              Programme
             </CFormLabel>
-            <DatePicker
-              size="md"
-              placeholder="Select..."
-              style={{ width: 400, display: 'block', marginBottom: 10 }}
-              value={dob}
-              onChange={(e) => setDob(e.target.value)}
-            />
+            <Select
+              type="text"
+              id="exampleFormControlInput1"
+              size="sm"
+              options={[
+                { label: 'Male', value: 'Male' },
+                { label: 'Female', value: 'Female' },
+                { label: 'Not Specify', value: 'Not Specify' },
+              ]}
+            ></Select>
           </CCol>
         </CRow>
 

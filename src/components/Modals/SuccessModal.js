@@ -1,9 +1,10 @@
 import { cilArrowRight, cilSave } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-import { CButton, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from '@coreui/react'
+import { CButton, CImage, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from '@coreui/react'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { COLORS } from 'src/common/const'
+import CorrectIconAnimation from "src/assets/other/verified.gif"
 
 function SuccessModal({ title, description, rediretUrl, open, onOpen, addAnother }) {
   const navigate = useNavigate()
@@ -24,7 +25,8 @@ function SuccessModal({ title, description, rediretUrl, open, onOpen, addAnother
           }}
           className="mb-3"
         >
-          <CIcon icon={cilSave} size="3xl" />
+          {/* <CIcon icon={cilSave} size="3xl" /> */}
+          <CImage src={CorrectIconAnimation} width={100} />
         </div>
         <p style={{ textAlign: 'center' }}>{description}</p>
       </CModalBody>
