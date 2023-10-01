@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "title": "NJP Party Memeber",
+    "value": "isNJPMember"
+  },
+  {
+    "id": 2,
+    "title": "Occupation",
+    "value": "occupation"
+  },
+  {
+    "id": 3,
+    "title": "Gender",
+    "value": "gender"
+  },
+  {
+    "id": 4,
+    "title": "Civil Status",
+    "value": "civilStatus"
+  },
+  {
+    "id": 5,
+    "title": "Category of Programmes",
+    "value": "categoryOfProgrammes"
+  }
+]

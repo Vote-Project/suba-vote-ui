@@ -3,6 +3,7 @@ import React from 'react'
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const OrganizersPage = React.lazy(() => import('./views/pages/main/orginizers/OrganizersPage'))
 const VotersPage = React.lazy(() => import('./views/pages/main/voters/VotersPage'))
+const ResportsPage = React.lazy(() => import('./views/pages/main/reports/ReportsPage'))
 const AddEditVoter = React.lazy(() => import('./views/pages/main/voters/AddEditVoter'))
 const AddEditOrginizer = React.lazy(() => import('./views/pages/main/orginizers/AddEditOrginizer'))
 
@@ -62,6 +63,7 @@ const routes = [
   { path: '/voters', name: 'Voters Carousal', element: VotersPage },
   { path: '/voters/:type/:add', name: 'Voter Configaration', element: AddEditVoter },
   { path: '/organizers/:type/:add', name: 'Organizer Configaration', element: AddEditOrginizer },
+  { path: '/reports', name: 'Reports', element: ResportsPage },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },
