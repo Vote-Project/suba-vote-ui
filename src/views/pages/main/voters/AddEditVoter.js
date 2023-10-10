@@ -13,19 +13,25 @@ import {
   CRow,
   CSpinner,
 } from '@coreui/react'
-import React, { useState } from 'react'
-import Select from 'react-select'
+import moment from 'moment'
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import Select, { useStateManager } from 'react-select'
 import DatePicker from 'rsuite/DatePicker'
 import 'rsuite/dist/rsuite.min.css'
-import { jsonToSelectBox } from 'src/common/common'
+import { getNullOrUndefinedAttributes, jsonToSelectBox } from 'src/common/common'
 import { COLORS, MODAL_MSGES } from 'src/common/const'
 import SuccessModal from 'src/components/Modals/SuccessModal'
 import OccupationList from 'src/data/Occupations.json'
+import ProgrammesList from 'src/data/ProgrammeCategories.json'
+import { OrganizersService } from 'src/services/organizers.service'
+import { votersService } from 'src/services/voters.service'
 
 const INITIAL_VALUE = ''
 
 function AddEditVoter() {
   //input fields
+  const { id, type } = useParams()
   const [title, setTitle] = useState(INITIAL_VALUE)
   const [name, setName] = useState(INITIAL_VALUE)
   const [nic, setNic] = useState(INITIAL_VALUE)
@@ -45,26 +51,283 @@ function AddEditVoter() {
   const [ward, setWard] = useState(INITIAL_VALUE)
   const [streetVillage, setStreetVillage] = useState(INITIAL_VALUE)
   const [gnDivision, setGnDivision] = useState(INITIAL_VALUE)
-  const [districtOrganizer, setDistrictOrganizer] = useState(INITIAL_VALUE)
-  const [streetVillageOrganizer, setStreetVillageOrganizer] = useState(INITIAL_VALUE)
-  const [seatOrganizer, setSeatOrganizer] = useState(INITIAL_VALUE)
-  const [localAuthorityOrganizer, setLocalAuthorityOrganizer] = useState(INITIAL_VALUE)
-  const [wardOrganizer, setWardOrganizer] = useState(INITIAL_VALUE)
-  const [gnDivisionOrganizer, setGnDivisionOrganizer] = useState(INITIAL_VALUE)
+  const [districtOrganizer, setDistrictOrganizer] = useState({
+    label: 'Hasintha',
+    value: 'Hasintha',
+  })
+  const [streetVillageOrganizer, setStreetVillageOrganizer] = useState({
+    label: 'Hasintha',
+    value: 'Hasintha',
+  })
+  const [seatOrganizer, setSeatOrganizer] = useState({
+    label: 'Hasintha',
+    value: 'Hasintha',
+  })
+  const [localAuthorityOrganizer, setLocalAuthorityOrganizer] = useState({
+    label: 'Hasintha',
+    value: 'Hasintha',
+  })
+  const [wardOrganizer, setWardOrganizer] = useState({
+    label: 'Hasintha',
+    value: 'Hasintha',
+  })
+  const [gnDivisionOrganizer, setGnDivisionOrganizer] = useState({
+    label: 'Hasintha',
+    value: 'Hasintha',
+  })
+  const [programmeWardOrganizer, setProgrammeWardOrganizer] = useState('Hasintha')
+  const [selectedProgramme, setSelectedProgramme] = useState(INITIAL_VALUE)
+  const [location, setLocation] = useState(INITIAL_VALUE)
+  const [dop, setDop] = useState(new Date())
+  const [programmeDesc, setProgrammeDesc] = useState(INITIAL_VALUE)
+
+  //options
+  const [districtOrganizerOptions, setDistrictOrganizerOptions] = useState([
+    {
+      label: 'Hasintha',
+      value: 'Hasintha',
+    },
+  ])
+
+  const [seatOrganizerOptions, setSeatOrganizerOptions] = useState([
+    {
+      label: 'Hasintha',
+      value: 'Hasintha',
+    },
+  ])
+  const [localAuthorityOrganizerOptions, setLocalAuthorityOrganizerOptions] = useState([
+    {
+      label: 'Hasintha',
+      value: 'Hasintha',
+    },
+  ])
+  const [wardOrganizerOptions, setWardOrganizerOptions] = useState([
+    {
+      label: 'Hasintha',
+      value: 'Hasintha',
+    },
+  ])
+  const [streetVillageOrganizerOptions, setStreetVillageOrganizerOptions] = useState([
+    {
+      label: 'Hasintha',
+      value: 'Hasintha',
+    },
+  ])
+  const [GnDivisionOrganizerOptions, setGnDivisionOrganizerOptions] = useState([
+    {
+      label: 'Hasintha',
+      value: 'Hasintha',
+    },
+  ])
 
   const [alertMessage, setAlertMessage] = useState('Please Fill All Required Fields')
+  const [isAlert, setIsAlert] = useState(false)
   const [successMsg, setSuccessMsg] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const addVoter = () => {
-    setLoading(true)
-    setTimeout(() => {
-      setLoading(false)
-      setSuccessMsg(true)
-    }, 1000)
+  useEffect(() => {
+    console.log(id)
+    if (type == 'edit' && id > 0) {
+      getVoterById(id)
+    }
+  }, [id, type])
+
+  const getVoterById = async (id) => {
+    votersService
+      .getVoter(id)
+      .then((res) => {
+        const data = res.data?.attributes
+
+        setAddress(data.Address)
+        setCivilStatus({ label: data.Civil_Status, value: data.Civil_Status })
+        setDob(new Date(data.Date_of_Birth))
+        setDop(new Date(data.Date_of_Program_Conducted))
+        setDistrict({ label: data.District, value: data.District })
+        setDistrictOrganizer({ label: data.District_Organizer, value: data.District_Organizer })
+        setFbLink(data.Facebook_Link)
+        setGnDivision({ label: data.GN_Division, value: data.GN_Division })
+        setGnDivisionOrganizer({
+          label: data.GN_Division_Organizer,
+          value: data.GN_Division_Organizer,
+        })
+        setGender({ label: data.Gender, value: data.Gender })
+        setLocalAuthority({ label: data.Local_Authority, value: data.Local_Authority })
+        setLocalAuthorityOrganizer({
+          label: data.Local_Authority_Organizer,
+          value: data.Local_Authority_Organizer,
+        })
+        setLocation({ label: data.Location, value: data.Location })
+        setMobileNo(data.Mobile_Number_1)
+        setMobileNoTwo(data.Mobile_Number_2)
+        setNic(data.NIC_Number)
+        setIsNJP(data.NJP_Party_Member)
+        setName(data.Name)
+        setOccupation({ label: data.Occupation, value: data.Occupation })
+        setSelectedProgramme({ label: data.Program, value: data.Program })
+        setProgrammeDesc(data.Program_Description)
+        setProgrammeWardOrganizer(data.Program_Ward_Organizer)
+        setSeat({ label: data.Seat, value: data.Seat })
+        setSeatOrganizer({ label: data.Seat_Organizer, value: data.Seat_Organizer })
+        setStreetVillage({ label: data.Street_Village, value: data.Street_Village })
+        setStreetVillageOrganizer({
+          label: data.Street_Village_Organizer,
+          value: data.Street_Village_Organizer,
+        })
+        setTitle({ label: data.Title, value: data.Title })
+        setWard({ label: data.Ward, value: data.Ward })
+        setWardOrganizer({ label: data.Ward_Organizer, value: data.Ward_Organizer })
+        setWhatsAppNo(data.WhatsApp_Number)
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
-  const editVoter = () => {}
+  const addVoter = () => {
+    setLoading(true)
+
+    const requiredData = {
+      Title: title.value,
+      Name: name,
+      NIC_Number: nic,
+      Occupation: occupation.value,
+      Date_of_Birth: new Date(dob),
+      Gender: gender.value,
+      Address: address,
+      Civil_Status: civilStatus.value,
+      Mobile_Number_1: mobileNo,
+      District: district.value,
+      District_Organizer: districtOrganizer.value,
+      Seat: seat.value,
+      Seat_Organizer: seatOrganizer.value,
+      Local_Authority: localAuthority.value,
+      Local_Authority_Organizer: localAuthorityOrganizer.value,
+      Ward: ward.value,
+      Ward_Organizer: wardOrganizer.value,
+      GN_Division: gnDivision.value,
+      GN_Division_Organizer: gnDivisionOrganizer.value,
+      Street_Village: streetVillage.value,
+      Street_Village_Organizer: streetVillageOrganizer.value,
+      Program_Ward_Organizer: programmeWardOrganizer,
+      Program: selectedProgramme.value,
+      Location: location.value,
+      Date_of_Program_Conducted: new Date(dop),
+      Program_Description: programmeDesc,
+    }
+
+    const result = getNullOrUndefinedAttributes(requiredData)
+
+    if (result.length > 0) {
+      setIsAlert(true)
+      setAlertMessage(
+        <div>
+          <p>Please fill in the following required fields:</p>
+          <br />
+          <ul>
+            {result.map((item, key) => (
+              <li key={key}>{item}</li>
+            ))}
+          </ul>
+        </div>,
+      )
+      setLoading(false)
+      return
+    }
+
+    const data = {
+      ...requiredData,
+      NJP_Party_Member: isNJP,
+      Mobile_Number_2: mobileNoTwo,
+      WhatsApp_Number: WhatsAppNo,
+      Facebook_Link: fbLink,
+    }
+
+    votersService
+      .addVoter({ data })
+      .then((res) => {
+        console.log(res)
+        setLoading(false)
+        setSuccessMsg(true)
+      })
+      .catch((err) => {
+        console.log(err)
+        setLoading(false)
+      })
+  }
+
+  const editVoter = () => {
+    if (type != 'edit' && id == 0) {
+      return
+    }
+
+    const requiredData = {
+      Title: title.value,
+      Name: name,
+      NIC_Number: nic,
+      Occupation: occupation.value,
+      Date_of_Birth: new Date(dob),
+      Gender: gender.value,
+      Address: address,
+      Civil_Status: civilStatus.value,
+      Mobile_Number_1: mobileNo,
+      District: district.value,
+      District_Organizer: districtOrganizer.value,
+      Seat: seat.value,
+      Seat_Organizer: seatOrganizer.value,
+      Local_Authority: localAuthority.value,
+      Local_Authority_Organizer: localAuthorityOrganizer.value,
+      Ward: ward.value,
+      Ward_Organizer: wardOrganizer.value,
+      GN_Division: gnDivision.value,
+      GN_Division_Organizer: gnDivisionOrganizer.value,
+      Street_Village: streetVillage.value,
+      Street_Village_Organizer: streetVillageOrganizer.value,
+      Program_Ward_Organizer: programmeWardOrganizer,
+      Program: selectedProgramme.value,
+      Location: location.value,
+      Date_of_Program_Conducted: new Date(dop),
+      Program_Description: programmeDesc,
+    }
+
+    const result = getNullOrUndefinedAttributes(requiredData)
+
+    if (result.length > 0) {
+      setIsAlert(true)
+      setAlertMessage(
+        <div>
+          <p>Please fill in the following required fields:</p>
+          <br />
+          <ul>
+            {result.map((item, key) => (
+              <li key={key}>{item}</li>
+            ))}
+          </ul>
+        </div>,
+      )
+      setLoading(false)
+      return
+    }
+
+    const data = {
+      ...requiredData,
+      NJP_Party_Member: isNJP,
+      Mobile_Number_2: mobileNoTwo,
+      WhatsApp_Number: WhatsAppNo,
+      Facebook_Link: fbLink,
+    }
+
+    votersService
+      .updateVoter(id, { data })
+      .then((res) => {
+        setLoading(false)
+        setSuccessMsg(true)
+      })
+      .catch((err) => {
+        console.log(err)
+        setLoading(false)
+      })
+  }
 
   function resetValues() {
     setTitle('')
@@ -96,20 +359,30 @@ function AddEditVoter() {
 
   return (
     <CCard className="mb-4">
-      <SuccessModal
-        open={successMsg}
-        onOpen={(value) => setSuccessMsg(value)}
-        title={'Successful Operation'}
-        description={MODAL_MSGES.VOTERS.ADD_SUCCESS_MSG}
-        rediretUrl={'/voters'}
-        addAnother={() => resetValues()}
-      />
+      {type == 'edit' ? (
+        <SuccessModal
+          open={successMsg}
+          onOpen={(value) => setSuccessMsg(value)}
+          title={'Successful Operation'}
+          description={MODAL_MSGES.VOTERS.UPDATE_SUCCESS_MSG}
+          rediretUrl={'/voters'}
+        />
+      ) : (
+        <SuccessModal
+          open={successMsg}
+          onOpen={(value) => setSuccessMsg(value)}
+          title={'Successful Operation'}
+          description={MODAL_MSGES.VOTERS.ADD_SUCCESS_MSG}
+          rediretUrl={'/voters'}
+          addAnother={() => resetValues()}
+        />
+      )}
       <CCardHeader style={{ display: 'flex', justifyContent: 'space-between' }}>
         <h5>Voter Configaration</h5>
       </CCardHeader>
       <CCardBody>
         <CRow className="mb-4">
-          <h6 style={{ color: COLORS.MAIN }}>Add New Voter</h6>
+          <h6 style={{ color: COLORS.MAIN }}>{type == 'edit' ? 'Edit' : 'Add New'} Voter</h6>
         </CRow>
         <span style={{ color: 'grey', fontWeight: 'bold', color: COLORS.MAIN }}>
           Personal Information
@@ -118,20 +391,20 @@ function AddEditVoter() {
         <CRow className="mb-2">
           <CCol md={2}>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Title
+              Title <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
             <Select
               type="text"
               id="exampleFormControlInput1"
               size="sm"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => setTitle(e)}
               options={[{ label: 'Mr.', value: 'Mr.' }]}
             ></Select>
           </CCol>
           <CCol>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Name
+              Name <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
             <CFormInput
               type="text"
@@ -143,23 +416,21 @@ function AddEditVoter() {
           </CCol>
           <CCol>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Date of Birth
+              Date of Birth <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
             <DatePicker
-
               size="md"
               placeholder="Select..."
-              style={{ width: "auto", display: 'block', marginBottom: 10, zIndex: "no" }}
+              style={{ width: 'auto', display: 'block', marginBottom: 10, zIndex: 'no' }}
               value={dob}
               onChange={(e) => setDob(e.target.value)}
             />
           </CCol>
-        
         </CRow>
         <CRow className="mb-2">
           <CCol md={2}>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Gender
+              Gender <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
             <Select
               type="text"
@@ -176,7 +447,7 @@ function AddEditVoter() {
           </CCol>
           <CCol>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Occupation
+              Occupation <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
             <Select
               type="text"
@@ -189,7 +460,7 @@ function AddEditVoter() {
           </CCol>
           <CCol>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Civil Status
+              Civil Status <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
             <Select
               type="text"
@@ -208,7 +479,7 @@ function AddEditVoter() {
         <CRow className="mb-4">
           <CCol md={7}>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Address
+              Address <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
             <CFormInput
               type="text"
@@ -220,20 +491,20 @@ function AddEditVoter() {
           </CCol>
           <CCol>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              NIC Number
+              NIC Number <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
             <CFormInput
               type="text"
               id="exampleFormControlInput1"
               placeholder="Ex: 9837......"
               value={nic}
-              style={{zIndex: 100}}
+              style={{ zIndex: 100 }}
               onChange={(e) => setNic(e.target.value)}
             />
           </CCol>
           <CCol>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              NJP Party Member?
+              NJP Party Member? <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
             <br />
             <CFormCheck
@@ -265,7 +536,7 @@ function AddEditVoter() {
         <CRow className="mb-2">
           <CCol>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Mobile Number (1)
+              Mobile Number (1) <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
             <CFormInput
               type="text"
@@ -323,7 +594,7 @@ function AddEditVoter() {
             <CRow className="mb-2">
               <CCol>
                 <CFormLabel htmlFor="staticEmail" className="col-form-label">
-                  District
+                  District <span style={{ color: 'red' }}>*</span>
                 </CFormLabel>
                 <Select
                   type="text"
@@ -342,7 +613,7 @@ function AddEditVoter() {
             <CRow className="mb-2">
               <CCol>
                 <CFormLabel htmlFor="staticEmail" className="col-form-label">
-                  Seat
+                  Seat <span style={{ color: 'red' }}>*</span>
                 </CFormLabel>
                 <Select
                   type="text"
@@ -361,7 +632,7 @@ function AddEditVoter() {
             <CRow className="mb-2">
               <CCol>
                 <CFormLabel htmlFor="staticEmail" className="col-form-label">
-                  Local Authority
+                  Local Authority <span style={{ color: 'red' }}>*</span>
                 </CFormLabel>
                 <Select
                   type="text"
@@ -380,7 +651,7 @@ function AddEditVoter() {
             <CRow className="mb-2">
               <CCol>
                 <CFormLabel htmlFor="staticEmail" className="col-form-label">
-                  Ward
+                  Ward <span style={{ color: 'red' }}>*</span>
                 </CFormLabel>
                 <Select
                   type="text"
@@ -399,7 +670,7 @@ function AddEditVoter() {
             <CRow className="mb-2">
               <CCol>
                 <CFormLabel htmlFor="staticEmail" className="col-form-label">
-                  Street Village
+                  Street Village <span style={{ color: 'red' }}>*</span>
                 </CFormLabel>
                 <Select
                   type="text"
@@ -418,7 +689,7 @@ function AddEditVoter() {
             <CRow className="mb-2">
               <CCol>
                 <CFormLabel htmlFor="staticEmail" className="col-form-label">
-                  GN Division
+                  GN Division <span style={{ color: 'red' }}>*</span>
                 </CFormLabel>
                 <Select
                   type="text"
@@ -439,30 +710,34 @@ function AddEditVoter() {
             <CRow className="mb-2">
               <CCol>
                 <CFormLabel htmlFor="staticEmail" className="col-form-label">
-                  District Organizer
+                  District Organizer <span style={{ color: 'red' }}>*</span>
                 </CFormLabel>
-                <CFormInput
+                <Select
                   type="text"
                   id="exampleFormControlInput1"
                   size="md"
                   placeholder="District Organizer"
-                  disabled={true}
+                  disabled={districtOrganizerOptions.length == 1}
+                  defaultValue={districtOrganizerOptions[0]}
+                  options={districtOrganizerOptions}
                   value={districtOrganizer}
                   onChange={(e) => setDistrictOrganizer(e.target.value)}
-                />
+                ></Select>
               </CCol>
             </CRow>
             <CRow className="mb-2">
               <CCol>
                 <CFormLabel htmlFor="staticEmail" className="col-form-label">
-                  Seat Organizer
+                  Seat Organizer <span style={{ color: 'red' }}>*</span>
                 </CFormLabel>
-                <CFormInput
+                <Select
                   type="text"
                   id="exampleFormControlInput1"
                   size="md"
                   placeholder="Seat Organizer"
-                  disabled={true}
+                  disabled={seatOrganizerOptions.length == 1}
+                  options={seatOrganizerOptions}
+                  defaultValue={seatOrganizerOptions[0]}
                   value={seatOrganizer}
                   onChange={(e) => setSeatOrganizer(e.target.value)}
                 />
@@ -471,14 +746,16 @@ function AddEditVoter() {
             <CRow className="mb-2">
               <CCol>
                 <CFormLabel htmlFor="staticEmail" className="col-form-label">
-                  Local Authority Organizer
+                  Local Authority Organizer <span style={{ color: 'red' }}>*</span>
                 </CFormLabel>
-                <CFormInput
+                <Select
                   type="text"
                   id="exampleFormControlInput1"
                   size="md"
                   placeholder="Local Organizer"
-                  disabled={true}
+                  disabled={localAuthorityOrganizerOptions.length == 1}
+                  options={localAuthorityOrganizerOptions}
+                  defaultValue={localAuthorityOrganizerOptions[0]}
                   value={localAuthorityOrganizer}
                   onChange={(e) => setLocalAuthorityOrganizer(e.target.value)}
                 />
@@ -487,14 +764,16 @@ function AddEditVoter() {
             <CRow className="mb-2">
               <CCol>
                 <CFormLabel htmlFor="staticEmail" className="col-form-label">
-                  Ward Organizer
+                  Ward Organizer <span style={{ color: 'red' }}>*</span>
                 </CFormLabel>
-                <CFormInput
+                <Select
                   type="text"
                   id="exampleFormControlInput1"
                   size="md"
                   placeholder="Ward Organizer"
-                  disabled={true}
+                  disabled={wardOrganizerOptions.length == 1}
+                  options={wardOrganizerOptions}
+                  defaultValue={wardOrganizerOptions[0]}
                   value={wardOrganizer}
                   onChange={(e) => setWardOrganizer(e.target.value)}
                 />
@@ -503,14 +782,16 @@ function AddEditVoter() {
             <CRow className="mb-2">
               <CCol>
                 <CFormLabel htmlFor="staticEmail" className="col-form-label">
-                  Street Village Organizer
+                  Street Village Organizer <span style={{ color: 'red' }}>*</span>
                 </CFormLabel>
-                <CFormInput
+                <Select
                   type="text"
                   id="exampleFormControlInput1"
                   size="md"
                   placeholder="Street Village Organizer"
-                  disabled={true}
+                  disabled={streetVillageOrganizerOptions.length == 1}
+                  options={streetVillageOrganizerOptions}
+                  defaultValue={streetVillageOrganizerOptions[0]}
                   value={streetVillageOrganizer}
                   onChange={(e) => setStreetVillageOrganizer(e.target.value)}
                 />
@@ -519,14 +800,16 @@ function AddEditVoter() {
             <CRow className="mb-2">
               <CCol>
                 <CFormLabel htmlFor="staticEmail" className="col-form-label">
-                  GN Division Organizer
+                  GN Division Organizer <span style={{ color: 'red' }}>*</span>
                 </CFormLabel>
-                <CFormInput
+                <Select
                   type="text"
                   id="exampleFormControlInput1"
                   size="md"
                   placeholder="GN Division Organizer"
-                  disabled={true}
+                  disabled={GnDivisionOrganizerOptions.length == 1}
+                  options={GnDivisionOrganizerOptions}
+                  defaultValue={GnDivisionOrganizerOptions[0]}
                   value={gnDivisionOrganizer}
                   onChange={(e) => setGnDivisionOrganizer(e.target.value)}
                 />
@@ -541,7 +824,7 @@ function AddEditVoter() {
         <CRow className="mb-2">
           <CCol md={6}>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Ward Organizer
+              Ward Organizer <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
             <CFormInput
               type="text"
@@ -549,13 +832,14 @@ function AddEditVoter() {
               size="md"
               placeholder="Ward Organizer"
               disabled={true}
+              value={programmeWardOrganizer}
             />
           </CCol>
         </CRow>
         <CRow className="mb-2">
           <CCol>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Category of Programmes
+              Location <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
             <Select
               type="text"
@@ -566,59 +850,57 @@ function AddEditVoter() {
                 { label: 'Female', value: 'Female' },
                 { label: 'Not Specify', value: 'Not Specify' },
               ]}
+              value={location}
+              onChange={(e) => setLocation(e)}
             ></Select>
           </CCol>
+
           <CCol>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Date of Programme Conducted
+              Date of Programme Conducted <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
             <DatePicker
               size="md"
               placeholder="Select..."
               style={{ width: 400, display: 'block', marginBottom: 10 }}
-              value={dob}
-              onChange={(e) => setDob(e.target.value)}
+              value={dop}
+              onChange={(e) => setDop(e)}
             />
           </CCol>
-          
         </CRow>
         <CRow className="mb-2">
           <CCol>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Location
+              Programmes <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
             <Select
               type="text"
               id="exampleFormControlInput1"
               size="sm"
-              options={[
-                { label: 'Male', value: 'Male' },
-                { label: 'Female', value: 'Female' },
-                { label: 'Not Specify', value: 'Not Specify' },
-              ]}
+              options={jsonToSelectBox(ProgrammesList, 'title')}
+              value={selectedProgramme}
+              onChange={(e) => setSelectedProgramme(e)}
             ></Select>
           </CCol>
           <CCol>
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
-              Programme
+              Programme Description <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
-            <Select
+            <CFormInput
               type="text"
               id="exampleFormControlInput1"
-              size="sm"
-              options={[
-                { label: 'Male', value: 'Male' },
-                { label: 'Female', value: 'Female' },
-                { label: 'Not Specify', value: 'Not Specify' },
-              ]}
-            ></Select>
+              value={programmeDesc}
+              onChange={(e) => setProgrammeDesc(e.target.value)}
+            />
           </CCol>
         </CRow>
 
-        <CAlert color="warning" className="d-flex align-items-center mt-3">
-          <CIcon icon={cilWarning} className="flex-shrink-0 me-2" width={24} height={24} />
-          <div>{alertMessage}</div>
-        </CAlert>
+        {isAlert && (
+          <CAlert hidden={!isAlert} color="warning" className="d-flex align-items-center mt-3">
+            <CIcon icon={cilWarning} className="flex-shrink-0 me-2" width={24} height={24} />
+            <div>{alertMessage}</div>
+          </CAlert>
+        )}
         <CRow
           className="mt-4"
           style={{ position: 'sticky', bottom: '1rem', alignSelf: 'flex-end' }}
@@ -628,9 +910,9 @@ function AddEditVoter() {
               disabled={loading}
               color="primary"
               style={{ width: '100%', backgroundColor: COLORS.MAIN, border: '0px' }}
-              onClick={() => addVoter()}
+              onClick={() => (type == 'edit' ? editVoter() : addVoter())}
             >
-              Submit
+              {type == 'edit' ? 'Update' : 'Submit'}
             </CButton>
           </CCol>
           <CCol md={1}>

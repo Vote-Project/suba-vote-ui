@@ -1,4 +1,4 @@
-import { cilPeople, cilWindowRestore } from '@coreui/icons'
+import { cilPen, cilPeople, cilWindowRestore } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import {
   CButton,
@@ -14,27 +14,47 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import React from 'react'
+import moment from 'moment'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { COLORS } from 'src/common/const'
+import MoreInfoOffCanvas from 'src/components/MoreInfoOffCanvas'
+import { OrganizersService } from 'src/services/organizers.service'
 
 function OrganizersPage() {
   const navigate = useNavigate()
+  const [isMoreInfo, setIsMoreInfo] = useState(false)
+  const [organizersList, setOrganizersList] = useState([])
+  const [selectedOrganizer, setSelectedOrganizer] = useState(null)
+
+  useEffect(() => {
+    OrganizersService
+      .getOrganizers()
+      .then((res) => {
+        console.log(res)
+        setOrganizersList(res.data)
+      })
+      .then((err) => {
+        console.log(err)
+      })
+  }, [])
+
+
   return (
     <div>
       <CCard className="mb-4">
         <CCardHeader style={{ display: 'flex', justifyContent: 'space-between' }}>
           <h5>Orginzers Managment</h5>
           <CButton
-            onClick={() => navigate('/organizers/add/1')}
+            onClick={() => navigate('/organizers/add/0')}
             style={{ backgroundColor: COLORS.MAIN, border: '0px' }}
           >
             ADD NEW
           </CButton>
         </CCardHeader>
         <CCardBody>
-          <CTable hover small>
-            <CTableHead>
+          <CTable hover responsive>
+            <CTableHead color="light">
               <CTableRow>
                 <CTableHeaderCell scope="col">ID</CTableHeaderCell>
                 <CTableHeaderCell scope="col">NIC</CTableHeaderCell>
@@ -45,27 +65,50 @@ function OrganizersPage() {
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              <CTableRow>
-                <CTableDataCell width={50}>1</CTableDataCell>
-                <CTableDataCell width={150}>982872146V</CTableDataCell>
-                <CTableDataCell>Hasintha Kavindu</CTableDataCell>
-                <CTableDataCell width={150}>0778987181</CTableDataCell>
-                <CTableDataCell width={150}>01-02-2023</CTableDataCell>
-                <CTableDataCell width={150}>
-                  <CIcon
-                    icon={cilPeople}
-                    size="xl"
-                    className="text-info"
-                    style={{ cursor: 'pointer', padding: '2px', paddingInline: '3px' }}
-                  />
-                  <CIcon
-                    icon={cilWindowRestore}
-                    size="xl"
-                    className="text-info"
-                    style={{ cursor: 'pointer', padding: '2px', paddingInline: '3px' }}
-                  />
-                </CTableDataCell>
-              </CTableRow>
+              {organizersList.map((item, key) => (
+                <CTableRow
+                  key={key}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    setSelectedOrganizer(item)
+                    setIsMoreInfo(true)
+                  }}
+                >
+                  <CTableDataCell width={50}>{key + 1}</CTableDataCell>
+                  <CTableDataCell width={150}>{item?.attributes?.NIC_Number}</CTableDataCell>
+                  <CTableDataCell>{item?.attributes?.Name}</CTableDataCell>
+                  <CTableDataCell width={150}>
+                    {item?.attributes?.Mobile_Number_1 ||
+                      item?.attributes?.Mobile_Number_2 ||
+                      item?.attributes?.WhatsApp_Number}
+                  </CTableDataCell>
+                  <CTableDataCell width={150}>
+                    {moment(new Date(item?.attributes?.createdAt)).format('DD-MM-YYYY')}
+                  </CTableDataCell>
+                  <CTableDataCell width={150}>
+                    <CIcon
+                      icon={cilPeople}
+                      size="xl"
+                      className="text-info"
+                      style={{ cursor: 'pointer', padding: '2px', paddingInline: '4px' }}
+                      onClick={() => setIsMoreInfo(true)}
+                    />
+                    <CIcon
+                      icon={cilWindowRestore}
+                      size="xl"
+                      className="text-info"
+                      style={{ cursor: 'pointer', padding: '2px', paddingInline: '4px' }}
+                    />
+                    <CIcon
+                      icon={cilPen}
+                      size="xl"
+                      className="text-info"
+                      onClick={() => navigate('/voters/add/1')}
+                      style={{ cursor: 'pointer', padding: '2px', paddingInline: '4px' }}
+                    />
+                  </CTableDataCell>
+                </CTableRow>
+              ))}
             </CTableBody>
           </CTable>
           <div style={{ color: COLORS.MAIN }}>
@@ -79,6 +122,13 @@ function OrganizersPage() {
           </div>
         </CCardBody>
       </CCard>
+      <MoreInfoOffCanvas
+        title="Organizer Information"
+        type="organizer"
+        data={selectedOrganizer}
+        isMoreInfo={isMoreInfo}
+        setIsMoreInfo={setIsMoreInfo}
+      />
     </div>
   )
 }

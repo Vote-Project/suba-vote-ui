@@ -29,16 +29,40 @@ const _nav = [
     name: 'Managment',
   },
   {
-    component: CNavItem,
+    component: CNavGroup,
     name: 'Organizers',
     to: '/organizers',
     icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Organizer Carousel',
+        to: '/organizers',
+      },
+      {
+        component: CNavItem,
+        name: 'Add New Organizer',
+        to: '/organizers/add/0',
+      },
+],
   },
   {
-    component: CNavItem,
+    component: CNavGroup,
     name: 'Voters',
     to: '/voters',
     icon: <CIcon icon={cilPeople} customClassName="nav-icon" />,
+    items: [
+          {
+            component: CNavItem,
+            name: 'Voter Carousel',
+            to: '/voters',
+          },
+          {
+            component: CNavItem,
+            name: 'Add New Voter',
+            to: '/voters/add/0',
+          },
+    ],
   },
   {
     component: CNavItem,
@@ -143,7 +167,7 @@ const _nav = [
   //       to: '/base/tooltips',
   //     },
   //   ],
-  // },
+  // }
   // {
   //   component: CNavGroup,
   //   name: 'Buttons',

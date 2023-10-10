@@ -5,3 +5,13 @@ export const jsonToSelectBox = (jsonArray, key, value) => {
 
   return selectArray
 }
+
+export function getNullOrUndefinedAttributes(data) {
+  const nullOrUndefinedAttributes = [];
+  for (const key in data) {
+    if (data[key] === null || data[key] === undefined || data[key] === '') {
+      nullOrUndefinedAttributes.push(key);
+    }
+  }
+  return nullOrUndefinedAttributes;
+}
