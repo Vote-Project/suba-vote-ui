@@ -1,4 +1,4 @@
-import { cilArrowRight, cilSave } from '@coreui/icons'
+import { cilArrowRight, cilSave, cilXCircle } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import {
   CButton,
@@ -13,10 +13,8 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { COLORS } from 'src/common/const'
 import CorrectIconAnimation from 'src/assets/other/verified.gif'
-import Lottie from 'lottie-react'
-import successAnimation from '../../assets/other/success.json'
 
-function SuccessModal({ title, description, rediretUrl, open, onOpen, addAnother = null }) {
+function ErrorModal({ title, description, open, onOpen, addAnother = null }) {
   const navigate = useNavigate()
   return (
     <CModal
@@ -36,16 +34,9 @@ function SuccessModal({ title, description, rediretUrl, open, onOpen, addAnother
           className="mb-3"
         >
           {/* <CIcon icon={cilSave} size="3xl" /> */}
-
-          <Lottie
-            loop={false}
-            autoplay={true}
-            style={{ height: '150px' }}
-            className="match-animation"
-            animationData={successAnimation}
-          />
+          <CIcon style={{ color: COLORS.DANGER_BTN }} icon={cilXCircle} width={80} />
         </div>
-        <p style={{ textAlign: 'center' }}>{description}</p>
+        <p style={{ textAlign: 'center', fontSize: "1.2em" }}>{description}</p>
       </CModalBody>
       <CModalFooter>
         <CButton color="light" onClick={() => onOpen(false)}>
@@ -54,7 +45,7 @@ function SuccessModal({ title, description, rediretUrl, open, onOpen, addAnother
         {addAnother && (
           <CButton
             color="primary"
-            style={{ backgroundColor: COLORS.MAIN, border: '0px' }}
+            style={{ backgroundColor: COLORS.DANGER_BTN, border: '0px' }}
             onClick={() => {
               addAnother()
               onOpen(false)
@@ -63,16 +54,10 @@ function SuccessModal({ title, description, rediretUrl, open, onOpen, addAnother
             Add Another
           </CButton>
         )}
-        <CButton
-          style={{ backgroundColor: COLORS.MAIN, border: '0px' }}
-          color="primary"
-          onClick={() => navigate(rediretUrl)}
-        >
-          Go To Carousal <CIcon icon={cilArrowRight} size="md" />
-        </CButton>
+     
       </CModalFooter>
     </CModal>
   )
 }
 
-export default SuccessModal
+export default ErrorModal

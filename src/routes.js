@@ -58,12 +58,17 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
-  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
-  { path: '/organizers', name: 'Organizers Carousal', element: OrganizersPage },
-  { path: '/voters', name: 'Voters Carousal', element: VotersPage },
-  { path: '/voters/:type/:id', name: 'Voter Configaration', element: AddEditVoter },
-  { path: '/organizers/:type/:id', name: 'Organizer Configaration', element: AddEditOrginizer },
-  { path: '/reports', name: 'Reports', element: ResportsPage },
+  { path: '/dashboard', exact: true, name: 'Dashboard', element: Dashboard },
+  { path: '/organizers', exact: true, name: 'Organizers Carousal', element: OrganizersPage },
+  { path: '/voters', exact: true, name: 'Voters Carousal', element: VotersPage },
+  { path: '/voters/:type/:id', exact: true, name: 'Voter Configaration', element: AddEditVoter },
+  {
+    path: '/organizers/:type/:id',
+    exact: true,
+    name: 'Organizer Configaration',
+    element: AddEditOrginizer,
+  },
+  { path: '/reports', exact: true, name: 'Reports', element: ResportsPage },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },

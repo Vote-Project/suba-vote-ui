@@ -7,9 +7,35 @@ import {
   COffcanvasTitle,
   CRow,
 } from '@coreui/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { LocationService } from 'src/services/location.service'
+const INITIAL_VALUE = ''
 
 function MoreInfoOffCanvas({ title, type = 'voter', data, isMoreInfo, setIsMoreInfo }) {
+
+  const [district, setDistrict] = useState(INITIAL_VALUE)
+  const [seat, setSeat] = useState(INITIAL_VALUE)
+  const [localAuthority, setLocalAuthority] = useState(INITIAL_VALUE)
+  const [ward, setWard] = useState(INITIAL_VALUE)
+  const [streetVillage, setStreetVillage] = useState(INITIAL_VALUE)
+  const [gnDivision, setGnDivision] = useState(INITIAL_VALUE)
+
+
+  useEffect(() => {
+    console.log(data?.attributes.District)
+    if(data) {
+      LocationService.getDistrictById(data?.attributes.District).then((res) => setDistrict(res.data.attributes.Name))
+      LocationService.getSeatById(data?.attributes.Seat).then((res) => setSeat(res.data.attributes.Name))
+      LocationService.getLocalAuthorityById(data?.attributes.GN_Division).then((res) => setLocalAuthority(res.data.attributes.Name))
+      LocationService.getWardById(data?.attributes.Ward).then((res) => setWard(res.data.attributes.Name))
+      LocationService.getStreetById(data?.attributes.Street_Village).then((res) => setStreetVillage(res.data.attributes.Name))
+      LocationService.getGnDivisionById(data?.attributes.GN_Division).then((res) => setGnDivision(res.data.attributes.Name))
+
+    }
+
+  }, [data])
+  
+
   return (
     <COffcanvas
       backdrop={true}
@@ -19,7 +45,7 @@ function MoreInfoOffCanvas({ title, type = 'voter', data, isMoreInfo, setIsMoreI
       onHide={() => setIsMoreInfo(false)}
     >
       <COffcanvasHeader>
-        <COffcanvasTitle>{title}</COffcanvasTitle>
+        <COffcanvasTitle>{title + ` (ID - ${data?.id})`}</COffcanvasTitle>
         <CCloseButton className="text-reset" onClick={() => setIsMoreInfo(false)} />
       </COffcanvasHeader>
       <COffcanvasBody>
@@ -88,7 +114,9 @@ function MoreInfoOffCanvas({ title, type = 'voter', data, isMoreInfo, setIsMoreI
         <CRow>
           <span style={{ fontWeight: 'bold' }}>WhatsApp No</span>
           {data?.attributes.WhatsApp_Number ? (
-            <a href={`tel:${data?.attributes.WhatsApp_Number}`}>{data?.attributes.WhatsApp_Number || '-'}</a>
+            <a href={`tel:${data?.attributes.WhatsApp_Number}`}>
+              {data?.attributes.WhatsApp_Number || '-'}
+            </a>
           ) : (
             <span>-</span>
           )}
@@ -105,64 +133,94 @@ function MoreInfoOffCanvas({ title, type = 'voter', data, isMoreInfo, setIsMoreI
         <hr />
         <CRow>
           <span style={{ fontWeight: 'bold' }}>District</span>
-          <span>{data?.attributes.District || '-'}</span>
+          <span>{ district || '-'}</span>
         </CRow>
         <hr />
-        <CRow>
-          <span style={{ fontWeight: 'bold' }}>District Organizer</span>
-          <span>{data?.attributes.District_Organizer || '-'}</span>
-        </CRow>
-        <hr />
+
+        {type == 'voter' && (
+          <>
+            <CRow>
+              <span style={{ fontWeight: 'bold' }}>District Organizer</span>
+              <span>{data?.attributes.District_Organizer || '-'}</span>
+            </CRow>
+            <hr />
+          </>
+        )}
         <CRow>
           <span style={{ fontWeight: 'bold' }}>Seat</span>
-          <span>{data?.attributes.Seat || '-'}</span>
+          <span>{seat || '-'}</span>
         </CRow>
         <hr />
-        <CRow>
-          <span style={{ fontWeight: 'bold' }}>Seat Organizer</span>
-          <span>{data?.attributes.Seat_Organizer || '-'}</span>
-        </CRow>
-        <hr />
+
+        {type == 'voter' && (
+          <>
+            <CRow>
+              <span style={{ fontWeight: 'bold' }}>Seat Organizer</span>
+              <span>{data?.attributes.Seat_Organizer || '-'}</span>
+            </CRow>
+            <hr />
+          </>
+        )}
         <CRow>
           <span style={{ fontWeight: 'bold' }}>Local Authority</span>
-          <span>{data?.attributes.Local_Authority || '-'}</span>
+          <span>{localAuthority || '-'}</span>
         </CRow>
         <hr />
-        <CRow>
-          <span style={{ fontWeight: 'bold' }}>Local Authority Organizer</span>
-          <span>{data?.attributes.Local_Authority_Organizer || '-'}</span>
-        </CRow>
-        <hr />
+
+        {type == 'voter' && (
+          <>
+            <CRow>
+              <span style={{ fontWeight: 'bold' }}>Local Authority Organizer</span>
+              <span>{data?.attributes.Local_Authority_Organizer || '-'}</span>
+            </CRow>
+            <hr />
+          </>
+        )}
         <CRow>
           <span style={{ fontWeight: 'bold' }}>Ward</span>
-          <span>{data?.attributes.Ward || '-'}</span>
+          <span>{ward || '-'}</span>
         </CRow>
         <hr />
-        <CRow>
-          <span style={{ fontWeight: 'bold' }}>Ward Organizer</span>
-          <span>{data?.attributes.Ward_Organizer || '-'}</span>
-        </CRow>
-        <hr />
+
+        {type == 'voter' && (
+          <>
+            <CRow>
+              <span style={{ fontWeight: 'bold' }}>Ward Organizer</span>
+              <span>{data?.attributes.Ward_Organizer || '-'}</span>
+            </CRow>
+            <hr />
+          </>
+        )}
         <CRow>
           <span style={{ fontWeight: 'bold' }}>GN Division</span>
-          <span>{data?.attributes.GN_Division || '-'}</span>
+          <span>{gnDivision || '-'}</span>
         </CRow>
         <hr />
-        <CRow>
-          <span style={{ fontWeight: 'bold' }}>GN Division Organizer</span>
-          <span>{data?.attributes.GN_Division_Organizer || '-'}</span>
-        </CRow>
-        <hr />
+
+        {type == 'voter' && (
+          <>
+            <CRow>
+              <span style={{ fontWeight: 'bold' }}>GN Division Organizer</span>
+              <span>{data?.attributes.GN_Division_Organizer || '-'}</span>
+            </CRow>
+            <hr />
+          </>
+        )}
         <CRow>
           <span style={{ fontWeight: 'bold' }}>Street Village</span>
-          <span>{data?.attributes.GN_Division_Organizer || '-'}</span>
+          <span>{streetVillage || '-'}</span>
         </CRow>
         <hr />
-        <CRow>
-          <span style={{ fontWeight: 'bold' }}>Street Village Organizer</span>
-          <span>{data?.attributes.GN_Division_Organizer || '-'}</span>
-        </CRow>
-        <hr />
+        {type == 'voter' && (
+          <>
+            <CRow>
+              <span style={{ fontWeight: 'bold' }}>Street Village Organizer</span>
+              <span>{data?.attributes.GN_Division_Organizer || '-'}</span>
+            </CRow>
+            <hr />
+          </>
+        )}
+
         {type == 'voter' && (
           <>
             <CRow>
@@ -207,7 +265,6 @@ function MoreInfoOffCanvas({ title, type = 'voter', data, isMoreInfo, setIsMoreI
               <span style={{ fontWeight: 'bold' }}>Political Background</span>
               <span>{data?.attributes.Political_Background || '-'}</span>
             </CRow>
-           
           </>
         )}
       </COffcanvasBody>

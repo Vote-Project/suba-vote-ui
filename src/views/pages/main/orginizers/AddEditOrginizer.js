@@ -14,7 +14,7 @@ import {
   CSpinner,
 } from '@coreui/react'
 import moment from 'moment'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Select from 'react-select'
 import DatePicker from 'rsuite/DatePicker'
 import 'rsuite/dist/rsuite.min.css'
@@ -25,10 +25,14 @@ import OccupationList from 'src/data/Occupations.json'
 import ProgrammesList from 'src/data/ProgrammeCategories.json'
 import OrganizerCategories from 'src/data/OrganizerCategories.json'
 import { OrganizersService } from 'src/services/organizers.service'
+import { useParams } from 'react-router-dom'
+import { LocationService } from 'src/services/location.service'
+import ErrorModal from 'src/components/Modals/ErrorModal'
 
 const INITIAL_VALUE = ''
 
 function AddEditOrganizer() {
+  const { id, type } = useParams()
   //input fields
   const [title, setTitle] = useState(INITIAL_VALUE)
   const [name, setName] = useState(INITIAL_VALUE)
@@ -54,11 +58,139 @@ function AddEditOrganizer() {
   const [organizerCategory, setOrganizerCategory] = useState(INITIAL_VALUE)
   const [politicalBackground, setPoliticalBackground] = useState(INITIAL_VALUE)
 
+  //options
+  const [districtOptions, setDistrictOptions] = useState([])
+  const [seatOptions, setSeatOptions] = useState([])
+  const [localAuthorityOptions, setLocalAuthorityOptions] = useState([])
+  const [wardOptions, setWardOptions] = useState([])
+  const [streetVillageOptions, setStreetVillageOptions] = useState([])
+  const [gnDivisionOptions, setGnDivisionOptions] = useState([])
 
   const [alertMessage, setAlertMessage] = useState('Please Fill All Required Fields')
   const [isAlert, setIsAlert] = useState(false)
   const [successMsg, setSuccessMsg] = useState(false)
+  const [errorMsg, setErrorMsg] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (type == 'edit' && id > 0) {
+      getOrganizerById(id)
+    }
+  }, [id, type])
+
+  useEffect(() => {
+    LocationService.getDistricts()
+      .then((res) => {
+        const data = res.data
+        const selectArray = data.map((item) => {
+          return { value: item.id, label: item.attributes.Name }
+        })
+        setDistrictOptions(selectArray)
+      })
+      .catch((err) => console.log(err))
+  }, [])
+
+  useEffect(() => {
+    if (district)
+      LocationService.getSeatsByDistrictId(district.value)
+        .then((res) => {
+          const data = res.data
+          const selectArray = data.map((item) => {
+            return { value: item.id, label: item.attributes.Name }
+          })
+          setSeatOptions(selectArray)
+        })
+        .catch((err) => console.log(err))
+  }, [district])
+
+  useEffect(() => {
+    if (seat)
+      LocationService.getLocalAuthoritiesBySeatId(seat.value)
+        .then((res) => {
+          const data = res.data
+          const selectArray = data.map((item) => {
+            return { value: item.id, label: item.attributes.Name }
+          })
+          setLocalAuthorityOptions(selectArray)
+        })
+        .catch((err) => console.log(err))
+  }, [seat])
+
+  useEffect(() => {
+    if (localAuthority)
+      LocationService.getWardsByLocalAuthorityId(localAuthority.value)
+        .then((res) => {
+          const data = res.data
+          const selectArray = data.map((item) => {
+            return { value: item.id, label: item.attributes.Name }
+          })
+          setWardOptions(selectArray)
+        })
+        .catch((err) => console.log(err))
+  }, [localAuthority])
+
+  useEffect(() => {
+    if (ward)
+      LocationService.getGnDivisionsByWardId(ward.value)
+        .then((res) => {
+          const data = res.data
+          const selectArray = data.map((item) => {
+            return { value: item.id, label: item.attributes.Name }
+          })
+          setGnDivisionOptions(selectArray)
+        })
+        .catch((err) => console.log(err))
+  }, [ward])
+
+  useEffect(() => {
+    if (gnDivision)
+      LocationService.getStreetsByGnDivisionId(gnDivision.value)
+        .then((res) => {
+          const data = res.data
+          const selectArray = data.map((item) => {
+            return { value: item.id, label: item.attributes.Name }
+          })
+          setStreetVillageOptions(selectArray)
+        })
+        .catch((err) => console.log(err))
+  }, [gnDivision])
+
+  const getOrganizerById = async (id) => {
+    OrganizersService.getOrganizer(id)
+      .then(async (res) => {
+        const data = res.data?.attributes
+
+        setAddress(data.Address)
+        setCivilStatus({ label: data.Civil_Status, value: data.Civil_Status })
+        setDob(new Date(data.Date_of_Birth))
+        setDistrict({ label: (await LocationService.getDistrictById(data.District)).data.attributes.Name, value: data.District })
+        setFbLink(data.Facebook_Link)
+        setGnDivision({ label: (await LocationService.getGnDivisionById(data.GN_Division)).data.attributes.Name, value: data.GN_Division })
+        setGender({ label: data.Gender, value: data.Gender })
+        setLevelOfStrength({ label: data.Level_of_Strength, value: data.Level_of_Strength })
+        setLocalAuthority({ label: (await LocationService.getLocalAuthorityById(data.Local_Authority)).data.attributes.Name, value: data.Local_Authority })
+        setMobileNo(data.Mobile_Number_1)
+        setMobileNoTwo(data.Mobile_Number_2)
+        setNic(data.NIC_Number)
+        setIsNJP(data.NJP_Party_Member)
+        setName(data.Name)
+        setOccupation({ label: data.Occupation, value: data.Occupation })
+        setOrganizerCategory({ label: data.Organizer_Category, value: data.Organizer_Category })
+        setPoliticalBackground({
+          label: data.Political_Background,
+          value: data.Political_Background,
+        })
+        setSeat({ label: (await LocationService.getSeatById(data.Seat)).data.attributes.Name , value: data.Seat })
+        setStreetVillage({ label: (await LocationService.getStreetById(data.Street_Village)).data.attributes.Name, value: data.Street_Village })
+        setTitle({ label: data.Title, value: data.Title })
+        setWard({ label: (await LocationService.getWardById(data.Ward)).data.attributes.Name, value: data.Ward })
+        setWhatsAppNo(data.WhatsApp_Number)
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 
   const addOrganizer = () => {
     setLoading(true)
@@ -81,7 +213,7 @@ function AddEditOrganizer() {
       Street_Village: streetVillage.value,
       Political_Background: politicalBackground.value,
       Organizer_Category: organizerCategory.value,
-      Level_of_Strength: levelOfStrength.value
+      Level_of_Strength: levelOfStrength.value,
     }
 
     const result = getNullOrUndefinedAttributes(requiredData)
@@ -111,8 +243,7 @@ function AddEditOrganizer() {
       Facebook_Link: fbLink,
     }
 
-    OrganizersService
-      .addOrganizer({ data })
+    OrganizersService.addOrganizer({ data })
       .then((res) => {
         console.log(res)
         setLoading(false)
@@ -120,11 +251,77 @@ function AddEditOrganizer() {
       })
       .catch((err) => {
         console.log(err)
+        setErrorMsg(true)
         setLoading(false)
       })
   }
 
-  const editOrganizer = () => {}
+  const editOrganizer = () => {
+    if (type != 'edit' && id == 0) {
+      return
+    }
+
+    setLoading(true)
+
+    const requiredData = {
+      Title: title.value,
+      Name: name,
+      NIC_Number: nic,
+      Occupation: occupation.value,
+      Date_of_Birth: new Date(dob),
+      Gender: gender.value,
+      Address: address,
+      Civil_Status: civilStatus.value,
+      Mobile_Number_1: mobileNo,
+      District: district.value,
+      Seat: seat.value,
+      Local_Authority: localAuthority.value,
+      Ward: ward.value,
+      GN_Division: gnDivision.value,
+      Village_Street: streetVillage.value,
+      Political_Background: politicalBackground.value,
+      Organizer_Category: organizerCategory.value,
+      Level_of_Strength: levelOfStrength.value,
+    }
+
+    const result = getNullOrUndefinedAttributes(requiredData)
+
+    if (result.length > 0) {
+      setIsAlert(true)
+      setAlertMessage(
+        <div>
+          <p>Please fill in the following required fields:</p>
+          <br />
+          <ul>
+            {result.map((item, key) => (
+              <li key={key}>{item}</li>
+            ))}
+          </ul>
+        </div>,
+      )
+      setLoading(false)
+      return
+    }
+
+    const data = {
+      ...requiredData,
+      NJP_Party_Member: isNJP,
+      Mobile_Number_2: mobileNoTwo,
+      WhatsApp_Number: WhatsAppNo,
+      Facebook_Link: fbLink,
+    }
+
+    OrganizersService.updateOrganizer(id, { data })
+      .then((res) => {
+        setLoading(false)
+        setSuccessMsg(true)
+      })
+      .catch((err) => {
+        console.log(err)
+        setErrorMsg(true)
+        setLoading(false)
+      })
+  }
 
   function resetValues() {
     setTitle(INITIAL_VALUE)
@@ -153,20 +350,39 @@ function AddEditOrganizer() {
 
   return (
     <CCard className="mb-4">
-      <SuccessModal
-        open={successMsg}
-        onOpen={(value) => setSuccessMsg(value)}
-        title={'Successful Operation'}
-        description={MODAL_MSGES.VOTERS.ADD_SUCCESS_MSG}
-        rediretUrl={'/organizers'}
+      {type == 'edit' ? (
+        <SuccessModal
+          open={successMsg}
+          onOpen={(value) => setSuccessMsg(value)}
+          title={'Successful Operation'}
+          description={MODAL_MSGES.ORGANIZERS.UPDATE_SUCCESS_MSG}
+          rediretUrl={'/organizers'}
+        />
+      ) : (
+        <SuccessModal
+          open={successMsg}
+          onOpen={(value) => setSuccessMsg(value)}
+          title={'Successful Operation'}
+          description={MODAL_MSGES.ORGANIZERS.ADD_SUCCESS_MSG}
+          rediretUrl={'/organizers'}
+          addAnother={() => resetValues()}
+        />
+      )}
+
+      <ErrorModal
+        open={errorMsg}
+        onOpen={(value) => setErrorMsg(value)}
+        title={'Failed Operation'}
+        description={MODAL_MSGES.ERROR_MSG}
         addAnother={() => resetValues()}
       />
+
       <CCardHeader style={{ display: 'flex', justifyContent: 'space-between' }}>
         <h5>Organizer Configaration</h5>
       </CCardHeader>
       <CCardBody>
         <CRow className="mb-4">
-          <h6 style={{ color: COLORS.MAIN }}>Add New Organizer</h6>
+          <h6 style={{ color: COLORS.MAIN }}>{type == 'edit' ? 'Edit' : 'Add New'} Organizer</h6>
         </CRow>
         <span style={{ color: 'grey', fontWeight: 'bold', color: COLORS.MAIN }}>
           Personal Information
@@ -384,11 +600,7 @@ function AddEditOrganizer() {
                   type="text"
                   id="exampleFormControlInput1"
                   size="sm"
-                  options={[
-                    { label: 'Male', value: 'Male' },
-                    { label: 'Female', value: 'Female' },
-                    { label: 'Not Specify', value: 'Not Specify' },
-                  ]}
+                  options={districtOptions}
                   value={district}
                   onChange={(e) => setDistrict(e)}
                 ></Select>
@@ -403,11 +615,7 @@ function AddEditOrganizer() {
                   type="text"
                   id="exampleFormControlInput1"
                   size="sm"
-                  options={[
-                    { label: 'Male', value: 'Male' },
-                    { label: 'Female', value: 'Female' },
-                    { label: 'Not Specify', value: 'Not Specify' },
-                  ]}
+                  options={seatOptions}
                   value={seat}
                   onChange={(e) => setSeat(e)}
                 ></Select>
@@ -422,11 +630,7 @@ function AddEditOrganizer() {
                   type="text"
                   id="exampleFormControlInput1"
                   size="sm"
-                  options={[
-                    { label: 'Male', value: 'Male' },
-                    { label: 'Female', value: 'Female' },
-                    { label: 'Not Specify', value: 'Not Specify' },
-                  ]}
+                  options={localAuthorityOptions}
                   value={localAuthority}
                   onChange={(e) => setLocalAuthority(e)}
                 ></Select>
@@ -441,32 +645,9 @@ function AddEditOrganizer() {
                   type="text"
                   id="exampleFormControlInput1"
                   size="sm"
-                  options={[
-                    { label: 'Male', value: 'Male' },
-                    { label: 'Female', value: 'Female' },
-                    { label: 'Not Specify', value: 'Not Specify' },
-                  ]}
+                  options={wardOptions}
                   value={ward}
                   onChange={(e) => setWard(e)}
-                ></Select>
-              </CCol>
-            </CRow>
-            <CRow className="mb-2">
-              <CCol>
-                <CFormLabel htmlFor="staticEmail" className="col-form-label">
-                  Street Village <span style={{ color: 'red' }}>*</span>
-                </CFormLabel>
-                <Select
-                  type="text"
-                  id="exampleFormControlInput1"
-                  size="sm"
-                  options={[
-                    { label: 'Male', value: 'Male' },
-                    { label: 'Female', value: 'Female' },
-                    { label: 'Not Specify', value: 'Not Specify' },
-                  ]}
-                  value={streetVillage}
-                  onChange={(e) => setStreetVillage(e)}
                 ></Select>
               </CCol>
             </CRow>
@@ -479,18 +660,28 @@ function AddEditOrganizer() {
                   type="text"
                   id="exampleFormControlInput1"
                   size="sm"
-                  options={[
-                    { label: 'Male', value: 'Male' },
-                    { label: 'Female', value: 'Female' },
-                    { label: 'Not Specify', value: 'Not Specify' },
-                  ]}
+                  options={gnDivisionOptions}
                   value={gnDivision}
                   onChange={(e) => setGnDivision(e)}
                 ></Select>
               </CCol>
             </CRow>
+            <CRow className="mb-2">
+              <CCol>
+                <CFormLabel htmlFor="staticEmail" className="col-form-label">
+                  Street Village <span style={{ color: 'red' }}>*</span>
+                </CFormLabel>
+                <Select
+                  type="text"
+                  id="exampleFormControlInput1"
+                  size="sm"
+                  options={streetVillageOptions}
+                  value={streetVillage}
+                  onChange={(e) => setStreetVillage(e)}
+                ></Select>
+              </CCol>
+            </CRow>
           </CCol>
-         
         </CRow>
         <span style={{ color: 'grey', fontWeight: 'bold', color: COLORS.MAIN }}>
           Authentication
@@ -546,7 +737,6 @@ function AddEditOrganizer() {
               onChange={(e) => setPoliticalBackground(e)}
             ></Select>
           </CCol>
-        
         </CRow>
 
         {isAlert && (
@@ -564,13 +754,25 @@ function AddEditOrganizer() {
               disabled={loading}
               color="primary"
               style={{ width: '100%', backgroundColor: COLORS.MAIN, border: '0px' }}
-              onClick={() => addOrganizer()}
+              onClick={() => (type == 'edit' ? editOrganizer() : addOrganizer())}
             >
-              Submit
+              {type == 'edit' ? 'Update' : 'Submit'}
             </CButton>
           </CCol>
-          <CCol md={1}>
-            <CSpinner hidden={!loading} style={{ color: COLORS.MAIN }} />
+          {loading && (
+            <CCol md={1}>
+              <CSpinner hidden={!loading} style={{ color: COLORS.MAIN }} />
+            </CCol>
+          )}
+          <CCol md={2}>
+            <CButton
+              disabled={loading}
+              color="primary"
+              style={{ width: '100%', backgroundColor: COLORS.DANGER_BTN, border: '0px' }}
+              onClick={() => (type == 'edit' ? editOrganizer() : addOrganizer())}
+            >
+              Delete
+            </CButton>
           </CCol>
         </CRow>
       </CCardBody>
