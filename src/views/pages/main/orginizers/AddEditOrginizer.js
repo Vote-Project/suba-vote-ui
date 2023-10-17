@@ -24,6 +24,7 @@ import SuccessModal from 'src/components/Modals/SuccessModal'
 import OccupationList from 'src/data/Occupations.json'
 import ProgrammesList from 'src/data/ProgrammeCategories.json'
 import OrganizerCategories from 'src/data/OrganizerCategories.json'
+import PoliticalBackgrounds from 'src/data/PoliticalBackgrounds.json'
 import { OrganizersService } from 'src/services/organizers.service'
 import { useParams } from 'react-router-dom'
 import { LocationService } from 'src/services/location.service'
@@ -41,7 +42,7 @@ function AddEditOrganizer() {
   const [occupation, setOccupation] = useState(INITIAL_VALUE)
   const [civilStatus, setCivilStatus] = useState(INITIAL_VALUE)
   const [address, setAddress] = useState(INITIAL_VALUE)
-  const [dob, setDob] = useState(new Date())
+  const [dob, setDob] = useState(new Date("01-01-1990"))
   const [isNJP, setIsNJP] = useState(false)
   const [mobileNo, setMobileNo] = useState(INITIAL_VALUE)
   const [mobileNoTwo, setMobileNoTwo] = useState(INITIAL_VALUE)
@@ -91,7 +92,7 @@ function AddEditOrganizer() {
   }, [])
 
   useEffect(() => {
-    if (district)
+    if (district) {
       LocationService.getSeatsByDistrictId(district.value)
         .then((res) => {
           const data = res.data
@@ -101,6 +102,8 @@ function AddEditOrganizer() {
           setSeatOptions(selectArray)
         })
         .catch((err) => console.log(err))
+
+    }
   }, [district])
 
   useEffect(() => {
@@ -163,12 +166,22 @@ function AddEditOrganizer() {
         setAddress(data.Address)
         setCivilStatus({ label: data.Civil_Status, value: data.Civil_Status })
         setDob(new Date(data.Date_of_Birth))
-        setDistrict({ label: (await LocationService.getDistrictById(data.District)).data.attributes.Name, value: data.District })
+        setDistrict({
+          label: (await LocationService.getDistrictById(data.District)).data.attributes.Name,
+          value: data.District,
+        })
         setFbLink(data.Facebook_Link)
-        setGnDivision({ label: (await LocationService.getGnDivisionById(data.GN_Division)).data.attributes.Name, value: data.GN_Division })
+        setGnDivision({
+          label: (await LocationService.getGnDivisionById(data.GN_Division)).data.attributes.Name,
+          value: data.GN_Division,
+        })
         setGender({ label: data.Gender, value: data.Gender })
         setLevelOfStrength({ label: data.Level_of_Strength, value: data.Level_of_Strength })
-        setLocalAuthority({ label: (await LocationService.getLocalAuthorityById(data.Local_Authority)).data.attributes.Name, value: data.Local_Authority })
+        setLocalAuthority({
+          label: (await LocationService.getLocalAuthorityById(data.Local_Authority)).data.attributes
+            .Name,
+          value: data.Local_Authority,
+        })
         setMobileNo(data.Mobile_Number_1)
         setMobileNoTwo(data.Mobile_Number_2)
         setNic(data.NIC_Number)
@@ -180,10 +193,19 @@ function AddEditOrganizer() {
           label: data.Political_Background,
           value: data.Political_Background,
         })
-        setSeat({ label: (await LocationService.getSeatById(data.Seat)).data.attributes.Name , value: data.Seat })
-        setStreetVillage({ label: (await LocationService.getStreetById(data.Street_Village)).data.attributes.Name, value: data.Street_Village })
+        setSeat({
+          label: (await LocationService.getSeatById(data.Seat)).data.attributes.Name,
+          value: data.Seat,
+        })
+        setStreetVillage({
+          label: (await LocationService.getStreetById(data.Street_Village)).data.attributes.Name,
+          value: data.Street_Village,
+        })
         setTitle({ label: data.Title, value: data.Title })
-        setWard({ label: (await LocationService.getWardById(data.Ward)).data.attributes.Name, value: data.Ward })
+        setWard({
+          label: (await LocationService.getWardById(data.Ward)).data.attributes.Name,
+          value: data.Ward,
+        })
         setWhatsAppNo(data.WhatsApp_Number)
         console.log(res)
       })
@@ -399,7 +421,18 @@ function AddEditOrganizer() {
               size="sm"
               value={title}
               onChange={(e) => setTitle(e)}
-              options={[{ label: 'Mr.', value: 'Mr.' }]}
+              options={[
+                { label: 'Mr.', value: 'Mr.' },
+                { label: 'Mrs.', value: 'Mrs.' },
+                { label: 'Ms.', value: 'Ms.' },
+                { label: 'Miss', value: 'Miss' },
+                { label: 'Dr.', value: 'Dr.' },
+                { label: 'Prof.', value: 'Prof.' },
+                { label: 'Rev.', value: 'Rev.' },
+                { label: 'Hon.', value: 'Hon.' },
+                { label: 'Sir', value: 'Sir' },
+                { label: 'Madam', value: 'Madam' },
+              ]}
             ></Select>
           </CCol>
           <CCol>
@@ -422,8 +455,8 @@ function AddEditOrganizer() {
               size="md"
               placeholder="Select..."
               style={{ width: 'auto', display: 'block', marginBottom: 10, zIndex: 'no' }}
-              value={dob}
-              onChange={(e) => setDob(e.target.value)}
+              value={new Date(dob)}
+              onChange={(e) => setDob(e)}
             />
           </CCol>
         </CRow>
@@ -732,7 +765,7 @@ function AddEditOrganizer() {
               type="text"
               id="exampleFormControlInput1"
               size="sm"
-              options={jsonToSelectBox(ProgrammesList, 'title')}
+              options={jsonToSelectBox(PoliticalBackgrounds, 'title')}
               value={politicalBackground}
               onChange={(e) => setPoliticalBackground(e)}
             ></Select>
@@ -764,7 +797,7 @@ function AddEditOrganizer() {
               <CSpinner hidden={!loading} style={{ color: COLORS.MAIN }} />
             </CCol>
           )}
-          <CCol md={2}>
+          {/* <CCol md={2}>
             <CButton
               disabled={loading}
               color="primary"
@@ -773,7 +806,7 @@ function AddEditOrganizer() {
             >
               Delete
             </CButton>
-          </CCol>
+          </CCol> */}
         </CRow>
       </CCardBody>
     </CCard>

@@ -1,22 +1,26 @@
 [
     {
         "id": 1,
-        "title": "Seat Organizer"
+        "title": "District Organizer"
     },
     {
         "id": 2,
-        "title": "Ward Organizer"
+        "title": "Seat Organizer"
     },
     {
         "id": 3,
-        "title": "Local Authority Organizer"
+        "title": "Ward Organizer"
     },
     {
         "id": 4,
-        "title": "GN Division Organizer"
+        "title": "Local Authority Organizer"
     },
     {
         "id": 5,
+        "title": "GN Division Organizer"
+    },
+    {
+        "id": 6,
         "title": "Village / Street Organizer"
     }
 ]

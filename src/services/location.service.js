@@ -28,6 +28,15 @@ export const LocationService = {
     }
   },
 
+  getAllSeats: async () => {
+    try {
+      const response = await algoAxiosInstance.get(`/seats`) 
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
+
   getSeatById: async (id) => {
     try {
       const response = await algoAxiosInstance.get(`/seats/${id}`) 

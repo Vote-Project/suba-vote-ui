@@ -116,8 +116,8 @@ function OrganizersPage() {
           </CButton>
         </CCardHeader>
         <CCardBody>
-          <CRow className="mb-4">
-            <CCol md={3}>
+          <CRow className="mb-2">
+            <CCol md={3} className="mb-2">
               <CFormInput
                 label="Name"
                 placeholder="Search & Enter"
@@ -127,7 +127,7 @@ function OrganizersPage() {
               ></CFormInput>
             </CCol>
 
-            <CCol md={2}>
+            <CCol md={2} className="mb-2">
               <CFormInput
                 label="NIC No"
                 placeholder="Search & Enter"
@@ -136,7 +136,7 @@ function OrganizersPage() {
                 onKeyDown={(e) => onSearch(e, 'NIC_Number')}
               ></CFormInput>
             </CCol>
-            <CCol md={2}>
+            <CCol md={2} className="mb-2">
               <CFormInput
                 label="Contact No"
                 placeholder="Search & Enter"
@@ -161,7 +161,7 @@ function OrganizersPage() {
           {loading ? (
             <Loading loading={loading} />
           ) : organizersList.length == 0 ? (
-            <NoDataArt visible={true} description={MODAL_MSGES.NO_DATA_FOUND} size={10} />
+            <NoDataArt visible={true} description={filters.length > 0 ? MODAL_MSGES.SEARCH_NO_DATA_DOUND : MODAL_MSGES.NO_DATA_FOUND} size={10} />
           ) : (
             <CTable hover responsive>
               <CTableHead color="light">
@@ -233,7 +233,7 @@ function OrganizersPage() {
                   Previous
                 </CPaginationItem>
                 <CPaginationItem
-                  hidden={metaData.page == metaData.pageCount}
+                  hidden={metaData.page >= metaData.pageCount}
                   style={{ color: COLORS.MAIN, cursor: 'pointer' }}
                   onClick={() => setPage(metaData.page + 1)}
                 >

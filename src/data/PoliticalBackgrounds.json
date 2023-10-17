@@ -1,0 +1,58 @@
+[
+    {
+        "id": 1,
+        "title": "Fomer Parliament Member"
+    },
+    {
+        "id": 2,
+        "title": "Fomer Provincial Council  Member"
+    },
+    {
+        "id": 3,
+        "title": "Fomer Local Authority Member"
+    },
+    {
+        "id": 4,
+        "title": "Fomer Local Authority Chairman / Mayor"
+    },
+    {
+        "id": 5,
+        "title": "From Political Family"
+    },
+    {
+        "id": 7,
+        "title": "Fomer Minister Private Staff"
+    },
+    {
+        "id": 8,
+        "title": "Fomer Party Member"
+    },
+    {
+        "id": 9,
+        "title": "Social Activist"
+    },
+    {
+        "id": 10,
+        "title": "Announcer"
+    },
+    {
+        "id": 11,
+        "title": "Media / Reporter"
+    },
+    {
+        "id": 12,
+        "title": "Photographer / Videographer"
+    },
+    {
+        "id": 13,
+        "title": "VIP Driver"
+    },
+    {
+        "id": 14,
+        "title": "Unknown"
+    },
+    {
+        "id": 15,
+        "title": "No Political Background"
+    }
+]

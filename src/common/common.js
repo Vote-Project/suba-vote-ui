@@ -15,3 +15,11 @@ export function getNullOrUndefinedAttributes(data) {
   }
   return nullOrUndefinedAttributes;
 }
+
+export function removeUndisfinedValuesInArray(selectArray) {
+  const newData = selectArray.filter(function( element ) {
+    return element !== undefined;
+ });
+
+ return newData
+}
