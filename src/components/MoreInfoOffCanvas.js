@@ -30,24 +30,21 @@ function MoreInfoOffCanvas({ title, type = 'voter', data, isMoreInfo, setIsMoreI
 
 
   useEffect(() => {
-    console.log(data?.attributes.District)
     if(data) {
-      LocationService.getDistrictById(data?.attributes.District).then((res) => setDistrict(res.data.attributes.Name))
-      LocationService.getSeatById(data?.attributes.Seat).then((res) => setSeat(res.data.attributes.Name))
-      LocationService.getLocalAuthorityById(data?.attributes.GN_Division).then((res) => setLocalAuthority(res.data.attributes.Name))
-      LocationService.getWardById(data?.attributes.Ward).then((res) => setWard(res.data.attributes.Name))
-      LocationService.getStreetById(data?.attributes.Street_Village).then((res) => setStreetVillage(res.data.attributes.Name))
-      LocationService.getGnDivisionById(data?.attributes.GN_Division).then((res) => setGnDivision(res.data.attributes.Name))
+      LocationService.getDistrictById(data?.attributes.District).then((res) => setDistrict(res.data.attributes.Name)).catch(err=> console.log(err))
+      LocationService.getSeatById(data?.attributes.Seat).then((res) => setSeat(res.data.attributes.Name)).catch(err=> console.log(err))
+      LocationService.getLocalAuthorityById(data?.attributes.GN_Division).then((res) => setLocalAuthority(res.data.attributes.Name)).catch(err=> console.log(err))
+      LocationService.getWardById(data?.attributes.Ward).then((res) => setWard(res.data.attributes.Name)).catch(err=> console.log(err))
+      LocationService.getStreetById(data?.attributes.Street_Village).then((res) => setStreetVillage(res.data.attributes.Name)).catch(err=> console.log(err))
+      LocationService.getGnDivisionById(data?.attributes.GN_Division).then((res) => setGnDivision(res.data.attributes.Name)).catch(err=> console.log(err))
       if(type == 'voter') {
-        OrganizersService.getOrganizer(data?.attributes.District_Organizer).then((res) => setDistrictOrganizer(res.data.attributes.Name))
-        OrganizersService.getOrganizer(data?.attributes.Street_Village_Organizer).then((res) => setStreetVillageOrganizer(res.data.attributes.Name))
-        OrganizersService.getOrganizer(data?.attributes.Seat_Organizer).then((res) => setSeatOrganizer(res.data.attributes.Name))
-        OrganizersService.getOrganizer(data?.attributes.Local_Authority_Organizer).then((res) => setLocalAuthorityOrganizer(res.data.attributes.Name))
-        OrganizersService.getOrganizer(data?.attributes.Ward_Organizer).then((res) => setWardOrganizer(res.data.attributes.Name))
-        OrganizersService.getOrganizer(data?.attributes.GN_Division_Organizer).then((res) => setGnDivisionOrganizer(res.data.attributes.Name))
+        OrganizersService.getOrganizer(data?.attributes.District_Organizer).then((res) => setDistrictOrganizer(res.data.attributes.Name)).catch(err=> console.log(err))
+        OrganizersService.getOrganizer(data?.attributes.Street_Village_Organizer).then((res) => setStreetVillageOrganizer(res.data.attributes.Name)).catch(err=> console.log(err))
+        OrganizersService.getOrganizer(data?.attributes.Seat_Organizer).then((res) => setSeatOrganizer(res.data.attributes.Name)).catch(err=> console.log(err))
+        OrganizersService.getOrganizer(data?.attributes.Local_Authority_Organizer).then((res) => setLocalAuthorityOrganizer(res.data.attributes.Name)).catch(err=> console.log(err))
+        OrganizersService.getOrganizer(data?.attributes.Ward_Organizer).then((res) => setWardOrganizer(res.data.attributes.Name)).catch(err=> console.log(err))
+        OrganizersService.getOrganizer(data?.attributes.GN_Division_Organizer).then((res) => setGnDivisionOrganizer(res.data.attributes.Name)).catch(err=> console.log(err))
       }
- 
-
     }
 
   }, [data])

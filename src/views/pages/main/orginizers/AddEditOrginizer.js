@@ -207,7 +207,6 @@ function AddEditOrganizer() {
           value: data.Ward,
         })
         setWhatsAppNo(data.WhatsApp_Number)
-        console.log(res)
       })
       .catch((err) => {
         console.log(err)
@@ -267,7 +266,6 @@ function AddEditOrganizer() {
 
     OrganizersService.addOrganizer({ data })
       .then((res) => {
-        console.log(res)
         setLoading(false)
         setSuccessMsg(true)
       })

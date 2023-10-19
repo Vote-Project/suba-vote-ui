@@ -61,7 +61,6 @@ function VotersPage() {
         .then((res) => {
           const data = res?.data
           setMetaData(res.meta.pagination)
-          console.log(res)
           setVotersList(data)
           setLoading(false)
         })
@@ -92,7 +91,6 @@ function VotersPage() {
         .then((res) => {
           const data = res?.data
           setMetaData(res.meta.pagination)
-          console.log(res)
           setVotersList(data)
           setLoading(false)
         })

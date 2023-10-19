@@ -51,7 +51,6 @@ function OrganizersPage() {
     if (filters.length == 0) {
       OrganizersService.getOrganizers()
         .then((res) => {
-          console.log(res)
           setOrganizersList(res.data)
           setLoading(false)
         })

@@ -255,7 +255,6 @@ function AddEditVoter() {
             if (item.attributes.Organizer_Category == OrganizerCategories[4].title)
               return { value: item.id, label: item.attributes.Name }
           })
-          console.log(selectArray)
           setGnDivisionOrganizer(removeUndisfinedValuesInArray(selectArray)[0])
           setGnDivisionOrganizerOptions(removeUndisfinedValuesInArray(selectArray))
         })
@@ -360,30 +359,25 @@ function AddEditVoter() {
     setLoading(true)
 
     const requiredData = {
-      Title: title.value,
+      Title: title?.value,
       Name: name,
       NIC_Number: nic,
-      Occupation: occupation.value,
+      Occupation: occupation?.value,
       Date_of_Birth: new Date(dob),
-      Gender: gender.value,
+      Gender: gender?.value,
       Address: address,
-      Civil_Status: civilStatus.value,
+      Civil_Status: civilStatus?.value,
       Mobile_Number_1: mobileNo,
-      District: district.value,
-      District_Organizer: districtOrganizer.value,
-      Seat: seat.value,
-      Seat_Organizer: seatOrganizer.value,
-      Local_Authority: localAuthority.value,
-      Local_Authority_Organizer: localAuthorityOrganizer.value,
-      Ward: ward.value,
-      Ward_Organizer: wardOrganizer.value,
-      GN_Division: gnDivision.value,
-      GN_Division_Organizer: gnDivisionOrganizer.value,
-      Street_Village: streetVillage.value,
-      Street_Village_Organizer: streetVillageOrganizer.value,
-      Ward_Organizer_Authentication: wardOrganizer.value,
-      Programme_Authentication: selectedProgramme.value,
-      Location_Authentication: location.value,
+      District: district?.value,
+      District_Organizer: districtOrganizer?.value,
+      Seat: seat?.value,
+      Seat_Organizer: seatOrganizer?.value,
+      Local_Authority: localAuthority?.value,
+      Ward: ward?.value,
+      GN_Division: gnDivision?.value,
+      Street_Village: streetVillage?.value,
+      Programme_Authentication: selectedProgramme?.value,
+      Location_Authentication: location?.value,
       Date_of_Programme_Conducted_Authentication: new Date(dop),
       Category_of_Programmes_Authentication: programmeDesc,
     }
@@ -413,6 +407,11 @@ function AddEditVoter() {
       Mobile_Number_2: mobileNoTwo,
       WhatsApp_Number: WhatsAppNo,
       Facebook_Link: fbLink,
+      Ward_Organizer_Authentication: wardOrganizer?.label,
+      Ward_Organizer: wardOrganizer?.value,
+      Local_Authority_Organizer: localAuthorityOrganizer?.value,
+      GN_Division_Organizer: gnDivisionOrganizer?.value,
+      Street_Village_Organizer: streetVillageOrganizer?.value,
     }
 
     votersService
@@ -451,14 +450,9 @@ function AddEditVoter() {
       Seat: seat.value,
       Seat_Organizer: seatOrganizer.value,
       Local_Authority: localAuthority.value,
-      Local_Authority_Organizer: localAuthorityOrganizer.value,
       Ward: ward.value,
-      Ward_Organizer: wardOrganizer.value,
       GN_Division: gnDivision.value,
-      GN_Division_Organizer: gnDivisionOrganizer.value,
       Street_Village: streetVillage.value,
-      Street_Village_Organizer: streetVillageOrganizer.value,
-      Ward_Organizer_Authentication: wardOrganizer.value,
       Programme_Authentication: selectedProgramme.value,
       Location_Authentication: location.value,
       Date_of_Programme_Conducted_Authentication: new Date(dop),
@@ -490,6 +484,11 @@ function AddEditVoter() {
       Mobile_Number_2: mobileNoTwo,
       WhatsApp_Number: WhatsAppNo,
       Facebook_Link: fbLink,
+      Ward_Organizer_Authentication: wardOrganizer?.label,
+      Ward_Organizer: wardOrganizer?.value,
+      Local_Authority_Organizer: localAuthorityOrganizer?.value,
+      GN_Division_Organizer: gnDivisionOrganizer?.value,
+      Street_Village_Organizer: streetVillageOrganizer?.value,
     }
 
     votersService
