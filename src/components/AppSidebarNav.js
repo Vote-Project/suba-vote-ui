@@ -3,6 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import { CBadge } from '@coreui/react'
+import { COLORS } from 'src/common/const'
 
 export const AppSidebarNav = ({ items }) => {
   const location = useLocation()
@@ -12,7 +13,7 @@ export const AppSidebarNav = ({ items }) => {
         {icon && icon}
         {name && name}
         {badge && (
-          <CBadge color={badge.color} className="ms-auto">
+          <CBadge color={badge.color} className="ms-auto" >
             {badge.text}
           </CBadge>
         )}
@@ -25,6 +26,7 @@ export const AppSidebarNav = ({ items }) => {
     const Component = component
     return (
       <Component
+        style={{ fontWeight: 'bold' }}
         {...(rest.to &&
           !rest.items && {
             component: NavLink,

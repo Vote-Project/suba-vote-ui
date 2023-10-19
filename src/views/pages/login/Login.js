@@ -9,12 +9,15 @@ import {
   CContainer,
   CForm,
   CFormInput,
+  CImage,
   CInputGroup,
   CInputGroupText,
   CRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
+import LoginWallpaper from 'src/assets/images/online-voting.webp'
+import { COLORS } from 'src/common/const'
 
 const Login = () => {
   return (
@@ -46,34 +49,17 @@ const Login = () => {
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4">
+                        <CButton color="primary" className="px-4" style={{ backgroundColor: COLORS.MAIN, border: '0px' }}>
                           Login
                         </CButton>
                       </CCol>
-                      <CCol xs={6} className="text-right">
-                        <CButton color="link" className="px-0">
-                          Forgot password?
-                        </CButton>
-                      </CCol>
+                     
                     </CRow>
                   </CForm>
                 </CCardBody>
               </CCard>
-              <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
-                <CCardBody className="text-center">
-                  <div>
-                    <h2>Sign up</h2>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                      tempor incididunt ut labore et dolore magna aliqua.
-                    </p>
-                    <Link to="/register">
-                      <CButton color="primary" className="mt-3" active tabIndex={-1}>
-                        Register Now!
-                      </CButton>
-                    </Link>
-                  </div>
-                </CCardBody>
+              <CCard className="text-white bg-primary py-5" style={{  backgroundColor: COLORS.MAIN}}>
+              <CImage style={{objectFit: "cover", height: "100%"}} src={LoginWallpaper}></CImage>
               </CCard>
             </CCardGroup>
           </CCol>

@@ -1,6 +1,12 @@
 import React from 'react'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
+const OrganizersPage = React.lazy(() => import('./views/pages/main/orginizers/OrganizersPage'))
+const VotersPage = React.lazy(() => import('./views/pages/main/voters/VotersPage'))
+const ResportsPage = React.lazy(() => import('./views/pages/main/reports/ReportsPage'))
+const AddEditVoter = React.lazy(() => import('./views/pages/main/voters/AddEditVoter'))
+const AddEditOrginizer = React.lazy(() => import('./views/pages/main/orginizers/AddEditOrginizer'))
+
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 
@@ -52,7 +58,17 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
-  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/dashboard', exact: true, name: 'Dashboard', element: Dashboard },
+  { path: '/organizers', exact: true, name: 'Organizers Carousal', element: OrganizersPage },
+  { path: '/voters', exact: true, name: 'Voters Carousal', element: VotersPage },
+  { path: '/voters/:type/:id', exact: true, name: 'Voter Configaration', element: AddEditVoter },
+  {
+    path: '/organizers/:type/:id',
+    exact: true,
+    name: 'Organizer Configaration',
+    element: AddEditOrginizer,
+  },
+  { path: '/reports', exact: true, name: 'Reports', element: ResportsPage },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },
