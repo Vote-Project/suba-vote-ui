@@ -7,6 +7,7 @@ import {
   COffcanvasTitle,
   CRow,
 } from '@coreui/react'
+import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { LocationService } from 'src/services/location.service'
 import { OrganizersService } from 'src/services/organizers.service'
@@ -85,7 +86,7 @@ function MoreInfoOffCanvas({ title, type = 'voter', data, isMoreInfo, setIsMoreI
         <hr />
         <CRow>
           <span style={{ fontWeight: 'bold' }}>Date_of_Birth</span>
-          <span>{data?.attributes.Date_of_Birth || '-'}</span>
+          <span>{moment(new Date(data?.attributes.Date_of_Birth)).format('DD-MM-YYYY') || '-'}</span>
         </CRow>
         <hr />
         <CRow>
@@ -254,7 +255,7 @@ function MoreInfoOffCanvas({ title, type = 'voter', data, isMoreInfo, setIsMoreI
             <hr />
             <CRow>
               <span style={{ fontWeight: 'bold' }}>Date of Program Conducted</span>
-              <span>{data?.attributes.Date_of_Programme_Conducted_Authentication || '-'}</span>
+              <span>{moment(new Date(data?.attributes.Date_of_Programme_Conducted_Authentication)).format('DD-MM-YYYY') || '-'}</span>
             </CRow>
             <hr />
             <CRow>

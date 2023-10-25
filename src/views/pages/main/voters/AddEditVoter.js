@@ -17,8 +17,6 @@ import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Select, { useStateManager } from 'react-select'
-import DatePicker from 'rsuite/DatePicker'
-import 'rsuite/dist/rsuite.min.css'
 import {
   getNullOrUndefinedAttributes,
   jsonToSelectBox,
@@ -133,6 +131,11 @@ function AddEditVoter() {
   }, [])
 
   useEffect(() => {
+    setSeat(INITIAL_VALUE)
+    setLocalAuthority(INITIAL_VALUE)
+    setWard(INITIAL_VALUE)
+    setGnDivision(INITIAL_VALUE)
+    setStreetVillage(INITIAL_VALUE)
     if (district) {
       LocationService.getSeatsByDistrictId(district.value)
         .then((res) => {
@@ -159,6 +162,10 @@ function AddEditVoter() {
   }, [district])
 
   useEffect(() => {
+    setLocalAuthority(INITIAL_VALUE)
+    setWard(INITIAL_VALUE)
+    setGnDivision(INITIAL_VALUE)
+    setStreetVillage(INITIAL_VALUE)
     if (seat) {
       LocationService.getLocalAuthoritiesBySeatId(seat.value)
         .then((res) => {
@@ -185,6 +192,9 @@ function AddEditVoter() {
   }, [seat])
 
   useEffect(() => {
+    setWard(INITIAL_VALUE)
+    setGnDivision(INITIAL_VALUE)
+    setStreetVillage(INITIAL_VALUE)
     if (localAuthority) {
       LocationService.getWardsByLocalAuthorityId(localAuthority.value)
         .then((res) => {
@@ -211,6 +221,8 @@ function AddEditVoter() {
   }, [localAuthority])
 
   useEffect(() => {
+    setGnDivision(INITIAL_VALUE)
+    setStreetVillage(INITIAL_VALUE)
     if (ward) {
       LocationService.getGnDivisionsByWardId(ward.value)
         .then((res) => {
@@ -237,6 +249,7 @@ function AddEditVoter() {
   }, [ward])
 
   useEffect(() => {
+    setStreetVillage(INITIAL_VALUE)
     if (gnDivision) {
       LocationService.getStreetsByGnDivisionId(gnDivision.value)
         .then((res) => {
@@ -614,12 +627,13 @@ function AddEditVoter() {
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
               Date of Birth <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
-            <DatePicker
+            <CFormInput
+              type="date"
               size="md"
               placeholder="Select..."
-              style={{ width: 'auto', display: 'block', marginBottom: 10, zIndex: 'no' }}
-              value={new Date(dob)}
-              onChange={(e) => setDob(e)}
+              style={{ width: 'auto', display: 'block', zIndex: 'no', width: '100%' }}
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
             />
           </CCol>
         </CRow>
@@ -1020,12 +1034,13 @@ function AddEditVoter() {
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
               Date of Programme Conducted <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
-            <DatePicker
+            <CFormInput
+              type="date"
               size="md"
               placeholder="Select..."
-              style={{ width: 400, display: 'block', marginBottom: 10 }}
-              value={new Date(dop)}
-              onChange={(e) => setDop(e)}
+              style={{ width: 'auto', display: 'block', zIndex: 'no', width: '100%' }}
+              value={dop}
+              onChange={(e) => setDop(e.target.value)}
             />
           </CCol>
         </CRow>

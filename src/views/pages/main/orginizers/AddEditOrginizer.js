@@ -17,7 +17,7 @@ import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import Select from 'react-select'
 import DatePicker from 'rsuite/DatePicker'
-import 'rsuite/dist/rsuite.min.css'
+import 'react-datepicker/dist/react-datepicker.css'
 import { getNullOrUndefinedAttributes, jsonToSelectBox } from 'src/common/common'
 import { COLORS, MODAL_MSGES } from 'src/common/const'
 import SuccessModal from 'src/components/Modals/SuccessModal'
@@ -29,6 +29,7 @@ import { OrganizersService } from 'src/services/organizers.service'
 import { useParams } from 'react-router-dom'
 import { LocationService } from 'src/services/location.service'
 import ErrorModal from 'src/components/Modals/ErrorModal'
+import ReactDatePicker from 'react-datepicker'
 
 const INITIAL_VALUE = ''
 
@@ -42,7 +43,7 @@ function AddEditOrganizer() {
   const [occupation, setOccupation] = useState(INITIAL_VALUE)
   const [civilStatus, setCivilStatus] = useState(INITIAL_VALUE)
   const [address, setAddress] = useState(INITIAL_VALUE)
-  const [dob, setDob] = useState(new Date("01-01-1990"))
+  const [dob, setDob] = useState(new Date('01-01-1990'))
   const [isNJP, setIsNJP] = useState(false)
   const [mobileNo, setMobileNo] = useState(INITIAL_VALUE)
   const [mobileNoTwo, setMobileNoTwo] = useState(INITIAL_VALUE)
@@ -92,6 +93,11 @@ function AddEditOrganizer() {
   }, [])
 
   useEffect(() => {
+    setSeat(INITIAL_VALUE)
+    setLocalAuthority(INITIAL_VALUE)
+    setWard(INITIAL_VALUE)
+    setGnDivision(INITIAL_VALUE)
+    setStreetVillage(INITIAL_VALUE)
     if (district) {
       LocationService.getSeatsByDistrictId(district.value)
         .then((res) => {
@@ -102,11 +108,14 @@ function AddEditOrganizer() {
           setSeatOptions(selectArray)
         })
         .catch((err) => console.log(err))
-
     }
   }, [district])
 
   useEffect(() => {
+    setLocalAuthority(INITIAL_VALUE)
+    setWard(INITIAL_VALUE)
+    setGnDivision(INITIAL_VALUE)
+    setStreetVillage(INITIAL_VALUE)
     if (seat)
       LocationService.getLocalAuthoritiesBySeatId(seat.value)
         .then((res) => {
@@ -120,6 +129,9 @@ function AddEditOrganizer() {
   }, [seat])
 
   useEffect(() => {
+    setWard(INITIAL_VALUE)
+    setGnDivision(INITIAL_VALUE)
+    setStreetVillage(INITIAL_VALUE)
     if (localAuthority)
       LocationService.getWardsByLocalAuthorityId(localAuthority.value)
         .then((res) => {
@@ -133,6 +145,8 @@ function AddEditOrganizer() {
   }, [localAuthority])
 
   useEffect(() => {
+    setGnDivision(INITIAL_VALUE)
+    setStreetVillage(INITIAL_VALUE)
     if (ward)
       LocationService.getGnDivisionsByWardId(ward.value)
         .then((res) => {
@@ -146,6 +160,7 @@ function AddEditOrganizer() {
   }, [ward])
 
   useEffect(() => {
+    setStreetVillage(INITIAL_VALUE)
     if (gnDivision)
       LocationService.getStreetsByGnDivisionId(gnDivision.value)
         .then((res) => {
@@ -449,12 +464,14 @@ function AddEditOrganizer() {
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
               Date of Birth <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
-            <DatePicker
+            <br />
+            <CFormInput
+              type="date"
               size="md"
               placeholder="Select..."
-              style={{ width: 'auto', display: 'block', marginBottom: 10, zIndex: 'no' }}
-              value={new Date(dob)}
-              onChange={(e) => setDob(e)}
+              style={{ width: 'auto', display: 'block', zIndex: 'no', width: '100%' }}
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
             />
           </CCol>
         </CRow>
