@@ -1,5 +1,6 @@
+import { CLIENT_TOKEN } from 'src/common/const'
 import TokenService from './TokenService'
-import { axiosInstance } from 'src/common/AxiosInstance'
+import { algoAxiosInstance, axiosInstance } from 'src/common/AxiosInstance'
 
 export const AuthService = {
   registerUser: async (data) => {
@@ -39,17 +40,18 @@ export const AuthService = {
 
   login: async (username, password) => {
     try {
-      if (username && password == 'admin') {
-        TokenService.setUser({ username, password })
-        return { data: 'done' }
-      }
-      const response = await axiosInstance.post('/user-register/login', {
-        username,
+      // if (username && password == 'admin') {
+      //   TokenService.setUser({ username, password })
+      //   return { data: 'done' }
+      // }
+      const response = await axiosInstance.post('/auth/local', {
+        identifier: username,
         password,
       })
-      if (response.data.access_token) {
+      if (response.data.jwt) {
         // response.data['level'] = 1
-        TokenService.setUser(response.data)
+        const clientData = await algoAxiosInstance.get('/clients?populate=*&filters[Token][$containsi]=' + CLIENT_TOKEN)
+        TokenService.setUser({...response.data, clientData: clientData.data.data[0]})
       }
       return response.data
     } catch (error) {

@@ -31,6 +31,7 @@ import OrganizerCategories from 'src/data/OrganizerCategories.json'
 import { LocationService } from 'src/services/location.service'
 import { OrganizersService } from 'src/services/organizers.service'
 import { votersService } from 'src/services/voters.service'
+import TokenService from 'src/services/TokenService'
 
 const INITIAL_VALUE = ''
 
@@ -65,7 +66,7 @@ function AddEditVoter() {
   const [programmeWardOrganizer, setProgrammeWardOrganizer] = useState(null)
   const [selectedProgramme, setSelectedProgramme] = useState(INITIAL_VALUE)
   const [location, setLocation] = useState(INITIAL_VALUE)
-  const [dop, setDop] = useState(new Date())
+  const [dop, setDop] = useState(new Date('01-01-1990'))
   const [programmeDesc, setProgrammeDesc] = useState(INITIAL_VALUE)
 
   //options
@@ -102,7 +103,12 @@ function AddEditVoter() {
     LocationService.getDistricts()
       .then((res) => {
         const data = res.data
-        const selectArray = data.map((item) => {
+        const clientDistricts = TokenService.getClientDistricts()
+        const clientDataIds = clientDistricts.map(client => client.id);
+        const filteredData = data.filter(data => clientDataIds.includes(data.id));
+        
+        const selectArray = filteredData.map((item) => {
+          console.log(item)
           return { value: item.id, label: item.attributes.Name }
         })
         setDistrictOptions(selectArray)
@@ -190,6 +196,8 @@ function AddEditVoter() {
         .catch((err) => console.log(err))
     }
   }, [seat])
+
+  console.log(occupation)
 
   useEffect(() => {
     setWard(INITIAL_VALUE)
@@ -296,31 +304,23 @@ function AddEditVoter() {
       .getVoter(id)
       .then(async (res) => {
         const data = res.data?.attributes
-
+        setStreetVillageOrganizer({
+          label: data.Street_Village_Organizer,
+          value: data.Street_Village_Organizer,
+        })
+        setTitle({ label: data.Title, value: data.Title })
         setAddress(data.Address)
         setCivilStatus({ label: data.Civil_Status, value: data.Civil_Status })
         setDob(new Date(data?.Date_of_Birth))
         setDop(new Date(data?.Date_of_Programme_Conducted_Authentication))
-        setDistrict({
-          label: (await LocationService.getDistrictById(data.District)).data.attributes.Name,
-          value: data.District,
-        })
         setDistrictOrganizer({ label: data.District_Organizer, value: data.District_Organizer })
         setFbLink(data.Facebook_Link)
-        setGnDivision({
-          label: (await LocationService.getGnDivisionById(data.GN_Division)).data.attributes.Name,
-          value: data.GN_Division,
-        })
         setGnDivisionOrganizer({
           label: data.GN_Division_Organizer,
           value: data.GN_Division_Organizer,
         })
         setGender({ label: data.Gender, value: data.Gender })
-        setLocalAuthority({
-          label: (await LocationService.getLocalAuthorityById(data.Local_Authority)).data.attributes
-            .Name,
-          value: data.Local_Authority,
-        })
+
         setLocalAuthorityOrganizer({
           label: data.Local_Authority_Organizer,
           value: data.Local_Authority_Organizer,
@@ -331,37 +331,47 @@ function AddEditVoter() {
         setNic(data.NIC_Number)
         setIsNJP(data.NJP_Party_Member)
         setName(data.Name)
+        setSeatOrganizer({ label: data.Seat_Organizer, value: data.Seat_Organizer })
         setOccupation({ label: data.Occupation, value: data.Occupation })
         setSelectedProgramme({
           label: data.Programme_Authentication,
           value: data.Programme_Authentication,
         })
+        setWardOrganizer({ label: data.Ward_Organizer, value: data.Ward_Organizer })
+        setWhatsAppNo(data.WhatsApp_Number)
         setProgrammeDesc(data.Category_of_Programmes_Authentication)
         setProgrammeWardOrganizer({
           label: data.Ward_Organizer_Authentication,
           value: data.Ward_Organizer_Authentication,
         })
+        setDistrict({
+          label: (await LocationService.getDistrictById(data.District)).data.attributes.Name,
+          value: data.District,
+        })
+        setGnDivision({
+          label: (await LocationService.getGnDivisionById(data.GN_Division)).data.attributes.Name,
+          value: data.GN_Division,
+        })
+        setLocalAuthority({
+          label: (await LocationService.getLocalAuthorityById(data.Local_Authority)).data.attributes
+            .Name,
+          value: data.Local_Authority,
+        })
         setSeat({
           label: (await LocationService.getSeatById(data.Seat)).data.attributes.Name,
           value: data.Seat,
         })
-        setSeatOrganizer({ label: data.Seat_Organizer, value: data.Seat_Organizer })
+       
         setStreetVillage({
           label: (await LocationService.getStreetById(data.Street_Village)).data.attributes.Name,
           value: data.Street_Village,
         })
-        setStreetVillageOrganizer({
-          label: data.Street_Village_Organizer,
-          value: data.Street_Village_Organizer,
-        })
-        setTitle({ label: data.Title, value: data.Title })
+      
         setWard({
           label: (await LocationService.getWardById(data.Ward)).data.attributes.Name,
           value: data.Ward,
         })
-        setWardOrganizer({ label: data.Ward_Organizer, value: data.Ward_Organizer })
-        setWhatsAppNo(data.WhatsApp_Number)
-        console.log(res)
+    
       })
       .catch((err) => {
         console.log(err)

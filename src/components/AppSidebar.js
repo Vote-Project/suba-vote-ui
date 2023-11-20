@@ -13,7 +13,7 @@ import 'simplebar/dist/simplebar.min.css'
 
 // sidebar nav config
 import navigation from '../_nav'
-import { COLORS } from 'src/common/const'
+import { CLIENT_NAME, COLORS } from 'src/common/const'
 
 const AppSidebar = () => {
   const dispatch = useDispatch()
@@ -42,7 +42,7 @@ const AppSidebar = () => {
         }}
       >
         <CImage src={logo} height={50} className='p-1' />
-        <h4 style={{ color: COLORS.MAIN }}>SUBA VOTE</h4>
+        <h4 style={{ color: COLORS.MAIN }}>{CLIENT_NAME.toUpperCase()}</h4>
       </CSidebarBrand>
       <CSidebarNav>
         <SimpleBar>

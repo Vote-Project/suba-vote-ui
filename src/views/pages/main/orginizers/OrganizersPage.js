@@ -43,40 +43,41 @@ function OrganizersPage() {
 
   //pagination
   const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
+  const pageSize = 20
   const [metaData, setMetaData] = useState(null)
 
   useEffect(() => {
     setLoading(true)
-    if (filters.length == 0) {
-      OrganizersService.getOrganizers()
-        .then((res) => {
-          setOrganizersList(res.data)
-          setLoading(false)
-        })
-        .catch((err) => {
-          console.log(err)
-          setLoading(false)
-          if (err?.response?.status == 403) {
-            setOrganizersList([])
-            return
-          }
-          setErrorMsg(true)
-        })
+    if (filters.length === 0) {
+      getOrganizerList()
     } else {
       onSearch({ key: 'Enter' }, filters[0].key)
     }
-  }, [])
+  }, [page])
+
+  const getOrganizerList = () => {
+    OrganizersService.getOrganizers(page, pageSize)
+      .then((res) => {
+        setOrganizersList(res.data)
+        setMetaData(res.meta.pagination)
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.log(err)
+        setLoading(false)
+        if (err?.response?.status === 403) {
+          setOrganizersList([])
+          return
+        }
+        setErrorMsg(true)
+      })
+  }
 
   const onSearch = (e, key) => {
-    if (e.key == 'Enter') {
-      setFilters([
-        { key: key, value: key == 'Name' ? name : key == 'Mobile_Number_1' ? mobileNo : nic },
-      ])
+    if (e.key === 'Enter') {
+
       setLoading(true)
-      OrganizersService.getOrganizersByFiltering(page, pageSize, [
-        { key: key, value: key == 'Name' ? name : key == 'Mobile_Number_1' ? mobileNo : nic },
-      ])
+      OrganizersService.getOrganizersByFiltering(page, pageSize, filters)
         .then((res) => {
           const data = res?.data
           setMetaData(res.meta.pagination)
@@ -87,7 +88,7 @@ function OrganizersPage() {
         .catch((err) => {
           console.log(err)
           setLoading(false)
-          if (err?.response?.status == 403) {
+          if (err?.response?.status === 403) {
             setOrganizersList([])
             return
           }
@@ -95,6 +96,19 @@ function OrganizersPage() {
         })
     }
   }
+
+  useEffect(() => {
+    setFilters([
+      {
+        key: "Name",
+        value: name,
+      },
+      {
+        key: "Mobile_Number_1",
+        value: mobileNo,
+      },
+    ])
+  }, [name, nic, mobileNo])
 
   return (
     <div>
@@ -159,10 +173,16 @@ function OrganizersPage() {
           </CRow>
           {loading ? (
             <Loading loading={loading} />
-          ) : organizersList.length == 0 ? (
-            <NoDataArt visible={true} description={filters.length > 0 ? MODAL_MSGES.SEARCH_NO_DATA_DOUND : MODAL_MSGES.NO_DATA_FOUND} size={10} />
+          ) : organizersList.length === 0 ? (
+            <NoDataArt
+              visible={true}
+              description={
+                filters.length > 0 ? MODAL_MSGES.SEARCH_NO_DATA_DOUND : MODAL_MSGES.NO_DATA_FOUND
+              }
+              size={10}
+            />
           ) : (
-            <CTable hover responsive>
+            <CTable hover responsive small>
               <CTableHead color="light">
                 <CTableRow>
                   <CTableHeaderCell scope="col">#</CTableHeaderCell>
@@ -225,7 +245,7 @@ function OrganizersPage() {
             {metaData && (
               <CPagination className="mt-2" aria-label="Page navigation example">
                 <CPaginationItem
-                  hidden={metaData.page == 1}
+                  hidden={metaData.page === 1}
                   style={{ color: COLORS.MAIN, cursor: 'pointer' }}
                   onClick={() => setPage(metaData.page - 1)}
                 >

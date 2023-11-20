@@ -1,4 +1,4 @@
-import React, { Component, Suspense, useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import './scss/style.scss'
 import { AuthService } from './services/auth.service'
@@ -29,7 +29,7 @@ function App() {
     const user = TokenService.getUser()
     console.log(user)
 
-    if (user) {
+    if (user?.jwt) {
       setUserLogin(true)
     } else {
       logOut()

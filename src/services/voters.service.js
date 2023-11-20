@@ -3,7 +3,7 @@ import { axiosInstance } from '../common/AxiosInstance'
 export const votersService = {
   getVoters: async (page = 1, pageSize = 10) => {
     try {
-      const response = await axiosInstance.get(`/voters?pagination[page]=${page}&pagination[pageSize]=${pageSize}`) 
+      const response = await axiosInstance.get(`/voters?pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort[0]=createdAt:desc`) 
       return response.data
     } catch (error) {
       throw error
@@ -23,9 +23,9 @@ export const votersService = {
     try {
       let query = ""
       filters.map((filter) => {
-        query = query + `filters[${filter.key}][$containsi]=${filter.value}`
+        query = query + `filters[${filter.key}][$containsi]=${filter.value}&`
       })
-      const response = await axiosInstance.get(`/voters?pagination[page]=${page}&pagination[pageSize]=${pageSize}&${query}`) 
+      const response = await axiosInstance.get(`/voters?pagination[page]=${page}&pagination[pageSize]=${pageSize}&${query}sort[0]=createdAt:desc`) 
       return response.data
     } catch (error) {
       throw error

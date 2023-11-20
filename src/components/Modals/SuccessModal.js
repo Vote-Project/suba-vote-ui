@@ -57,6 +57,7 @@ function SuccessModal({ title, description, rediretUrl, open, onOpen, addAnother
             style={{ backgroundColor: COLORS.MAIN, border: '0px' }}
             onClick={() => {
               addAnother()
+              window.location.reload(false)
               onOpen(false)
             }}
           >

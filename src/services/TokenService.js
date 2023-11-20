@@ -21,7 +21,11 @@ const getUser = () => {
 };
 
 const getUsername = () => {
-  return JSON.parse(localStorage.getItem(localStorageName))?.username;
+  return JSON.parse(localStorage.getItem(localStorageName))?.user?.username;
+};
+
+const getEmail = () => {
+  return JSON.parse(localStorage.getItem(localStorageName))?.user?.email;
 };
 
 const getUserLevel = () => {
@@ -31,13 +35,16 @@ const getUserLevel = () => {
 const setUser = (user) => {
   localStorage.setItem(localStorageName, JSON.stringify(user));
 };
+const getClientDistricts = () => {
+  return JSON.parse(localStorage.getItem(localStorageName))?.clientData?.attributes?.districts?.data;
+};
 
 const removeUser = () => {
   localStorage.removeItem(localStorageName);
 };
 
 const getToken = () => {
-  return JSON.parse(localStorage.getItem(localStorageName))?.access_token;
+  return JSON.parse(localStorage.getItem(localStorageName))?.jwt;
 }
 
 const TokenService = {
@@ -49,7 +56,9 @@ const TokenService = {
   removeUser,
   getUsername,
   getToken,
-  getUserLevel
+  getUserLevel,
+  getEmail,
+  getClientDistricts
 };
 
 export default TokenService;

@@ -280,6 +280,16 @@ function MoreInfoOffCanvas({ title, type = 'voter', data, isMoreInfo, setIsMoreI
               <span style={{ fontWeight: 'bold' }}>Political Background</span>
               <span>{data?.attributes.Political_Background || '-'}</span>
             </CRow>
+            <hr />
+            <CRow>
+              <span style={{ fontWeight: 'bold' }}>Meeting Completed ?</span>
+              <span>{data?.attributes.Meeting_Complete ? 'Yes' : 'No'}</span>
+            </CRow>
+            <hr />
+            <CRow>
+              <span style={{ fontWeight: 'bold' }}>Meeting Completed Date</span>
+              <span>{data?.attributes.Meeting_Date || '-'}</span>
+            </CRow>
           </>
         )}
       </COffcanvasBody>

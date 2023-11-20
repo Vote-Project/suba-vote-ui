@@ -30,6 +30,7 @@ import { useParams } from 'react-router-dom'
 import { LocationService } from 'src/services/location.service'
 import ErrorModal from 'src/components/Modals/ErrorModal'
 import ReactDatePicker from 'react-datepicker'
+import TokenService from 'src/services/TokenService'
 
 const INITIAL_VALUE = ''
 
@@ -60,6 +61,8 @@ function AddEditOrganizer() {
   const [organizerCategory, setOrganizerCategory] = useState(INITIAL_VALUE)
   const [politicalBackground, setPoliticalBackground] = useState(INITIAL_VALUE)
 
+  const [isMeetingComplete, setIsMeetingComplete] = useState(false)
+  const [meetingDate, setMeetingDate] = useState(new Date())
   //options
   const [districtOptions, setDistrictOptions] = useState([])
   const [seatOptions, setSeatOptions] = useState([])
@@ -69,6 +72,9 @@ function AddEditOrganizer() {
   const [gnDivisionOptions, setGnDivisionOptions] = useState([])
 
   const [alertMessage, setAlertMessage] = useState('Please Fill All Required Fields')
+  const [locationAlertMessage, setLocationAlertMessage] = useState(
+    'Something Wrong With Location Server',
+  )
   const [isAlert, setIsAlert] = useState(false)
   const [successMsg, setSuccessMsg] = useState(false)
   const [errorMsg, setErrorMsg] = useState(false)
@@ -84,7 +90,10 @@ function AddEditOrganizer() {
     LocationService.getDistricts()
       .then((res) => {
         const data = res.data
-        const selectArray = data.map((item) => {
+        const clientDistricts = TokenService.getClientDistricts()
+        const clientDataIds = clientDistricts.map(client => client.id);
+        const filteredData = data.filter(data => clientDataIds.includes(data.id));
+        const selectArray = filteredData.map((item) => {
           return { value: item.id, label: item.attributes.Name }
         })
         setDistrictOptions(selectArray)
@@ -98,6 +107,7 @@ function AddEditOrganizer() {
     setWard(INITIAL_VALUE)
     setGnDivision(INITIAL_VALUE)
     setStreetVillage(INITIAL_VALUE)
+    setLocationAlertMessage(false)
     if (district) {
       LocationService.getSeatsByDistrictId(district.value)
         .then((res) => {
@@ -107,7 +117,10 @@ function AddEditOrganizer() {
           })
           setSeatOptions(selectArray)
         })
-        .catch((err) => console.log(err))
+        .catch((err) => {
+          console.log(err)
+          setLocationAlertMessage(true)
+        })
     }
   }, [district])
 
@@ -177,26 +190,16 @@ function AddEditOrganizer() {
     OrganizersService.getOrganizer(id)
       .then(async (res) => {
         const data = res.data?.attributes
-
+        setWhatsAppNo(data.WhatsApp_Number)
         setAddress(data.Address)
         setCivilStatus({ label: data.Civil_Status, value: data.Civil_Status })
         setDob(new Date(data.Date_of_Birth))
-        setDistrict({
-          label: (await LocationService.getDistrictById(data.District)).data.attributes.Name,
-          value: data.District,
-        })
+
         setFbLink(data.Facebook_Link)
-        setGnDivision({
-          label: (await LocationService.getGnDivisionById(data.GN_Division)).data.attributes.Name,
-          value: data.GN_Division,
-        })
+
         setGender({ label: data.Gender, value: data.Gender })
         setLevelOfStrength({ label: data.Level_of_Strength, value: data.Level_of_Strength })
-        setLocalAuthority({
-          label: (await LocationService.getLocalAuthorityById(data.Local_Authority)).data.attributes
-            .Name,
-          value: data.Local_Authority,
-        })
+
         setMobileNo(data.Mobile_Number_1)
         setMobileNoTwo(data.Mobile_Number_2)
         setNic(data.NIC_Number)
@@ -207,6 +210,19 @@ function AddEditOrganizer() {
         setPoliticalBackground({
           label: data.Political_Background,
           value: data.Political_Background,
+        })
+        setDistrict({
+          label: (await LocationService.getDistrictById(data.District)).data.attributes.Name,
+          value: data.District,
+        })
+        setGnDivision({
+          label: (await LocationService.getGnDivisionById(data.GN_Division)).data.attributes.Name,
+          value: data.GN_Division,
+        })
+        setLocalAuthority({
+          label: (await LocationService.getLocalAuthorityById(data.Local_Authority)).data.attributes
+            .Name,
+          value: data.Local_Authority,
         })
         setSeat({
           label: (await LocationService.getSeatById(data.Seat)).data.attributes.Name,
@@ -221,7 +237,6 @@ function AddEditOrganizer() {
           label: (await LocationService.getWardById(data.Ward)).data.attributes.Name,
           value: data.Ward,
         })
-        setWhatsAppNo(data.WhatsApp_Number)
       })
       .catch((err) => {
         console.log(err)
@@ -250,6 +265,7 @@ function AddEditOrganizer() {
       Political_Background: politicalBackground.value,
       Organizer_Category: organizerCategory.value,
       Level_of_Strength: levelOfStrength.value,
+      Meeting_Complete: isMeetingComplete,
     }
 
     const result = getNullOrUndefinedAttributes(requiredData)
@@ -277,6 +293,7 @@ function AddEditOrganizer() {
       Mobile_Number_2: mobileNoTwo,
       WhatsApp_Number: WhatsAppNo,
       Facebook_Link: fbLink,
+      Meeting_Date: isMeetingComplete ? meetingDate : null,
     }
 
     OrganizersService.addOrganizer({ data })
@@ -317,6 +334,7 @@ function AddEditOrganizer() {
       Political_Background: politicalBackground.value,
       Organizer_Category: organizerCategory.value,
       Level_of_Strength: levelOfStrength.value,
+      Meeting_Complete: isMeetingComplete,
     }
 
     const result = getNullOrUndefinedAttributes(requiredData)
@@ -344,6 +362,7 @@ function AddEditOrganizer() {
       Mobile_Number_2: mobileNoTwo,
       WhatsApp_Number: WhatsAppNo,
       Facebook_Link: fbLink,
+      Meeting_Date: isMeetingComplete ? meetingDate : null,
     }
 
     OrganizersService.updateOrganizer(id, { data })
@@ -785,7 +804,50 @@ function AddEditOrganizer() {
               onChange={(e) => setPoliticalBackground(e)}
             ></Select>
           </CCol>
+          <CCol>
+            <CFormLabel htmlFor="staticEmail" className="col-form-label">
+              Meeting Completed? <span style={{ color: 'red' }}>*</span>
+            </CFormLabel>
+            <br />
+            <CFormCheck
+              inline
+              type="radio"
+              name="inlineRadioOptions"
+              id="inlineCheckbox1"
+              value="option1"
+              label="Yes"
+              checked={isMeetingComplete}
+              onChange={(e) => setIsMeetingComplete(true)}
+            />
+            <CFormCheck
+              inline
+              type="radio"
+              name="inlineRadioOptions"
+              id="inlineCheckbox2"
+              value="option2"
+              label="No"
+              checked={!isMeetingComplete}
+              onChange={() => setIsMeetingComplete(false)}
+            />
+          </CCol>
         </CRow>
+        {isMeetingComplete && (
+          <CRow className="mb-2">
+            <CCol md={6}>
+              <CFormLabel htmlFor="staticEmail" className="col-form-label">
+                Meeting Date <span style={{ color: 'red' }}>*</span>
+              </CFormLabel>
+              <CFormInput
+                type="date"
+                size="md"
+                placeholder="Select..."
+                style={{ width: 'auto', display: 'block', zIndex: 'no', width: '100%' }}
+                value={meetingDate}
+                onChange={(e) => setMeetingDate(e.target.value)}
+              />
+            </CCol>
+          </CRow>
+        )}
 
         {isAlert && (
           <CAlert hidden={!isAlert} color="warning" className="d-flex align-items-center mt-3">

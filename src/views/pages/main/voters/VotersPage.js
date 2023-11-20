@@ -1,17 +1,12 @@
-import { cilPen, cilPeople, cilWindowRestore } from '@coreui/icons'
+import { cilPen, cilPeople } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import {
   CButton,
   CCard,
   CCardBody,
   CCardHeader,
-  CCloseButton,
   CCol,
   CFormInput,
-  COffcanvas,
-  COffcanvasBody,
-  COffcanvasHeader,
-  COffcanvasTitle,
   CPagination,
   CPaginationItem,
   CRow,
@@ -31,7 +26,6 @@ import ErrorModal from 'src/components/Modals/ErrorModal'
 import MoreInfoOffCanvas from 'src/components/MoreInfoOffCanvas'
 import { votersService } from 'src/services/voters.service'
 import NoDataArt from 'src/components/NoDataArt'
-import { LocationService } from 'src/services/location.service'
 
 function VotersPage() {
   const navigate = useNavigate()
@@ -50,44 +44,43 @@ function VotersPage() {
 
   //pagination
   const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
+  const pageSize = 20
   const [metaData, setMetaData] = useState(null)
 
   useEffect(() => {
     setLoading(true)
-    if (filters.length == 0) {
-      votersService
-        .getVoters(page, pageSize)
-        .then((res) => {
-          const data = res?.data
-          setMetaData(res.meta.pagination)
-          setVotersList(data)
-          setLoading(false)
-        })
-        .catch((err) => {
-          console.log(err)
-          setLoading(false)
-          if (err?.response?.status == 403) {
-            setVotersList([])
-            return
-          }
-          setErrorMsg(true)
-        })
+    if (filters.length === 0) {
+      getVoterList()
     } else {
       onSearch({ key: 'Enter' }, filters[0].key)
     }
   }, [page])
 
+  const getVoterList = () => {
+    votersService
+      .getVoters(page, pageSize)
+      .then((res) => {
+        const data = res?.data
+        setMetaData(res.meta.pagination)
+        setVotersList(data)
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.log(err)
+        setLoading(false)
+        if (err?.response?.status === 403) {
+          setVotersList([])
+          return
+        }
+        setErrorMsg(true)
+      })
+  }
+
   const onSearch = (e, key) => {
-    if (e.key == 'Enter') {
-      setFilters([
-        { key: key, value: key == 'Name' ? name : key == 'Mobile_Number_1' ? mobileNo : nic },
-      ])
+    if (e.key === 'Enter') {
       setLoading(true)
       votersService
-        .getVotersByFiltering(page, pageSize, [
-          { key: key, value: key == 'Name' ? name : key == 'Mobile_Number_1' ? mobileNo : nic },
-        ])
+        .getVotersByFiltering(page, pageSize, filters)
         .then((res) => {
           const data = res?.data
           setMetaData(res.meta.pagination)
@@ -97,7 +90,7 @@ function VotersPage() {
         .catch((err) => {
           console.log(err)
           setLoading(false)
-          if (err?.response?.status == 403) {
+          if (err?.response?.status === 403) {
             setVotersList([])
             return
           }
@@ -105,6 +98,40 @@ function VotersPage() {
         })
     }
   }
+
+  // const onFilterButton = () => {
+  //   setLoading(true)
+  //   votersService
+  //   .getVotersByFiltering(page, pageSize, filters)
+  //   .then((res) => {
+  //     const data = res?.data
+  //     setMetaData(res.meta.pagination)
+  //     setVotersList(data)
+  //     setLoading(false)
+  //   })
+  //   .catch((err) => {
+  //     console.log(err)
+  //     setLoading(false)
+  //     if (err?.response?.status === 403) {
+  //       setVotersList([])
+  //       return
+  //     }
+  //     setErrorMsg(true)
+  //   })
+  // }
+
+  useEffect(() => {
+    setFilters([
+      {
+        key: "Name",
+        value: name,
+      },
+      {
+        key: "Mobile_Number_1",
+        value: mobileNo,
+      },
+    ])
+  }, [name, nic, mobileNo])
 
   return (
     <div>
@@ -154,6 +181,19 @@ function VotersPage() {
                 onKeyDown={(e) => onSearch(e, 'Mobile_Number_1')}
               ></CFormInput>
             </CCol>
+            {/* <CCol md={2}>
+              <CButton
+                style={{
+                  width: '40%',
+                  backgroundColor: COLORS.MAIN,
+                  border: 'none',
+                  marginTop: '32px',
+                }}
+                onClick={() => onFilterButton()}
+              >
+                Filter
+              </CButton>
+            </CCol> */}
             <CCol md={3}></CCol>
             <CCol>
               <CButton
@@ -170,10 +210,16 @@ function VotersPage() {
 
           {loading ? (
             <Loading loading={loading} />
-          ) : votersList.length == 0 ? (
-            <NoDataArt visible={true} description={filters.length > 0 ? MODAL_MSGES.SEARCH_NO_DATA_DOUND : MODAL_MSGES.NO_DATA_FOUND} size={10} />
+          ) : votersList.length === 0 ? (
+            <NoDataArt
+              visible={true}
+              description={
+                filters.length > 0 ? MODAL_MSGES.SEARCH_NO_DATA_DOUND : MODAL_MSGES.NO_DATA_FOUND
+              }
+              size={10}
+            />
           ) : (
-            <CTable hover responsive>
+            <CTable hover responsive small>
               <CTableHead color="light">
                 <CTableRow>
                   <CTableHeaderCell scope="col">#</CTableHeaderCell>
@@ -230,7 +276,7 @@ function VotersPage() {
           {metaData && (
             <CPagination className="mt-2" aria-label="Page navigation example">
               <CPaginationItem
-                hidden={metaData.page == 1}
+                hidden={metaData.page === 1}
                 style={{ color: COLORS.MAIN, cursor: 'pointer' }}
                 onClick={() => setPage(metaData.page - 1)}
               >
