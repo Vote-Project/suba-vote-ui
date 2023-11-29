@@ -104,9 +104,9 @@ function AddEditVoter() {
       .then((res) => {
         const data = res.data
         const clientDistricts = TokenService.getClientDistricts()
-        const clientDataIds = clientDistricts.map(client => client.id);
-        const filteredData = data.filter(data => clientDataIds.includes(data.id));
-        
+        const clientDataIds = clientDistricts.map((client) => client.id)
+        const filteredData = data.filter((data) => clientDataIds.includes(data.id))
+
         const selectArray = filteredData.map((item) => {
           console.log(item)
           return { value: item.id, label: item.attributes.Name }
@@ -348,30 +348,28 @@ function AddEditVoter() {
           label: (await LocationService.getDistrictById(data.District)).data.attributes.Name,
           value: data.District,
         })
-        setGnDivision({
-          label: (await LocationService.getGnDivisionById(data.GN_Division)).data.attributes.Name,
-          value: data.GN_Division,
+        setSeat({
+          label: (await LocationService.getSeatById(data.Seat)).data.attributes.Name,
+          value: data.Seat,
         })
         setLocalAuthority({
           label: (await LocationService.getLocalAuthorityById(data.Local_Authority)).data.attributes
             .Name,
           value: data.Local_Authority,
         })
-        setSeat({
-          label: (await LocationService.getSeatById(data.Seat)).data.attributes.Name,
-          value: data.Seat,
-        })
-       
-        setStreetVillage({
-          label: (await LocationService.getStreetById(data.Street_Village)).data.attributes.Name,
-          value: data.Street_Village,
-        })
-      
         setWard({
           label: (await LocationService.getWardById(data.Ward)).data.attributes.Name,
           value: data.Ward,
         })
-    
+        setGnDivision({
+          label: (await LocationService.getGnDivisionById(data.GN_Division)).data.attributes.Name,
+          value: data.GN_Division,
+        })
+
+        setStreetVillage({
+          label: (await LocationService.getStreetById(data.Street_Village)).data.attributes.Name,
+          value: data.Street_Village,
+        })
       })
       .catch((err) => {
         console.log(err)
@@ -554,8 +552,6 @@ function AddEditVoter() {
     setWardOrganizer('')
     setGnDivisionOrganizer('')
   }
-
-  console.log(seatOrganizerOptions)
 
   return (
     <CCard className="mb-4">

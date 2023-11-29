@@ -130,6 +130,10 @@ function VotersPage() {
         key: "Mobile_Number_1",
         value: mobileNo,
       },
+      {
+        key: "NIC_Number",
+        value: nic,
+      },
     ])
   }, [name, nic, mobileNo])
 

@@ -34,7 +34,7 @@ function MoreInfoOffCanvas({ title, type = 'voter', data, isMoreInfo, setIsMoreI
     if(data) {
       LocationService.getDistrictById(data?.attributes.District).then((res) => setDistrict(res.data.attributes.Name)).catch(err=> console.log(err))
       LocationService.getSeatById(data?.attributes.Seat).then((res) => setSeat(res.data.attributes.Name)).catch(err=> console.log(err))
-      LocationService.getLocalAuthorityById(data?.attributes.GN_Division).then((res) => setLocalAuthority(res.data.attributes.Name)).catch(err=> console.log(err))
+      LocationService.getLocalAuthorityById(data?.attributes.Local_Authority).then((res) => setLocalAuthority(res.data.attributes.Name)).catch(err=> console.log(err))
       LocationService.getWardById(data?.attributes.Ward).then((res) => setWard(res.data.attributes.Name)).catch(err=> console.log(err))
       LocationService.getStreetById(data?.attributes.Street_Village).then((res) => setStreetVillage(res.data.attributes.Name)).catch(err=> console.log(err))
       LocationService.getGnDivisionById(data?.attributes.GN_Division).then((res) => setGnDivision(res.data.attributes.Name)).catch(err=> console.log(err))
