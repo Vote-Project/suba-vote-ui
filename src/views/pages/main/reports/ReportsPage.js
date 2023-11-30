@@ -179,6 +179,27 @@ function ReportsPage() {
         key: 'Civil_Status',
         value: selectedCivilStatus.value ? selectedCivilStatus.value : '',
       },
+      {
+        key: 'District',
+        value: district.value ? district.value : '',
+      },
+      {
+        key: 'Seat',
+        value: seat.value ? seat.value : '',
+      },
+      {
+        key: 'Ward',
+        value: ward.value ? ward.value : '',
+      },
+      {
+        key: 'GN_Division',
+        value: gnDivision.value ? gnDivision.value : '',
+      },
+      {
+        key: 'Street_Village',
+        value: streetVillage.value ? streetVillage.value : '',
+      },
+      
     ]
 
     if (selectedPersonType?.value.toLowerCase() == 'organizers') {
@@ -478,6 +499,18 @@ function ReportsPage() {
                 onClick={genarateReport}
               >
                 Genarate Report
+              </CButton>
+            </CCol>
+            <CCol md={2}>
+              <CButton
+                disabled={loading}
+                color="light"
+                style={{ width: '100%'}}
+                onClick={() => {
+                  window.location.reload(false)
+                }}
+              >
+                Clear Filters
               </CButton>
             </CCol>
           </CRow>

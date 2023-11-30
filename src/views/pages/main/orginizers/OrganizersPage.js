@@ -166,7 +166,8 @@ function OrganizersPage() {
             <CCol>
               <CButton
                 className="mt-4"
-                style={{ width: '100%', backgroundColor: COLORS.MAIN, border: 'none' }}
+                style={{ width: '100%' }}
+                color='light'
                 onClick={() => {
                   window.location.reload(false)
                 }}

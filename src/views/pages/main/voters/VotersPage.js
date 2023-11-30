@@ -202,7 +202,8 @@ function VotersPage() {
             <CCol>
               <CButton
                 className="mt-4"
-                style={{ width: '100%', backgroundColor: COLORS.MAIN, border: 'none' }}
+                color='light'
+                style={{ width: '100%' }}
                 onClick={() => {
                   window.location.reload(false)
                 }}

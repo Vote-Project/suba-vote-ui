@@ -1,3 +1,5 @@
+import { jwtDecode } from "jwt-decode";
+
 const localStorageName = "user-suba-vote"
 
 const getLocalRefreshToken = () => {
@@ -47,6 +49,11 @@ const getToken = () => {
   return JSON.parse(localStorage.getItem(localStorageName))?.jwt;
 }
 
+const getTokenDetails = () => {
+  const details = jwtDecode(JSON.parse(localStorage.getItem(localStorageName))?.jwt)
+  return details;
+}
+
 const TokenService = {
   getLocalRefreshToken,
   getLocalAccessToken,
@@ -58,7 +65,8 @@ const TokenService = {
   getToken,
   getUserLevel,
   getEmail,
-  getClientDistricts
+  getClientDistricts,
+  getTokenDetails
 };
 
 export default TokenService;

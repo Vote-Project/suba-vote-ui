@@ -92,9 +92,10 @@ const PdfDocument = ({ data }) => {
         <h3>Preview Records</h3>
         <VirtualizedTable data={data} />
       </div>
-      <div className="mt-2 justify-content-end">
+      <div className="mt-2 d-flex justify-content-end">
         <CButton
           size="sm"
+          className="ml-auto"
           style={{ width: '150px', backgroundColor: COLORS.MAIN, border: '0px' }}
           onClick={generatePdf}
         >
