@@ -2,7 +2,6 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { CImage, CSidebar, CSidebarBrand, CSidebarNav, CSidebarToggler } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
 
 import { AppSidebarNav } from './AppSidebarNav'
 
@@ -41,7 +40,7 @@ const AppSidebar = () => {
           gap: 20,
         }}
       >
-        <CImage src={logo} height={50} className='p-1' />
+        <CImage src={logo} height={50} className="p-1" />
         <h4 style={{ color: COLORS.MAIN }}>{CLIENT_NAME.toUpperCase()}</h4>
       </CSidebarBrand>
       <CSidebarNav>

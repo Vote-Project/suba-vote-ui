@@ -1,27 +1,30 @@
 import React from 'react'
 import { VariableSizeList  } from 'react-window';
 
-const VirtualizedTable = ({ data }) => {
+const VirtualizedTable = ({ data, columns }) => {
     const rowHeight = 80;
-    console.log("data", data)
+    console.log("data", data, columns)
     // Row renderer function
-    const Row = ({ index, style }) => (
-      <div style={{ ...style, display: 'flex', alignItems: 'center', borderBottom: '1px solid #ccc' }}>
-        <div style={{ flex: 1, padding: '5px', textAlign: 'left' }}>{data[index].attributes.Name}</div>
-        <div style={{ flex: 1, padding: '5px', textAlign: 'center' }}>{data[index].attributes['NIC_Number']}</div>
-        <div style={{ flex: 1, padding: '5px', textAlign: 'center' }}>{data[index].attributes['Mobile_Number_1']}</div>
+    const Row = ({ index, style }) => {
+      
+      return <div style={{ ...style, display: 'flex', alignItems: 'center', borderBottom: '1px solid #ccc' }}>
+        {columns?.map((column, i) => (
+          <div key={i} style={{ flex: 1, padding: '5px', textAlign: 'left' }}>{data[index].attributes[column.value]}</div>
+        ))}
+        
         
         {/* Add other columns based on your data structure */}
       </div>
-    );
+    };
 
     const calculateRowHeight = index => {
       const name = data[index].attributes.Name;
       const nic = data[index].attributes['NIC_Number'];
       const mobile = data[index].attributes['Mobile_Number_1'];
+      const address = data[index].attributes['Address'];
   
       // Calculate the maximum length among the columns
-      const maxLength = Math.max(name.length, nic.length, mobile.length);
+      const maxLength = Math.max(name.length, nic.length, mobile.length, address.length);
   
       // Adjust the factor as needed for your specific case
       //const factor = 2.5;

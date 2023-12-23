@@ -10,7 +10,7 @@ import {
 } from '@coreui/react'
 import React, { useEffect } from 'react'
 import { useState } from 'react'
-import Select, { useStateManager } from 'react-select'
+import Select from 'react-select'
 import { jsonToSelectBox } from 'src/common/common'
 import { COLORS, MODAL_MSGES } from 'src/common/const'
 import OccupationList from 'src/data/Occupations.json'
@@ -25,11 +25,19 @@ import Loading from 'src/components/Loading'
 import NoDataArt from 'src/components/NoDataArt'
 import { votersService } from 'src/services/voters.service'
 
+
 const INITIAL_VALUE = ''
 const sampleData = Array.from({ length: 50000 }, (_, index) => ({
   id: index,
   name: `Name ${index}`,
 }))
+
+const options = [
+  { value: 'Name', label: 'Name' },
+  { value: 'NIC_Number', label: 'NIC' },
+  { value: 'Mobile_Number_1', label: 'Contact No.' },
+  { value: 'Gender', label: 'Gender' },
+]
 
 function ReportsPage() {
   const [searchByCivilStatus, setSearchByCivilStatus] = useState(false)
@@ -63,6 +71,7 @@ function ReportsPage() {
   const [gnDivisionOptions, setGnDivisionOptions] = useState([])
 
   const [data, setData] = useState(null)
+  const [selectedOption, setSelectedOption] = useState(null)
 
   useEffect(() => {
     LocationService.getDistricts()
@@ -199,7 +208,6 @@ function ReportsPage() {
         key: 'Street_Village',
         value: streetVillage.value ? streetVillage.value : '',
       },
-      
     ]
 
     if (selectedPersonType?.value.toLowerCase() == 'organizers') {
@@ -220,22 +228,23 @@ function ReportsPage() {
           // setErrorMsg(true)
         })
     } else {
-      votersService.getVotersByFiltering(1, 10000000, filters)
-      .then((res) => {
-        const data = res?.data
-        console.log(res)
-        setData(res.data)
-        setLoading(false)
-      })
-      .catch((err) => {
-        console.log(err)
-        setLoading(false)
-        // if (err?.response?.status === 403) {
-        //   setOrganizersList([])
-        //   return
-        // }
-        // setErrorMsg(true)
-      })
+      votersService
+        .getVotersByFiltering(1, 10000000, filters)
+        .then((res) => {
+          const data = res?.data
+          console.log(res)
+          setData(res.data)
+          setLoading(false)
+        })
+        .catch((err) => {
+          console.log(err)
+          setLoading(false)
+          // if (err?.response?.status === 403) {
+          //   setOrganizersList([])
+          //   return
+          // }
+          // setErrorMsg(true)
+        })
     }
   }
 
@@ -505,7 +514,7 @@ function ReportsPage() {
               <CButton
                 disabled={loading}
                 color="light"
-                style={{ width: '100%'}}
+                style={{ width: '100%' }}
                 onClick={() => {
                   window.location.reload(false)
                 }}
@@ -517,7 +526,7 @@ function ReportsPage() {
           {!loading && data && data?.length != 0 && (
             <CRow className="mt-4">
               <hr />
-              <PdfDocument data={data} />
+              <PdfDocument data={data} columns={selectedOption} />
             </CRow>
           )}
           {!loading && data?.length == 0 && (

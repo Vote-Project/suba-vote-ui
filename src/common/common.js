@@ -23,3 +23,5 @@ export function removeUndisfinedValuesInArray(selectArray) {
 
  return newData
 }
+
+
