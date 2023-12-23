@@ -6,6 +6,7 @@ import { CButton, CCol, CFormLabel, CFormText } from '@coreui/react'
 import Select from 'react-select'
 import { exportToExcel } from 'react-json-to-excel'
 import { LocationService } from 'src/services/location.service'
+import { OrganizersService } from 'src/services/organizers.service'
 
 const options = [
   { value: 'Name', label: 'Name', rectVal: 100, textVal: 105, align: 'left' },
@@ -16,7 +17,7 @@ const options = [
   { value: 'Address', label: 'Address', rectVal: 30, textVal: 25, align: 'left' },
 ]
 
-const PdfDocument = ({ data, columns }) => {
+const PdfDocument = ({ data, type }) => {
   const [selectedOption, setSelectedOption] = useState([
     { value: 'Name', label: 'Name', rectVal: 100, textVal: 105, align: 'left' },
     { value: 'NIC_Number', label: 'NIC', rectVal: 30, textVal: 25, align: 'center' },
@@ -170,6 +171,27 @@ const PdfDocument = ({ data, columns }) => {
             await LocationService.getGnDivisionById(item.GN_Division)
           ).data.attributes.Name
 
+          if(type == 'voter') {
+            item.District_Organizer = (
+              await OrganizersService.getOrganizer(item.District_Organizer)
+            ).data.attributes.Name
+            item.Street_Village_Organizer = (
+              await OrganizersService.getOrganizer(item.Street_Village_Organizer)
+            ).data.attributes.Name
+            item.Seat_Organizer = (
+              await OrganizersService.getOrganizer(item.Seat_Organizer)
+            ).data.attributes.Name
+            item.Local_Authority_Organizer = (
+              await OrganizersService.getOrganizer(item.Local_Authority_Organizer)
+            ).data.attributes.Name
+            item.Ward_Organizer = (
+              await OrganizersService.getOrganizer(item.Ward_Organizer)
+            ).data.attributes.Name
+            item.GN_Division_Organizer = (
+              await OrganizersService.getOrganizer(item.GN_Division_Organizer)
+            ).data.attributes.Name
+          }
+
           completedItems += 1
 
           // Calculate loading percentage
@@ -230,14 +252,17 @@ const PdfDocument = ({ data, columns }) => {
       <div className="mt-2 gap-3 d-flex justify-content-end">
         <p>{loadingMsg}</p>
       </div>
+     
+      <CCol xs="12" sm="8" style={{backgroundColor: COLORS.LIGHT , padding: "20px", borderRadius: '10px'}}>
       <p>Excel Tips:</p>
-      <ul>
-        <li>
-          Ctrl + a to select all and Alt + H, then O, and then I. You can auto fit all the columns
-          width.
-        </li>
-        <li>Ctrl + L to aligns the line or selected text to the left of the screen.</li>
-      </ul>
+        <ul>
+          <li>
+            Ctrl + a to select all and Alt + H, then O, and then I. You can auto fit all the columns
+            width.
+          </li>
+          <li>Ctrl + L to aligns the line or selected text to the left of the screen.</li>
+        </ul>
+      </CCol>
     </div>
   )
 }

@@ -3,7 +3,6 @@ import { VariableSizeList  } from 'react-window';
 
 const VirtualizedTable = ({ data, columns }) => {
     const rowHeight = 80;
-    console.log("data", data, columns)
     // Row renderer function
     const Row = ({ index, style }) => {
       
@@ -28,10 +27,8 @@ const VirtualizedTable = ({ data, columns }) => {
   
       // Adjust the factor as needed for your specific case
       //const factor = 2.5;
-      console.log(window.innerWidth)
       const factor = window.innerWidth < 600 ? 2.9 : 1;
       
-      console.log(maxLength * factor)
       // Minimum row height is set to 50 pixels
       return Math.max(30, maxLength * factor);
     };

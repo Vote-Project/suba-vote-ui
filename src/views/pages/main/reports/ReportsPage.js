@@ -8,7 +8,7 @@ import {
   CRow,
   CSpinner,
 } from '@coreui/react'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useState } from 'react'
 import Select from 'react-select'
 import { jsonToSelectBox } from 'src/common/common'
@@ -40,6 +40,8 @@ const options = [
 ]
 
 function ReportsPage() {
+  const targetRef = useRef(null);
+
   const [searchByCivilStatus, setSearchByCivilStatus] = useState(false)
 
   const [selectedReportType, setSelectedReportType] = useState(null)
@@ -173,6 +175,13 @@ function ReportsPage() {
         .catch((err) => console.log(err))
   }, [gnDivision])
 
+  const scrollToTarget = () => {
+    if (targetRef.current) {
+      targetRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+
   const genarateReport = () => {
     setLoading(true)
     const filters = [
@@ -210,6 +219,8 @@ function ReportsPage() {
       },
     ]
 
+
+
     if (selectedPersonType?.value.toLowerCase() == 'organizers') {
       OrganizersService.getOrganizersByFiltering(1, 10000000, filters)
         .then((res) => {
@@ -217,6 +228,7 @@ function ReportsPage() {
           console.log(res)
           setData(res.data)
           setLoading(false)
+          scrollToTarget();
         })
         .catch((err) => {
           console.log(err)
@@ -226,6 +238,7 @@ function ReportsPage() {
           //   return
           // }
           // setErrorMsg(true)
+          scrollToTarget();
         })
     } else {
       votersService
@@ -235,10 +248,12 @@ function ReportsPage() {
           console.log(res)
           setData(res.data)
           setLoading(false)
+          scrollToTarget();
         })
         .catch((err) => {
           console.log(err)
           setLoading(false)
+          scrollToTarget();
           // if (err?.response?.status === 403) {
           //   setOrganizersList([])
           //   return
@@ -492,7 +507,7 @@ function ReportsPage() {
             </CCol>
           </CRow>
           <CRow
-            className="mt-4 justify-content-end"
+            className="mt-4 gap-1 justify-content-end"
             style={{ position: 'sticky', bottom: '1rem', alignSelf: 'flex-end' }}
           >
             {loading && (
@@ -523,10 +538,11 @@ function ReportsPage() {
               </CButton>
             </CCol>
           </CRow>
+          <div ref={targetRef}>
           {!loading && data && data?.length != 0 && (
             <CRow className="mt-4">
               <hr />
-              <PdfDocument data={data} columns={selectedOption} />
+              <PdfDocument data={data} columns={selectedOption} type={selectedPersonType?.value.toLowerCase()} />
             </CRow>
           )}
           {!loading && data?.length == 0 && (
@@ -536,6 +552,7 @@ function ReportsPage() {
             </>
           )}
           {loading && <Loading loading={loading} />}
+          </div>
         </CCardBody>
       </CCard>
     </div>
