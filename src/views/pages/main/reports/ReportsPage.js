@@ -510,11 +510,7 @@ function ReportsPage() {
             className="mt-4 gap-1 justify-content-end"
             style={{ position: 'sticky', bottom: '1rem', alignSelf: 'flex-end' }}
           >
-            {loading && (
-              <CCol md={1}>
-                <CSpinner hidden={!loading} style={{ color: COLORS.MAIN }} />
-              </CCol>
-            )}
+     
             <CCol md={2}>
               <CButton
                 disabled={loading}

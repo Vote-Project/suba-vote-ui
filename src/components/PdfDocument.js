@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import jsPDF from 'jspdf'
 import VirtualizedTable from './VirtualizedTable'
 import { CLIENT_NAME, COLORS } from 'src/common/const'
@@ -7,6 +7,8 @@ import Select from 'react-select'
 import { exportToExcel } from 'react-json-to-excel'
 import { LocationService } from 'src/services/location.service'
 import { OrganizersService } from 'src/services/organizers.service'
+import moment from 'moment'
+import WarningModal from './Modals/WarningModal'
 
 const options = [
   { value: 'Name', label: 'Name', rectVal: 100, textVal: 105, align: 'left' },
@@ -24,8 +26,11 @@ const PdfDocument = ({ data, type }) => {
     { value: 'Mobile_Number_1', label: 'Contact No.', rectVal: 30, textVal: 30, align: 'center' },
   ])
 
+  const [warningModalVisible, setWarningModalVisible] = useState(false)
   const [loadingMsg, setLoadingMsg] = useState(null)
   const [downloadButtonDisable, setDownloadButtonDisable] = useState(false)
+
+  const [sortedData, setSortedData] = useState(null)
 
   const generatePdf = () => {
     const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' })
@@ -144,18 +149,69 @@ const PdfDocument = ({ data, type }) => {
     pdf.save(`Report_${new Date().toLocaleString()}.pdf`)
   }
 
+  useEffect(() => {
+    let filteredData = data.map((item) => item.attributes)
+    const sortedDetails = filteredData.map((item) => {
+      const sortedItem = {}
+
+      // Specify the desired order of property names
+      const propertyOrder = [
+        'NIC_Number',
+        'Title',
+        'Name',
+        'Gender',
+        'Civil_Status',
+        'Occupation',
+        'Date_of_Birth',
+        'NJP_Party_Member',
+        'Address',
+        'Mobile_Number_1',
+        'Mobile_Number_2',
+        'WhatsApp_Number',
+        'Facebook_Link',
+        'District',
+        'Seat',
+        'Local_Authority',
+        'Ward',
+        'GN_Division',
+        'Street_Village',
+        'Organizer_Category',
+        'Level_of_Strength',
+        'Political_Background',
+        'Meeting_Complete',
+        'Meeting_Date',
+        'createdAt',
+        'updatedAt',
+        'publishedAt',
+      ]
+
+      // Sort the properties based on the specified order
+      propertyOrder.forEach((property) => {
+        if (item.hasOwnProperty(property)) {
+          sortedItem[property] = item[property]
+        }
+      })
+
+      return sortedItem
+    })
+    setSortedData(sortedDetails)
+  }, [])
+
   const downloadAsExcel = async () => {
     setDownloadButtonDisable(true)
-    let filteredData = data.map((item) => item.attributes)
-    const totalItems = filteredData.length
+
+    const totalItems = sortedData.length
     let completedItems = 0
     setLoadingMsg(null)
 
-    const newData = await Promise.all(
-      filteredData.map(async (item) => {
+    const processData = async () => {
+      if (completedItems < totalItems) {
+        const item = sortedData[completedItems]
+
         try {
           item.NJP_Party_Member = item.NJP_Party_Member ? 'Yes' : 'No'
           item.Meeting_Complete = item.Meeting_Complete ? 'Yes' : 'No'
+          item.Date_of_Birth = moment(item.Date_of_Birth).format('DD-MM-YYYY')
           item.District = (
             await LocationService.getDistrictById(item.District)
           ).data.attributes.Name
@@ -171,7 +227,7 @@ const PdfDocument = ({ data, type }) => {
             await LocationService.getGnDivisionById(item.GN_Division)
           ).data.attributes.Name
 
-          if(type == 'voter') {
+          if (type == 'voter') {
             item.District_Organizer = (
               await OrganizersService.getOrganizer(item.District_Organizer)
             ).data.attributes.Name
@@ -197,7 +253,10 @@ const PdfDocument = ({ data, type }) => {
           // Calculate loading percentage
           const loadingPercentage = (completedItems / totalItems) * 100
           setLoadingMsg(`Loading: ${loadingPercentage.toFixed(2)}%`)
-          setDownloadButtonDisable(false)
+
+          await new Promise((resolve) => setTimeout(resolve, 500))
+          await processData() // Process the next item
+
           return item
         } catch (err) {
           console.error(err)
@@ -205,10 +264,31 @@ const PdfDocument = ({ data, type }) => {
           setDownloadButtonDisable(false)
           return item // You might want to handle the error differently or skip the item
         }
-      }),
-    )
+      } else {
+        // All items processed
+        const newData = sortedData
+        exportToExcel(newData, `Full_Report_${new Date().toLocaleString()}`)
+        setDownloadButtonDisable(false)
+      }
+    }
 
-    exportToExcel(newData, `Full_Report_${new Date().toLocaleString()}`)
+    await processData() // Start processing
+
+    // exportToExcel(newData, `Full_Report_${new Date().toLocaleString()}`)
+    // setDownloadButtonDisable(false)
+  }
+
+  const calculateEstimation = () => {
+    const estimation = ((0.5 * sortedData?.length) / 60).toFixed(2)
+
+    var integerPart = parseInt(estimation);
+    var decimalPart = ((estimation - integerPart).toFixed(2) * 100) * 60 / 100
+    
+    if(integerPart == 0) {
+     return <span style={{fontWeight: 'bold'}}>{decimalPart.toFixed(0)} seconds. </span>
+    }
+
+    return <span style={{fontWeight: 'bold'}}>{integerPart} minutes and {decimalPart.toFixed(0)} seconds. </span>
   }
 
   return (
@@ -243,7 +323,7 @@ const PdfDocument = ({ data, type }) => {
           size="sm"
           className="ml-auto"
           style={{ width: '150px', backgroundColor: COLORS.MAIN, border: '0px' }}
-          onClick={downloadAsExcel}
+          onClick={() => setWarningModalVisible(true)}
           disabled={downloadButtonDisable}
         >
           Download Excel <br></br>(Full Report)
@@ -252,9 +332,13 @@ const PdfDocument = ({ data, type }) => {
       <div className="mt-2 gap-3 d-flex justify-content-end">
         <p>{loadingMsg}</p>
       </div>
-     
-      <CCol xs="12" sm="8" style={{backgroundColor: COLORS.LIGHT , padding: "20px", borderRadius: '10px'}}>
-      <p>Excel Tips:</p>
+
+      <CCol
+        xs="12"
+        sm="8"
+        style={{ backgroundColor: COLORS.LIGHT, padding: '20px', borderRadius: '10px' }}
+      >
+        <p>Excel Tips:</p>
         <ul>
           <li>
             Ctrl + a to select all and Alt + H, then O, and then I. You can auto fit all the columns
@@ -263,6 +347,21 @@ const PdfDocument = ({ data, type }) => {
           <li>Ctrl + L to aligns the line or selected text to the left of the screen.</li>
         </ul>
       </CCol>
+      <WarningModal
+        open={warningModalVisible}
+        onOpen={(status) => setWarningModalVisible(status)}
+        okay={(status) => {
+          if (status) {
+            downloadAsExcel()
+          }
+        }}
+        title={'Action Required!'}
+        description={
+          <div>
+            The estimation time for file generation is {calculateEstimation()} If acceptable, please proceed.
+          </div>
+        }
+      />
     </div>
   )
 }

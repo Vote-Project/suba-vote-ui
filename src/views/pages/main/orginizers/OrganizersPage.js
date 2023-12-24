@@ -116,6 +116,7 @@ function OrganizersPage() {
 
   return (
     <div>
+      
       <ErrorModal
         open={errorMsg}
         onOpen={(value) => setErrorMsg(value)}

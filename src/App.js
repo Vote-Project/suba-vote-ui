@@ -27,7 +27,6 @@ function App() {
 
   useEffect(() => {
     const user = TokenService.getUser()
-    console.log(user)
 
     if (user?.jwt) {
       setUserLogin(true)
