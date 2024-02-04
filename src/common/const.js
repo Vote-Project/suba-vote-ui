@@ -17,6 +17,13 @@ export const MODAL_MSGES = {
     UPDATE_SUCCESS_MSG:
       "You've successfully updated the organizer. The organizer details have been saved and are now available in the carousal.",
   },
+  TASKS: {
+    ADD_SUCCESS_MSG:
+      "You've successfully created a new task for the organizer. The task details have been saved and are now available in the carousal.",
+    UPDATE_SUCCESS_MSG:
+      "You've successfully updated the task. The task details have been saved and are now available in the carousal.",
+      NO_TASKS: "No Tasks Found! This might be because there is no tasks available at the moment"
+  },
   LOGIN_INVALID: 'No user found for this username/password!!',
   ERROR_MSG: 'Somthing Went Wrong!! Please Try Again.',
   SEARCH_NO_DATA_DOUND:

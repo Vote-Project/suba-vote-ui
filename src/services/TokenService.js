@@ -1,6 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 
 const localStorageName = "user-suba-vote"
+const organizerLocalStorageName = "org-suba-vote"
 
 const getLocalRefreshToken = () => {
   const user = JSON.parse(localStorage.getItem(localStorageName));
@@ -37,6 +38,11 @@ const getUserLevel = () => {
 const setUser = (user) => {
   localStorage.setItem(localStorageName, JSON.stringify(user));
 };
+
+const setOrganizer = (user) => {
+  localStorage.setItem(localStorageName, JSON.stringify(user));
+};
+
 const getClientDistricts = () => {
   return JSON.parse(localStorage.getItem(localStorageName))?.clientData?.attributes?.districts?.data;
 };
@@ -46,7 +52,7 @@ const removeUser = () => {
 };
 
 const getToken = () => {
-  return JSON.parse(localStorage.getItem(localStorageName))?.jwt;
+  return JSON.parse(localStorage.getItem(localStorageName))?.jwt || JSON.parse(localStorage.getItem(localStorageName))?.token;
 }
 
 const getTokenDetails = () => {

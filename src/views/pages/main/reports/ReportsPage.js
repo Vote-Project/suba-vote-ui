@@ -267,7 +267,7 @@ function ReportsPage() {
     <div>
       <CCard className="mb-4">
         <CCardHeader>
-          <h5>Reports Managment</h5>
+          <h5>Reports & Campaign Managment</h5>
         </CCardHeader>
         <CCardBody>
           {/* <CRow>

@@ -38,6 +38,27 @@ export const AuthService = {
     }
   },
 
+  organizerLogin: async (userid, password) => {
+    try {
+      // if (username && password == 'admin') {
+      //   TokenService.setUser({ username, password })
+      //   return { data: 'done' }
+      // }
+      const response = await axiosInstance.post(`/login/${userid}/${password}`, {})
+      
+      if (response.data.jwt) {
+        // response.data['level'] = 1
+        const clientData = await algoAxiosInstance.get('/clients?populate=*&filters[Token][$containsi]=' + CLIENT_TOKEN)
+        TokenService.setUser({...response.data, clientData: clientData.data.data[0]})
+      } else if(response.data.token) {
+        TokenService.setUser({...response.data})
+      }
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
+
   login: async (username, password) => {
     try {
       // if (username && password == 'admin') {

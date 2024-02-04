@@ -1,9 +1,17 @@
 import { axiosInstance } from '../common/AxiosInstance'
 
 export const OrganizersService = {
-  getOrganizers: async (page = 1, pageSize = 10) => {
+  getOrganizers: async (page = 1, pageSize = 10000000) => {
     try {
       const response = await axiosInstance.get(`/organizers?pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort[0]=createdAt:desc`)
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
+  getOrganizersByBirthday: async (birthday) => {
+    try {
+      const response = await axiosInstance.get(`/organizers?filters[Date_of_Birth][$eq]=${birthday}&sort[0]=createdAt:desc`)
       return response.data
     } catch (error) {
       throw error

@@ -9,18 +9,14 @@ import {
   CDropdownMenu,
   CDropdownToggle,
 } from '@coreui/react'
-import {
-  cilLockLocked,
-  cilUser,
-  cilEnvelopeClosed,
-} from '@coreui/icons'
+import { cilLockLocked, cilUser, cilEnvelopeClosed } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import avatar8 from './../../assets/images/avatars/8.jpg'
 import TokenService from 'src/services/TokenService'
 import { COLORS } from 'src/common/const'
 import { AuthService } from 'src/services/auth.service'
 
-const AppHeaderDropdown = () => {
+const AppHeaderDropdown = (consumer = false) => {
   const logOut = () => {
     AuthService.logout()
     window.location.reload(false)
@@ -32,15 +28,21 @@ const AppHeaderDropdown = () => {
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownHeader className="bg-light fw-semibold py-2">Account</CDropdownHeader>
-        <CDropdownItem >
-          <CIcon icon={cilUser} className="me-2" />
-          {TokenService.getUsername()}
-        </CDropdownItem>
-        <CDropdownItem >
-          <CIcon icon={cilEnvelopeClosed} className="me-2" />
-          {TokenService.getEmail()}
-        </CDropdownItem>
-        <CDropdownDivider />
+        {!consumer && (
+          <>
+            {' '}
+            <CDropdownItem>
+              <CIcon icon={cilUser} className="me-2" />
+              {TokenService.getUsername()}
+            </CDropdownItem>
+            <CDropdownItem>
+              <CIcon icon={cilEnvelopeClosed} className="me-2" />
+              {TokenService.getEmail()}
+            </CDropdownItem>
+            <CDropdownDivider />
+          </>
+        )}
+
         <CDropdownItem onClick={logOut} style={{ color: COLORS.DANGER_BTN, cursor: 'pointer' }}>
           <CIcon icon={cilLockLocked} className="me-2" />
           Sign Out

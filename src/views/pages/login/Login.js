@@ -9,6 +9,7 @@ import {
   CContainer,
   CForm,
   CFormInput,
+  CFormSwitch,
   CImage,
   CInputGroup,
   CInputGroupText,
@@ -19,6 +20,9 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 import { COLORS, MODAL_MSGES } from 'src/common/const'
 import logo from 'src/assets/images/suba-logo.jpg'
 import { AuthService } from 'src/services/auth.service'
+
+import './switch.css'
+
 const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -26,9 +30,12 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState(false)
 
+  const [isAdmin, setIsAdmin] = useState(true)
+
   const loginUser = async () => {
     setLoading(true)
-    AuthService.login(username, password)
+    if(isAdmin) {
+      AuthService.login(username, password)
       .then((res) => {
         console.log(res)
         window.location.reload(false)
@@ -38,7 +45,24 @@ const Login = () => {
         setLoading(false)
         console.log(err)
       })
+    } else {
+
+      AuthService.organizerLogin(username, password)
+      .then((res) => {
+        console.log(res)
+        window.location.href = '#/consumer/dash'
+        window.location.reload(false)
+      })
+      .catch((err) => {
+        setErrorMessage(MODAL_MSGES.LOGIN_INVALID)
+        setLoading(false)
+        console.log(err)
+      })
+    }
+
   }
+
+  console.log(isAdmin)
 
   return (
     <div
@@ -49,7 +73,10 @@ const Login = () => {
         <CRow className="justify-content-center">
           <CCol md={8}>
             <CCardGroup>
-              <CCard className="p-4" style={{borderRadius: '20px', boxShadow: "1px 1px 15px black"}}>
+              <CCard
+                className="p-4"
+                style={{ borderRadius: '20px', boxShadow: '1px 1px 15px black' }}
+              >
                 <CCardBody style={{ alignSelf: 'center', textAlign: 'center' }}>
                   <div style={{ alignSelf: 'center', textAlign: 'center' }}>
                     <CImage
@@ -61,8 +88,19 @@ const Login = () => {
                   </div>
                   <CForm>
                     <h1>Login</h1>
+
+                    {/* <span className='switch-r'>
+                      <input type='checkbox' id='switcher' />
+                      <labe1 htmlFor="switcher" />
+
+                    </span> */}
+                          <label className="toggle mt-2 mb-2">
+                      <CFormInput type="checkbox" onChange={(e) => setIsAdmin(e.target.checked)} value={isAdmin} />
+                      <span className="slider"></span>
+                      <span className="labels" data-on="Admin" data-off="Organizer"></span>
+                    </label>
                     <p className="text-medium-emphasis">Sign In to your account</p>
-                   
+
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
@@ -87,7 +125,17 @@ const Login = () => {
                         onKeyDown={(e) => (e.key == 'Enter' ? loginUser() : null)}
                       />
                     </CInputGroup>
-                    <span style={{ color: COLORS.DANGER_BTN, fontSize: "0.8em" }}>{errorMessage}</span>
+                    {/* <div style={{display: 'flex', justifyContent: 'center', gap: '20px', textAlign: 'center'}}>
+                      <span>Admin</span>
+                      <CFormSwitch id="formSwitchCheckDefault" />
+                      <span>Organizer</span>
+                    </div> */}
+
+              
+
+                    <span style={{ color: COLORS.DANGER_BTN, fontSize: '0.8em' }}>
+                      {errorMessage}
+                    </span>
                     <CRow>
                       <CCol>
                         <CButton
