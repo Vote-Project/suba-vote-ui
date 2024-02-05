@@ -16,8 +16,6 @@ import {
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import Select from 'react-select'
-import DatePicker from 'rsuite/DatePicker'
-import 'rsuite/dist/rsuite.min.css'
 import { getNullOrUndefinedAttributes, jsonToSelectBox } from 'src/common/common'
 import { COLORS, MODAL_MSGES } from 'src/common/const'
 import SuccessModal from 'src/components/Modals/SuccessModal'
@@ -29,6 +27,7 @@ import { OrganizersService } from 'src/services/organizers.service'
 import { useParams } from 'react-router-dom'
 import { LocationService } from 'src/services/location.service'
 import ErrorModal from 'src/components/Modals/ErrorModal'
+import TokenService from 'src/services/TokenService'
 
 const INITIAL_VALUE = ''
 
@@ -42,7 +41,7 @@ function AddEditOrganizer() {
   const [occupation, setOccupation] = useState(INITIAL_VALUE)
   const [civilStatus, setCivilStatus] = useState(INITIAL_VALUE)
   const [address, setAddress] = useState(INITIAL_VALUE)
-  const [dob, setDob] = useState(new Date("01-01-1990"))
+  const [dob, setDob] = useState(new Date('01-01-1990'))
   const [isNJP, setIsNJP] = useState(false)
   const [mobileNo, setMobileNo] = useState(INITIAL_VALUE)
   const [mobileNoTwo, setMobileNoTwo] = useState(INITIAL_VALUE)
@@ -59,6 +58,8 @@ function AddEditOrganizer() {
   const [organizerCategory, setOrganizerCategory] = useState(INITIAL_VALUE)
   const [politicalBackground, setPoliticalBackground] = useState(INITIAL_VALUE)
 
+  const [isMeetingComplete, setIsMeetingComplete] = useState(false)
+  const [meetingDate, setMeetingDate] = useState(new Date())
   //options
   const [districtOptions, setDistrictOptions] = useState([])
   const [seatOptions, setSeatOptions] = useState([])
@@ -68,6 +69,9 @@ function AddEditOrganizer() {
   const [gnDivisionOptions, setGnDivisionOptions] = useState([])
 
   const [alertMessage, setAlertMessage] = useState('Please Fill All Required Fields')
+  const [locationAlertMessage, setLocationAlertMessage] = useState(
+    'Something Wrong With Location Server',
+  )
   const [isAlert, setIsAlert] = useState(false)
   const [successMsg, setSuccessMsg] = useState(false)
   const [errorMsg, setErrorMsg] = useState(false)
@@ -83,7 +87,10 @@ function AddEditOrganizer() {
     LocationService.getDistricts()
       .then((res) => {
         const data = res.data
-        const selectArray = data.map((item) => {
+        const clientDistricts = TokenService.getClientDistricts()
+        const clientDataIds = clientDistricts.map((client) => client.id)
+        const filteredData = data.filter((data) => clientDataIds.includes(data.id))
+        const selectArray = filteredData.map((item) => {
           return { value: item.id, label: item.attributes.Name }
         })
         setDistrictOptions(selectArray)
@@ -92,6 +99,12 @@ function AddEditOrganizer() {
   }, [])
 
   useEffect(() => {
+    setSeat(INITIAL_VALUE)
+    setLocalAuthority(INITIAL_VALUE)
+    setWard(INITIAL_VALUE)
+    setGnDivision(INITIAL_VALUE)
+    setStreetVillage(INITIAL_VALUE)
+    setLocationAlertMessage(false)
     if (district) {
       LocationService.getSeatsByDistrictId(district.value)
         .then((res) => {
@@ -101,12 +114,18 @@ function AddEditOrganizer() {
           })
           setSeatOptions(selectArray)
         })
-        .catch((err) => console.log(err))
-
+        .catch((err) => {
+          console.log(err)
+          setLocationAlertMessage(true)
+        })
     }
   }, [district])
 
   useEffect(() => {
+    setLocalAuthority(INITIAL_VALUE)
+    setWard(INITIAL_VALUE)
+    setGnDivision(INITIAL_VALUE)
+    setStreetVillage(INITIAL_VALUE)
     if (seat)
       LocationService.getLocalAuthoritiesBySeatId(seat.value)
         .then((res) => {
@@ -120,6 +139,9 @@ function AddEditOrganizer() {
   }, [seat])
 
   useEffect(() => {
+    setWard(INITIAL_VALUE)
+    setGnDivision(INITIAL_VALUE)
+    setStreetVillage(INITIAL_VALUE)
     if (localAuthority)
       LocationService.getWardsByLocalAuthorityId(localAuthority.value)
         .then((res) => {
@@ -133,6 +155,8 @@ function AddEditOrganizer() {
   }, [localAuthority])
 
   useEffect(() => {
+    setGnDivision(INITIAL_VALUE)
+    setStreetVillage(INITIAL_VALUE)
     if (ward)
       LocationService.getGnDivisionsByWardId(ward.value)
         .then((res) => {
@@ -146,6 +170,7 @@ function AddEditOrganizer() {
   }, [ward])
 
   useEffect(() => {
+    setStreetVillage(INITIAL_VALUE)
     if (gnDivision)
       LocationService.getStreetsByGnDivisionId(gnDivision.value)
         .then((res) => {
@@ -162,26 +187,17 @@ function AddEditOrganizer() {
     OrganizersService.getOrganizer(id)
       .then(async (res) => {
         const data = res.data?.attributes
-
+        setTitle({ label: data.Title, value: data.Title })
+        setWhatsAppNo(data.WhatsApp_Number)
         setAddress(data.Address)
         setCivilStatus({ label: data.Civil_Status, value: data.Civil_Status })
         setDob(new Date(data.Date_of_Birth))
-        setDistrict({
-          label: (await LocationService.getDistrictById(data.District)).data.attributes.Name,
-          value: data.District,
-        })
+
         setFbLink(data.Facebook_Link)
-        setGnDivision({
-          label: (await LocationService.getGnDivisionById(data.GN_Division)).data.attributes.Name,
-          value: data.GN_Division,
-        })
+
         setGender({ label: data.Gender, value: data.Gender })
         setLevelOfStrength({ label: data.Level_of_Strength, value: data.Level_of_Strength })
-        setLocalAuthority({
-          label: (await LocationService.getLocalAuthorityById(data.Local_Authority)).data.attributes
-            .Name,
-          value: data.Local_Authority,
-        })
+
         setMobileNo(data.Mobile_Number_1)
         setMobileNoTwo(data.Mobile_Number_2)
         setNic(data.NIC_Number)
@@ -193,21 +209,36 @@ function AddEditOrganizer() {
           label: data.Political_Background,
           value: data.Political_Background,
         })
+        setDistrict({
+          label: (await LocationService.getDistrictById(data.District)).data.attributes.Name,
+          value: data.District,
+        })
         setSeat({
           label: (await LocationService.getSeatById(data.Seat)).data.attributes.Name,
           value: data.Seat,
         })
-        setStreetVillage({
-          label: (await LocationService.getStreetById(data.Street_Village)).data.attributes.Name,
-          value: data.Street_Village,
+
+        setLocalAuthority({
+          label: (await LocationService.getLocalAuthorityById(data.Local_Authority)).data.attributes
+            .Name,
+          value: data.Local_Authority,
         })
-        setTitle({ label: data.Title, value: data.Title })
+
         setWard({
           label: (await LocationService.getWardById(data.Ward)).data.attributes.Name,
           value: data.Ward,
         })
-        setWhatsAppNo(data.WhatsApp_Number)
-        console.log(res)
+
+        setGnDivision({
+          label: (await LocationService.getGnDivisionById(data.GN_Division)).data.attributes.Name,
+          value: data.GN_Division,
+        })
+
+        setStreetVillage({
+          label: (await LocationService.getStreetById(data.Street_Village)).data.attributes.Name,
+          value: data.Street_Village,
+        })
+        
       })
       .catch((err) => {
         console.log(err)
@@ -236,6 +267,7 @@ function AddEditOrganizer() {
       Political_Background: politicalBackground.value,
       Organizer_Category: organizerCategory.value,
       Level_of_Strength: levelOfStrength.value,
+      Meeting_Complete: isMeetingComplete,
     }
 
     const result = getNullOrUndefinedAttributes(requiredData)
@@ -263,11 +295,11 @@ function AddEditOrganizer() {
       Mobile_Number_2: mobileNoTwo,
       WhatsApp_Number: WhatsAppNo,
       Facebook_Link: fbLink,
+      Meeting_Date: isMeetingComplete ? meetingDate : null,
     }
 
     OrganizersService.addOrganizer({ data })
       .then((res) => {
-        console.log(res)
         setLoading(false)
         setSuccessMsg(true)
       })
@@ -304,6 +336,7 @@ function AddEditOrganizer() {
       Political_Background: politicalBackground.value,
       Organizer_Category: organizerCategory.value,
       Level_of_Strength: levelOfStrength.value,
+      Meeting_Complete: isMeetingComplete,
     }
 
     const result = getNullOrUndefinedAttributes(requiredData)
@@ -331,6 +364,7 @@ function AddEditOrganizer() {
       Mobile_Number_2: mobileNoTwo,
       WhatsApp_Number: WhatsAppNo,
       Facebook_Link: fbLink,
+      Meeting_Date: isMeetingComplete ? meetingDate : null,
     }
 
     OrganizersService.updateOrganizer(id, { data })
@@ -451,12 +485,14 @@ function AddEditOrganizer() {
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
               Date of Birth <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
-            <DatePicker
+            <br />
+            <CFormInput
+              type="date"
               size="md"
               placeholder="Select..."
-              style={{ width: 'auto', display: 'block', marginBottom: 10, zIndex: 'no' }}
-              value={new Date(dob)}
-              onChange={(e) => setDob(e)}
+              style={{ width: 'auto', display: 'block', zIndex: 'no', width: '100%' }}
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
             />
           </CCol>
         </CRow>
@@ -770,7 +806,50 @@ function AddEditOrganizer() {
               onChange={(e) => setPoliticalBackground(e)}
             ></Select>
           </CCol>
+          <CCol>
+            <CFormLabel htmlFor="staticEmail" className="col-form-label">
+              Meeting Completed? <span style={{ color: 'red' }}>*</span>
+            </CFormLabel>
+            <br />
+            <CFormCheck
+              inline
+              type="radio"
+              name="inlineRadioOptions"
+              id="inlineCheckbox1"
+              value="option1"
+              label="Yes"
+              checked={isMeetingComplete}
+              onChange={(e) => setIsMeetingComplete(true)}
+            />
+            <CFormCheck
+              inline
+              type="radio"
+              name="inlineRadioOptions"
+              id="inlineCheckbox2"
+              value="option2"
+              label="No"
+              checked={!isMeetingComplete}
+              onChange={() => setIsMeetingComplete(false)}
+            />
+          </CCol>
         </CRow>
+        {isMeetingComplete && (
+          <CRow className="mb-2">
+            <CCol md={6}>
+              <CFormLabel htmlFor="staticEmail" className="col-form-label">
+                Meeting Date <span style={{ color: 'red' }}>*</span>
+              </CFormLabel>
+              <CFormInput
+                type="date"
+                size="md"
+                placeholder="Select..."
+                style={{ width: 'auto', display: 'block', zIndex: 'no', width: '100%' }}
+                value={meetingDate}
+                onChange={(e) => setMeetingDate(e.target.value)}
+              />
+            </CCol>
+          </CRow>
+        )}
 
         {isAlert && (
           <CAlert hidden={!isAlert} color="warning" className="d-flex align-items-center mt-3">

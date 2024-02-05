@@ -2,7 +2,6 @@ import { cilArrowRight, cilSave, cilXCircle } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import {
   CButton,
-  CImage,
   CModal,
   CModalBody,
   CModalFooter,

@@ -321,21 +321,15 @@ const Dashboard = () => {
                 <CCol xs={12} md={6} xl={6}>
                   <CRow>
                     <CCol sm={6}>
-                      <div className="border-start border-start-4 border-start-info py-1 px-3">
-                        <div className="text-medium-emphasis small">New Clients</div>
-                        <div className="fs-5 fw-semibold">9,123</div>
-                      </div>
-                    </CCol>
-                    <CCol sm={6}>
                       <div className="border-start border-start-4 border-start-danger py-1 px-3 mb-3">
-                        <div className="text-medium-emphasis small">Recurring Clients</div>
+                        <div className="text-medium-emphasis small">Organizers</div>
                         <div className="fs-5 fw-semibold">22,643</div>
                       </div>
                     </CCol>
                   </CRow>
 
                   <hr className="mt-0" />
-                  {progressGroupExample1.map((item, index) => (
+                  {/* {progressGroupExample1.map((item, index) => (
                     <div className="progress-group mb-4" key={index}>
                       <div className="progress-group-prepend">
                         <span className="text-medium-emphasis small">{item.title}</span>
@@ -345,28 +339,22 @@ const Dashboard = () => {
                         <CProgress thin color="danger" value={item.value2} />
                       </div>
                     </div>
-                  ))}
+                  ))} */}
                 </CCol>
 
                 <CCol xs={12} md={6} xl={6}>
                   <CRow>
                     <CCol sm={6}>
                       <div className="border-start border-start-4 border-start-warning py-1 px-3 mb-3">
-                        <div className="text-medium-emphasis small">Pageviews</div>
+                        <div className="text-medium-emphasis small">Voters</div>
                         <div className="fs-5 fw-semibold">78,623</div>
-                      </div>
-                    </CCol>
-                    <CCol sm={6}>
-                      <div className="border-start border-start-4 border-start-success py-1 px-3 mb-3">
-                        <div className="text-medium-emphasis small">Organic</div>
-                        <div className="fs-5 fw-semibold">49,123</div>
                       </div>
                     </CCol>
                   </CRow>
 
                   <hr className="mt-0" />
 
-                  {progressGroupExample2.map((item, index) => (
+                  {/* {progressGroupExample2.map((item, index) => (
                     <div className="progress-group mb-4" key={index}>
                       <div className="progress-group-header">
                         <CIcon className="me-2" icon={item.icon} size="lg" />
@@ -377,9 +365,9 @@ const Dashboard = () => {
                         <CProgress thin color="warning" value={item.value} />
                       </div>
                     </div>
-                  ))}
+                  ))} */}
 
-                  <div className="mb-5"></div>
+                  {/* <div className="mb-5"></div>
 
                   {progressGroupExample3.map((item, index) => (
                     <div className="progress-group" key={index}>
@@ -395,13 +383,37 @@ const Dashboard = () => {
                         <CProgress thin color="success" value={item.percent} />
                       </div>
                     </div>
-                  ))}
+                  ))} */}
                 </CCol>
+              </CRow>
+              <CRow>
+              <div className="progress-group mb-4" >
+                      <div className="progress-group-header">
+                        <CIcon className="me-2" icon={cilUser} size="lg" />
+                        <span>Male</span>
+                        <span className="ms-auto fw-semibold">50%</span>
+                      </div>
+                      <div className="progress-group-bars">
+                        <CProgress thin color="warning"  height={7} value={50} />
+                        <CProgress thin color="danger" height={7} value={90} />
+                      </div>
+                    </div>
+                    <div className="progress-group mb-4" >
+                      <div className="progress-group-header">
+                        <CIcon className="me-2" icon={cilUserFemale} size="lg" />
+                        <span>Female</span>
+                        <span className="ms-auto fw-semibold">50%</span>
+                      </div>
+                      <div className="progress-group-bars">
+                        <CProgress thin color="warning"  height={7} value={50} />
+                        <CProgress thin color="danger" height={7} value={90} />
+                      </div>
+                    </div>
               </CRow>
 
               <br />
 
-              <CTable align="middle" className="mb-0 border" hover responsive>
+              {/* <CTable align="middle" className="mb-0 border" hover responsive>
                 <CTableHead color="light">
                   <CTableRow>
                     <CTableHeaderCell className="text-center">
@@ -451,7 +463,7 @@ const Dashboard = () => {
                     </CTableRow>
                   ))}
                 </CTableBody>
-              </CTable>
+              </CTable> */}
             </CCardBody>
           </CCard>
         </CCol>

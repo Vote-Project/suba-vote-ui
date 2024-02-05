@@ -85,6 +85,18 @@
   },
   {
     "id": 22,
+    "title": "Photographer"
+  },
+  {
+    "id": 23,
+    "title": "Driver"
+  },
+  {
+    "id": 24,
+    "title": "Government Server"
+  },
+  {
+    "id": 25,
     "title": "Other"
   }
 ]

@@ -2,7 +2,6 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { CImage, CSidebar, CSidebarBrand, CSidebarNav, CSidebarToggler } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
 
 import { AppSidebarNav } from './AppSidebarNav'
 
@@ -13,7 +12,7 @@ import 'simplebar/dist/simplebar.min.css'
 
 // sidebar nav config
 import navigation from '../_nav'
-import { COLORS } from 'src/common/const'
+import { CLIENT_NAME, COLORS } from 'src/common/const'
 
 const AppSidebar = () => {
   const dispatch = useDispatch()
@@ -41,8 +40,8 @@ const AppSidebar = () => {
           gap: 20,
         }}
       >
-        <CImage src={logo} height={50} className='p-1' />
-        <h4 style={{ color: COLORS.MAIN }}>SUBA VOTE</h4>
+        <CImage src={logo} height={50} className="p-1" />
+        <h4 style={{ color: COLORS.MAIN }}>{CLIENT_NAME.toUpperCase()}</h4>
       </CSidebarBrand>
       <CSidebarNav>
         <SimpleBar>

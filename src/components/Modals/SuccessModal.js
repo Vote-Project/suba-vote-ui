@@ -57,19 +57,20 @@ function SuccessModal({ title, description, rediretUrl, open, onOpen, addAnother
             style={{ backgroundColor: COLORS.MAIN, border: '0px' }}
             onClick={() => {
               addAnother()
+              window.location.reload(false)
               onOpen(false)
             }}
           >
             Add Another
           </CButton>
         )}
-        <CButton
+        {rediretUrl && <CButton
           style={{ backgroundColor: COLORS.MAIN, border: '0px' }}
           color="primary"
           onClick={() => navigate(rediretUrl)}
         >
           Go To Carousal <CIcon icon={cilArrowRight} size="md" />
-        </CButton>
+        </CButton> }
       </CModalFooter>
     </CModal>
   )

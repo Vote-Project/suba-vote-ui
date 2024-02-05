@@ -17,8 +17,6 @@ import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Select, { useStateManager } from 'react-select'
-import DatePicker from 'rsuite/DatePicker'
-import 'rsuite/dist/rsuite.min.css'
 import {
   getNullOrUndefinedAttributes,
   jsonToSelectBox,
@@ -33,6 +31,7 @@ import OrganizerCategories from 'src/data/OrganizerCategories.json'
 import { LocationService } from 'src/services/location.service'
 import { OrganizersService } from 'src/services/organizers.service'
 import { votersService } from 'src/services/voters.service'
+import TokenService from 'src/services/TokenService'
 
 const INITIAL_VALUE = ''
 
@@ -67,7 +66,7 @@ function AddEditVoter() {
   const [programmeWardOrganizer, setProgrammeWardOrganizer] = useState(null)
   const [selectedProgramme, setSelectedProgramme] = useState(INITIAL_VALUE)
   const [location, setLocation] = useState(INITIAL_VALUE)
-  const [dop, setDop] = useState(new Date())
+  const [dop, setDop] = useState(new Date('01-01-1990'))
   const [programmeDesc, setProgrammeDesc] = useState(INITIAL_VALUE)
 
   //options
@@ -104,7 +103,12 @@ function AddEditVoter() {
     LocationService.getDistricts()
       .then((res) => {
         const data = res.data
-        const selectArray = data.map((item) => {
+        const clientDistricts = TokenService.getClientDistricts()
+        const clientDataIds = clientDistricts.map((client) => client.id)
+        const filteredData = data.filter((data) => clientDataIds.includes(data.id))
+
+        const selectArray = filteredData.map((item) => {
+          console.log(item)
           return { value: item.id, label: item.attributes.Name }
         })
         setDistrictOptions(selectArray)
@@ -133,6 +137,11 @@ function AddEditVoter() {
   }, [])
 
   useEffect(() => {
+    setSeat(INITIAL_VALUE)
+    setLocalAuthority(INITIAL_VALUE)
+    setWard(INITIAL_VALUE)
+    setGnDivision(INITIAL_VALUE)
+    setStreetVillage(INITIAL_VALUE)
     if (district) {
       LocationService.getSeatsByDistrictId(district.value)
         .then((res) => {
@@ -159,6 +168,10 @@ function AddEditVoter() {
   }, [district])
 
   useEffect(() => {
+    setLocalAuthority(INITIAL_VALUE)
+    setWard(INITIAL_VALUE)
+    setGnDivision(INITIAL_VALUE)
+    setStreetVillage(INITIAL_VALUE)
     if (seat) {
       LocationService.getLocalAuthoritiesBySeatId(seat.value)
         .then((res) => {
@@ -184,7 +197,12 @@ function AddEditVoter() {
     }
   }, [seat])
 
+  console.log(occupation)
+
   useEffect(() => {
+    setWard(INITIAL_VALUE)
+    setGnDivision(INITIAL_VALUE)
+    setStreetVillage(INITIAL_VALUE)
     if (localAuthority) {
       LocationService.getWardsByLocalAuthorityId(localAuthority.value)
         .then((res) => {
@@ -211,6 +229,8 @@ function AddEditVoter() {
   }, [localAuthority])
 
   useEffect(() => {
+    setGnDivision(INITIAL_VALUE)
+    setStreetVillage(INITIAL_VALUE)
     if (ward) {
       LocationService.getGnDivisionsByWardId(ward.value)
         .then((res) => {
@@ -237,6 +257,7 @@ function AddEditVoter() {
   }, [ward])
 
   useEffect(() => {
+    setStreetVillage(INITIAL_VALUE)
     if (gnDivision) {
       LocationService.getStreetsByGnDivisionId(gnDivision.value)
         .then((res) => {
@@ -255,7 +276,6 @@ function AddEditVoter() {
             if (item.attributes.Organizer_Category == OrganizerCategories[4].title)
               return { value: item.id, label: item.attributes.Name }
           })
-          console.log(selectArray)
           setGnDivisionOrganizer(removeUndisfinedValuesInArray(selectArray)[0])
           setGnDivisionOrganizerOptions(removeUndisfinedValuesInArray(selectArray))
         })
@@ -284,31 +304,23 @@ function AddEditVoter() {
       .getVoter(id)
       .then(async (res) => {
         const data = res.data?.attributes
-
+        setStreetVillageOrganizer({
+          label: data.Street_Village_Organizer,
+          value: data.Street_Village_Organizer,
+        })
+        setTitle({ label: data.Title, value: data.Title })
         setAddress(data.Address)
         setCivilStatus({ label: data.Civil_Status, value: data.Civil_Status })
         setDob(new Date(data?.Date_of_Birth))
         setDop(new Date(data?.Date_of_Programme_Conducted_Authentication))
-        setDistrict({
-          label: (await LocationService.getDistrictById(data.District)).data.attributes.Name,
-          value: data.District,
-        })
         setDistrictOrganizer({ label: data.District_Organizer, value: data.District_Organizer })
         setFbLink(data.Facebook_Link)
-        setGnDivision({
-          label: (await LocationService.getGnDivisionById(data.GN_Division)).data.attributes.Name,
-          value: data.GN_Division,
-        })
         setGnDivisionOrganizer({
           label: data.GN_Division_Organizer,
           value: data.GN_Division_Organizer,
         })
         setGender({ label: data.Gender, value: data.Gender })
-        setLocalAuthority({
-          label: (await LocationService.getLocalAuthorityById(data.Local_Authority)).data.attributes
-            .Name,
-          value: data.Local_Authority,
-        })
+
         setLocalAuthorityOrganizer({
           label: data.Local_Authority_Organizer,
           value: data.Local_Authority_Organizer,
@@ -319,37 +331,45 @@ function AddEditVoter() {
         setNic(data.NIC_Number)
         setIsNJP(data.NJP_Party_Member)
         setName(data.Name)
+        setSeatOrganizer({ label: data.Seat_Organizer, value: data.Seat_Organizer })
         setOccupation({ label: data.Occupation, value: data.Occupation })
         setSelectedProgramme({
           label: data.Programme_Authentication,
           value: data.Programme_Authentication,
         })
+        setWardOrganizer({ label: data.Ward_Organizer, value: data.Ward_Organizer })
+        setWhatsAppNo(data.WhatsApp_Number)
         setProgrammeDesc(data.Category_of_Programmes_Authentication)
         setProgrammeWardOrganizer({
           label: data.Ward_Organizer_Authentication,
           value: data.Ward_Organizer_Authentication,
         })
+        setDistrict({
+          label: (await LocationService.getDistrictById(data.District)).data.attributes.Name,
+          value: data.District,
+        })
         setSeat({
           label: (await LocationService.getSeatById(data.Seat)).data.attributes.Name,
           value: data.Seat,
         })
-        setSeatOrganizer({ label: data.Seat_Organizer, value: data.Seat_Organizer })
-        setStreetVillage({
-          label: (await LocationService.getStreetById(data.Street_Village)).data.attributes.Name,
-          value: data.Street_Village,
+        setLocalAuthority({
+          label: (await LocationService.getLocalAuthorityById(data.Local_Authority)).data.attributes
+            .Name,
+          value: data.Local_Authority,
         })
-        setStreetVillageOrganizer({
-          label: data.Street_Village_Organizer,
-          value: data.Street_Village_Organizer,
-        })
-        setTitle({ label: data.Title, value: data.Title })
         setWard({
           label: (await LocationService.getWardById(data.Ward)).data.attributes.Name,
           value: data.Ward,
         })
-        setWardOrganizer({ label: data.Ward_Organizer, value: data.Ward_Organizer })
-        setWhatsAppNo(data.WhatsApp_Number)
-        console.log(res)
+        setGnDivision({
+          label: (await LocationService.getGnDivisionById(data.GN_Division)).data.attributes.Name,
+          value: data.GN_Division,
+        })
+
+        setStreetVillage({
+          label: (await LocationService.getStreetById(data.Street_Village)).data.attributes.Name,
+          value: data.Street_Village,
+        })
       })
       .catch((err) => {
         console.log(err)
@@ -360,30 +380,25 @@ function AddEditVoter() {
     setLoading(true)
 
     const requiredData = {
-      Title: title.value,
+      Title: title?.value,
       Name: name,
       NIC_Number: nic,
-      Occupation: occupation.value,
+      Occupation: occupation?.value,
       Date_of_Birth: new Date(dob),
-      Gender: gender.value,
+      Gender: gender?.value,
       Address: address,
-      Civil_Status: civilStatus.value,
+      Civil_Status: civilStatus?.value,
       Mobile_Number_1: mobileNo,
-      District: district.value,
-      District_Organizer: districtOrganizer.value,
-      Seat: seat.value,
-      Seat_Organizer: seatOrganizer.value,
-      Local_Authority: localAuthority.value,
-      Local_Authority_Organizer: localAuthorityOrganizer.value,
-      Ward: ward.value,
-      Ward_Organizer: wardOrganizer.value,
-      GN_Division: gnDivision.value,
-      GN_Division_Organizer: gnDivisionOrganizer.value,
-      Street_Village: streetVillage.value,
-      Street_Village_Organizer: streetVillageOrganizer.value,
-      Ward_Organizer_Authentication: wardOrganizer.value,
-      Programme_Authentication: selectedProgramme.value,
-      Location_Authentication: location.value,
+      District: district?.value,
+      District_Organizer: districtOrganizer?.value,
+      Seat: seat?.value,
+      Seat_Organizer: seatOrganizer?.value,
+      Local_Authority: localAuthority?.value,
+      Ward: ward?.value,
+      GN_Division: gnDivision?.value,
+      Street_Village: streetVillage?.value,
+      Programme_Authentication: selectedProgramme?.value,
+      Location_Authentication: location?.value,
       Date_of_Programme_Conducted_Authentication: new Date(dop),
       Category_of_Programmes_Authentication: programmeDesc,
     }
@@ -413,6 +428,11 @@ function AddEditVoter() {
       Mobile_Number_2: mobileNoTwo,
       WhatsApp_Number: WhatsAppNo,
       Facebook_Link: fbLink,
+      Ward_Organizer_Authentication: wardOrganizer?.label,
+      Ward_Organizer: wardOrganizer?.value,
+      Local_Authority_Organizer: localAuthorityOrganizer?.value,
+      GN_Division_Organizer: gnDivisionOrganizer?.value,
+      Street_Village_Organizer: streetVillageOrganizer?.value,
     }
 
     votersService
@@ -451,14 +471,9 @@ function AddEditVoter() {
       Seat: seat.value,
       Seat_Organizer: seatOrganizer.value,
       Local_Authority: localAuthority.value,
-      Local_Authority_Organizer: localAuthorityOrganizer.value,
       Ward: ward.value,
-      Ward_Organizer: wardOrganizer.value,
       GN_Division: gnDivision.value,
-      GN_Division_Organizer: gnDivisionOrganizer.value,
       Street_Village: streetVillage.value,
-      Street_Village_Organizer: streetVillageOrganizer.value,
-      Ward_Organizer_Authentication: wardOrganizer.value,
       Programme_Authentication: selectedProgramme.value,
       Location_Authentication: location.value,
       Date_of_Programme_Conducted_Authentication: new Date(dop),
@@ -490,6 +505,11 @@ function AddEditVoter() {
       Mobile_Number_2: mobileNoTwo,
       WhatsApp_Number: WhatsAppNo,
       Facebook_Link: fbLink,
+      Ward_Organizer_Authentication: wardOrganizer?.label,
+      Ward_Organizer: wardOrganizer?.value,
+      Local_Authority_Organizer: localAuthorityOrganizer?.value,
+      GN_Division_Organizer: gnDivisionOrganizer?.value,
+      Street_Village_Organizer: streetVillageOrganizer?.value,
     }
 
     votersService
@@ -532,8 +552,6 @@ function AddEditVoter() {
     setWardOrganizer('')
     setGnDivisionOrganizer('')
   }
-
-  console.log(seatOrganizerOptions)
 
   return (
     <CCard className="mb-4">
@@ -615,12 +633,13 @@ function AddEditVoter() {
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
               Date of Birth <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
-            <DatePicker
+            <CFormInput
+              type="date"
               size="md"
               placeholder="Select..."
-              style={{ width: 'auto', display: 'block', marginBottom: 10, zIndex: 'no' }}
-              value={new Date(dob)}
-              onChange={(e) => setDob(e)}
+              style={{ width: 'auto', display: 'block', zIndex: 'no', width: '100%' }}
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
             />
           </CCol>
         </CRow>
@@ -1021,12 +1040,13 @@ function AddEditVoter() {
             <CFormLabel htmlFor="staticEmail" className="col-form-label">
               Date of Programme Conducted <span style={{ color: 'red' }}>*</span>
             </CFormLabel>
-            <DatePicker
+            <CFormInput
+              type="date"
               size="md"
               placeholder="Select..."
-              style={{ width: 400, display: 'block', marginBottom: 10 }}
-              value={new Date(dop)}
-              onChange={(e) => setDop(e)}
+              style={{ width: 'auto', display: 'block', zIndex: 'no', width: '100%' }}
+              value={dop}
+              onChange={(e) => setDop(e.target.value)}
             />
           </CCol>
         </CRow>

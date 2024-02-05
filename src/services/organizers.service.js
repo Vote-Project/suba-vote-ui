@@ -1,9 +1,17 @@
 import { axiosInstance } from '../common/AxiosInstance'
 
 export const OrganizersService = {
-  getOrganizers: async (page = 1, pageSize = 10) => {
+  getOrganizers: async (page = 1, pageSize = 10000000) => {
     try {
-      const response = await axiosInstance.get(`/organizers?pagination[page]=${page}&pagination[pageSize]=${pageSize}`)
+      const response = await axiosInstance.get(`/organizers?pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort[0]=createdAt:desc`)
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
+  getOrganizersByBirthday: async (birthday) => {
+    try {
+      const response = await axiosInstance.get(`/organizers?filters[Date_of_Birth][$eq]=${birthday}&sort[0]=createdAt:desc`)
       return response.data
     } catch (error) {
       throw error
@@ -11,7 +19,7 @@ export const OrganizersService = {
   },
   getOrganizersByOrganizerCategory: async (OrganizerCategory) => {
     try {
-      const response = await axiosInstance.get(`/organizers?filters[Organizer_Category][$eq]=${OrganizerCategory}`)
+      const response = await axiosInstance.get(`/organizers?filters[Organizer_Category][$eq]=${OrganizerCategory}&sort[0]=createdAt:desc`)
       return response.data
     } catch (error) {
       throw error
@@ -30,9 +38,9 @@ export const OrganizersService = {
     try {
       let query = ''
       filters.map((filter) => {
-        query = query + `filters[${filter.key}][$containsi]=${filter.value}`
+        query = query + `filters[${filter.key}][$containsi]=${filter.value}&`
       })
-      const response = await axiosInstance.get(`/organizers?pagination[page]=${page}&pagination[pageSize]=${pageSize}&${query}`)
+      const response = await axiosInstance.get(`/organizers?pagination[page]=${page}&pagination[pageSize]=${pageSize}&${query}sort[0]=createdAt:desc`)
       return response.data
     } catch (error) {
       throw error

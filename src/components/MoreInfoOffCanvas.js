@@ -7,6 +7,7 @@ import {
   COffcanvasTitle,
   CRow,
 } from '@coreui/react'
+import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { LocationService } from 'src/services/location.service'
 import { OrganizersService } from 'src/services/organizers.service'
@@ -30,24 +31,21 @@ function MoreInfoOffCanvas({ title, type = 'voter', data, isMoreInfo, setIsMoreI
 
 
   useEffect(() => {
-    console.log(data?.attributes.District)
     if(data) {
-      LocationService.getDistrictById(data?.attributes.District).then((res) => setDistrict(res.data.attributes.Name))
-      LocationService.getSeatById(data?.attributes.Seat).then((res) => setSeat(res.data.attributes.Name))
-      LocationService.getLocalAuthorityById(data?.attributes.GN_Division).then((res) => setLocalAuthority(res.data.attributes.Name))
-      LocationService.getWardById(data?.attributes.Ward).then((res) => setWard(res.data.attributes.Name))
-      LocationService.getStreetById(data?.attributes.Street_Village).then((res) => setStreetVillage(res.data.attributes.Name))
-      LocationService.getGnDivisionById(data?.attributes.GN_Division).then((res) => setGnDivision(res.data.attributes.Name))
+      LocationService.getDistrictById(data?.attributes.District).then((res) => setDistrict(res.data.attributes.Name)).catch(err=> console.log(err))
+      LocationService.getSeatById(data?.attributes.Seat).then((res) => setSeat(res.data.attributes.Name)).catch(err=> console.log(err))
+      LocationService.getLocalAuthorityById(data?.attributes.Local_Authority).then((res) => setLocalAuthority(res.data.attributes.Name)).catch(err=> console.log(err))
+      LocationService.getWardById(data?.attributes.Ward).then((res) => setWard(res.data.attributes.Name)).catch(err=> console.log(err))
+      LocationService.getStreetById(data?.attributes.Street_Village).then((res) => setStreetVillage(res.data.attributes.Name)).catch(err=> console.log(err))
+      LocationService.getGnDivisionById(data?.attributes.GN_Division).then((res) => setGnDivision(res.data.attributes.Name)).catch(err=> console.log(err))
       if(type == 'voter') {
-        OrganizersService.getOrganizer(data?.attributes.District_Organizer).then((res) => setDistrictOrganizer(res.data.attributes.Name))
-        OrganizersService.getOrganizer(data?.attributes.Street_Village_Organizer).then((res) => setStreetVillageOrganizer(res.data.attributes.Name))
-        OrganizersService.getOrganizer(data?.attributes.Seat_Organizer).then((res) => setSeatOrganizer(res.data.attributes.Name))
-        OrganizersService.getOrganizer(data?.attributes.Local_Authority_Organizer).then((res) => setLocalAuthorityOrganizer(res.data.attributes.Name))
-        OrganizersService.getOrganizer(data?.attributes.Ward_Organizer).then((res) => setWardOrganizer(res.data.attributes.Name))
-        OrganizersService.getOrganizer(data?.attributes.GN_Division_Organizer).then((res) => setGnDivisionOrganizer(res.data.attributes.Name))
+        OrganizersService.getOrganizer(data?.attributes.District_Organizer).then((res) => setDistrictOrganizer(res.data.attributes.Name)).catch(err=> console.log(err))
+        OrganizersService.getOrganizer(data?.attributes.Street_Village_Organizer).then((res) => setStreetVillageOrganizer(res.data.attributes.Name)).catch(err=> console.log(err))
+        OrganizersService.getOrganizer(data?.attributes.Seat_Organizer).then((res) => setSeatOrganizer(res.data.attributes.Name)).catch(err=> console.log(err))
+        OrganizersService.getOrganizer(data?.attributes.Local_Authority_Organizer).then((res) => setLocalAuthorityOrganizer(res.data.attributes.Name)).catch(err=> console.log(err))
+        OrganizersService.getOrganizer(data?.attributes.Ward_Organizer).then((res) => setWardOrganizer(res.data.attributes.Name)).catch(err=> console.log(err))
+        OrganizersService.getOrganizer(data?.attributes.GN_Division_Organizer).then((res) => setGnDivisionOrganizer(res.data.attributes.Name)).catch(err=> console.log(err))
       }
- 
-
     }
 
   }, [data])
@@ -88,7 +86,7 @@ function MoreInfoOffCanvas({ title, type = 'voter', data, isMoreInfo, setIsMoreI
         <hr />
         <CRow>
           <span style={{ fontWeight: 'bold' }}>Date_of_Birth</span>
-          <span>{data?.attributes.Date_of_Birth || '-'}</span>
+          <span>{moment(new Date(data?.attributes.Date_of_Birth)).format('DD-MM-YYYY') || '-'}</span>
         </CRow>
         <hr />
         <CRow>
@@ -257,7 +255,7 @@ function MoreInfoOffCanvas({ title, type = 'voter', data, isMoreInfo, setIsMoreI
             <hr />
             <CRow>
               <span style={{ fontWeight: 'bold' }}>Date of Program Conducted</span>
-              <span>{data?.attributes.Date_of_Programme_Conducted_Authentication || '-'}</span>
+              <span>{moment(new Date(data?.attributes.Date_of_Programme_Conducted_Authentication)).format('DD-MM-YYYY') || '-'}</span>
             </CRow>
             <hr />
             <CRow>
@@ -281,6 +279,16 @@ function MoreInfoOffCanvas({ title, type = 'voter', data, isMoreInfo, setIsMoreI
             <CRow>
               <span style={{ fontWeight: 'bold' }}>Political Background</span>
               <span>{data?.attributes.Political_Background || '-'}</span>
+            </CRow>
+            <hr />
+            <CRow>
+              <span style={{ fontWeight: 'bold' }}>Meeting Completed ?</span>
+              <span>{data?.attributes.Meeting_Complete ? 'Yes' : 'No'}</span>
+            </CRow>
+            <hr />
+            <CRow>
+              <span style={{ fontWeight: 'bold' }}>Meeting Completed Date</span>
+              <span>{data?.attributes.Meeting_Date || '-'}</span>
             </CRow>
           </>
         )}

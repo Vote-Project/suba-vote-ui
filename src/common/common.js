@@ -1,3 +1,6 @@
+import TimedOutModal from 'src/components/Modals/TimedOutModal'
+import React from 'react'
+
 export const jsonToSelectBox = (jsonArray, key, value) => {
   const selectArray = jsonArray.map((object) => {
     return { label: object[key], value: object[value || key] }
@@ -7,19 +10,21 @@ export const jsonToSelectBox = (jsonArray, key, value) => {
 }
 
 export function getNullOrUndefinedAttributes(data) {
-  const nullOrUndefinedAttributes = [];
+  const nullOrUndefinedAttributes = []
   for (const key in data) {
     if (data[key] === null || data[key] === undefined || data[key] === '') {
-      nullOrUndefinedAttributes.push(key);
+      nullOrUndefinedAttributes.push(key)
     }
   }
-  return nullOrUndefinedAttributes;
+  return nullOrUndefinedAttributes
 }
 
 export function removeUndisfinedValuesInArray(selectArray) {
-  const newData = selectArray.filter(function( element ) {
-    return element !== undefined;
- });
+  const newData = selectArray.filter(function (element) {
+    return element !== undefined
+  })
 
- return newData
+  return newData
 }
+
+export const triggerTimedOutModal = () => <TimedOutModal open={true} />

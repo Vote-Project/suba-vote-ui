@@ -24,27 +24,27 @@ function Counts() {
     
   return (
     <CCard className="mb-4">
-      <CCardBody>
-        <CRow>
-          <CCol md={6}>
+      <CCardBody style={{padding: 20}}>
+        <CRow xs={{ cols:2, gutter: 2 }} lg={{ cols: 2, gutter: 3}}>
+          <CCol>
             <div style={{ display: 'flex', justifyContent: 'center', gap: 20 }}>
-              <div style={{ backgroundColor: COLORS.MAIN, padding: 20, borderRadius: 50 }}>
-                <CIcon style={{ color: 'white', fontSize: "100px" }} icon={cilUser} size="3xl" ></CIcon>
+              <div className='icon_container' style={{ backgroundColor: COLORS.MAIN, borderRadius: 50 }}>
+                <CIcon style={{ color: 'white', fontSize: "100px" }} icon={cilUser} size="xxl" ></CIcon>
               </div>
               <div style={{}}>
-                <span style={{color: "gray", fontWeight: "bold"}}>Organizers</span> <br />
-                <span style={{ fontSize: '3em', fontWeight: 'bold' }}>{organizers}</span>
+                <span className='icon-text' style={{color: "gray", fontWeight: "bold"}}>Organizers</span> <br />
+                <span  className='icon-header-text' style={{ fontWeight: 'bold' }}>{organizers}</span>
               </div>
             </div>
           </CCol>
-          <CCol md={6}>
+          <CCol >
             <div style={{ display: 'flex', justifyContent: 'center', gap: 20 }}>
-              <div style={{ backgroundColor: COLORS.MAIN, padding: 20, borderRadius: 50 }}>
-                <CIcon style={{ color: 'white' }} icon={cilPeople} size="3xl"></CIcon>
+              <div className='icon_container' style={{ backgroundColor: COLORS.MAIN, borderRadius: 50 }}>
+                <CIcon style={{ color: 'white' }} icon={cilPeople} size="xxl"></CIcon>
               </div>
               <div style={{}}>
-                <span style={{color: "gray", fontWeight: "bold"}}>Voters</span> <br />
-                <span style={{ fontSize: '3em', fontWeight: 'bold' }}>{voters}</span>
+                <span className='icon-text' style={{color: "gray", fontWeight: "bold"}}>Voters</span> <br />
+                <span className='icon-header-text' style={{ fontWeight: 'bold' }}>{voters}</span>
               </div>
             </div>
           </CCol>

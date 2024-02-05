@@ -4,6 +4,8 @@ const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const OrganizersPage = React.lazy(() => import('./views/pages/main/orginizers/OrganizersPage'))
 const VotersPage = React.lazy(() => import('./views/pages/main/voters/VotersPage'))
 const ResportsPage = React.lazy(() => import('./views/pages/main/reports/ReportsPage'))
+const TasksDashboard = React.lazy(() => import('./views/pages/main/tasks/TasksDashboard'))
+const BirthdaysPage = React.lazy(() => import('./views/pages/main/birthdays/BirthdaysPage'))
 const AddEditVoter = React.lazy(() => import('./views/pages/main/voters/AddEditVoter'))
 const AddEditOrginizer = React.lazy(() => import('./views/pages/main/orginizers/AddEditOrginizer'))
 
@@ -69,6 +71,8 @@ const routes = [
     element: AddEditOrginizer,
   },
   { path: '/reports', exact: true, name: 'Reports', element: ResportsPage },
+  { path: '/tasks', exact: true, name: 'Tasks', element: TasksDashboard },
+  { path: '/birthdays', exact: true, name: 'Birthdays', element: BirthdaysPage },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },
