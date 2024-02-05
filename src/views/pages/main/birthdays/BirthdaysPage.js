@@ -26,6 +26,8 @@ import Loading from 'src/components/Loading'
 import EditBirthdayInfoModal from 'src/components/Modals/EditBirthdayInfoModal'
 import ErrorModal from 'src/components/Modals/ErrorModal'
 import NoDataArt from 'src/components/NoDataArt'
+import { OrganizersService } from 'src/services/organizers.service'
+import { votersService } from 'src/services/voters.service'
 
 function BirthdaysPage() {
   const navigate = useNavigate()
@@ -42,12 +44,59 @@ function BirthdaysPage() {
   
   const [voterList, setVoterList] = useState([])
   const [organizerList, setOrganizerList] = useState([])
+
+
+  useEffect(() => {
+    getOrganizers()
+    getVoters()
+  }, [])
+  
+
+  const getOrganizers = async () => {
+    setLoading(true)
+    OrganizersService.getOrganizersByBirthday(`${moment(new Date()).format('MM-DD')}`)
+    .then((res) => {
+      const data = res?.data
+      setMetaData(res.meta.pagination)
+      setOrganizerList(data)
+      setLoading(false)
+    })
+    .catch((err) => {
+      console.log(err)
+      setLoading(false)
+      if (err?.response?.status === 403) {
+        setOrganizerList([])
+        return
+      }
+      setErrorMsg(true)
+    })
+  }
+
+  const getVoters = async () => {
+    setLoading(true)
+    votersService.getVotorsByBirthday(`${moment(new Date()).format('MM-DD')}`)
+    .then((res) => {
+      const data = res?.data
+      setMetaData(res.meta.pagination)
+      setVoterList(data)
+      setLoading(false)
+    })
+    .catch((err) => {
+      console.log(err)
+      setLoading(false)
+      if (err?.response?.status === 403) {
+        setVoterList([])
+        return
+      }
+      setErrorMsg(true)
+    })
+  }
   return (
     <div>
-      <EditBirthdayInfoModal
+      {/* <EditBirthdayInfoModal
         open={isCreating}
         onOpen={(status) => setIsCreating(status)}
-      />
+      /> */}
       <ErrorModal
         open={errorMsg}
         onOpen={(value) => setErrorMsg(value)}
@@ -156,7 +205,7 @@ function BirthdaysPage() {
                 </CTableRow>
               </CTableHead>
               <CTableBody>
-                {voterList.map((item, key) => (
+                {organizerList.map((item, key) => (
                   <CTableRow
                     key={key}
                     style={{ cursor: 'pointer' }}

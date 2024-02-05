@@ -18,6 +18,14 @@ export const votersService = {
       throw error
     }
   },
+  getVotorsByBirthday: async (birthday) => {
+    try {
+      const response = await axiosInstance.get(`/voters?filters[Date_of_Birth][$eq]=${birthday}&sort[0]=createdAt:desc`)
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
 
   getVotersByFiltering: async (page = 1, pageSize = 10, filters) => {
     try {

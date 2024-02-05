@@ -17,11 +17,12 @@ import {
   CTableRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilPen, cilPeople, cilTrash } from '@coreui/icons'
+import { cilLocationPin, cilPen, cilPeople, cilTrash } from '@coreui/icons'
 import ErrorModal from './ErrorModal'
 import moment from 'moment'
 import { TasksService } from 'src/services/tasks.service'
 import EditOrganizerTask from './EditOrganizerTask'
+import LocationCanvas from '../LocationCanvas'
 
 function OrganizerTaskListModal({ open, onOpen, selectedMainID }) {
   const [errorMsg, setErrorMsg] = useState(false)
@@ -39,6 +40,7 @@ function OrganizerTaskListModal({ open, onOpen, selectedMainID }) {
   const [createType, setCreateType] = useState('add')
 
   const [selectedSubID, setSelectedSubID] = useState(null)
+  const [selectedOrgId, setSelectedOrgId] = useState(null)
 
   useEffect(() => {
     if (selectedMainID && open) {
@@ -94,6 +96,7 @@ function OrganizerTaskListModal({ open, onOpen, selectedMainID }) {
       aria-labelledby="VerticallyCenteredExample"
     >
       <CModalBody>
+        <LocationCanvas visibleLocation={selectedOrgId} setVisibleLocation={() => setSelectedOrgId(null)} orgID={selectedOrgId} />
         <ErrorModal
           open={errorMsg}
           onOpen={(value) => setErrorMsg(value)}
@@ -167,6 +170,17 @@ function OrganizerTaskListModal({ open, onOpen, selectedMainID }) {
                       }}
                       style={{ cursor: 'pointer', padding: '2px', paddingInline: '4px' }}
                     />
+                     <CIcon
+                      icon={cilLocationPin}
+                      size="xl"
+                      className="text-info"
+                      onClick={() => setSelectedOrgId(item?.attributes?.orId)}
+                      style={{
+                        cursor: 'pointer',
+                        padding: '2px',
+                        paddingInline: '4px',
+                 
+                      }}/>
                     <CIcon
                       icon={cilTrash}
                       size="xl"

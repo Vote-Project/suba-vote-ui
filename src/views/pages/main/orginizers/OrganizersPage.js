@@ -209,7 +209,7 @@ function OrganizersPage() {
                       setIsMoreInfo(true)
                     }}
                   >
-                    <CTableDataCell width={50}>{key + 1}</CTableDataCell>
+                    <CTableDataCell width={50}>{item?.id}</CTableDataCell>
                     <CTableDataCell width={150}>{item?.attributes?.NIC_Number}</CTableDataCell>
                     <CTableDataCell>{item?.attributes?.Name}</CTableDataCell>
                     <CTableDataCell width={150}>
