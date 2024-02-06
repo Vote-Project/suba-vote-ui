@@ -7,6 +7,8 @@ import {
   CCardHeader,
   CCol,
   CFormInput,
+  CFormLabel,
+  CFormTextarea,
   CPagination,
   CPaginationItem,
   CRow,
@@ -41,55 +43,57 @@ function BirthdaysPage() {
   const pageSize = 20
   const [metaData, setMetaData] = useState(null)
   const [isCreating, setIsCreating] = useState(false)
-  
+
   const [voterList, setVoterList] = useState([])
   const [organizerList, setOrganizerList] = useState([])
 
+  const [votersMsg, setVotersMsg] = useState("🎉 Happy Birthday to You! 🎂 Your vote is the greatest gift you can give to shape our future. Thank you for being an active participant in our democracy! Wishing you a day filled with joy and celebration. 🥳 From Name")
+  const [organizersMsg, setOrganizersMsg] = useState("🎉 Happy Birthday to an incredible organizer! 🎂 Your dedication and hard work make our events unforgettable. Here's to another year of bringing people together and making a difference. Wishing you a day as amazing as you are! 🥳 From Name")
 
   useEffect(() => {
     getOrganizers()
     getVoters()
   }, [])
-  
 
   const getOrganizers = async () => {
     setLoading(true)
     OrganizersService.getOrganizersByBirthday(`${moment(new Date()).format('MM-DD')}`)
-    .then((res) => {
-      const data = res?.data
-      setMetaData(res.meta.pagination)
-      setOrganizerList(data)
-      setLoading(false)
-    })
-    .catch((err) => {
-      console.log(err)
-      setLoading(false)
-      if (err?.response?.status === 403) {
-        setOrganizerList([])
-        return
-      }
-      setErrorMsg(true)
-    })
+      .then((res) => {
+        const data = res?.data
+        setMetaData(res.meta.pagination)
+        setOrganizerList(data)
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.log(err)
+        setLoading(false)
+        if (err?.response?.status === 403) {
+          setOrganizerList([])
+          return
+        }
+        setErrorMsg(true)
+      })
   }
 
   const getVoters = async () => {
     setLoading(true)
-    votersService.getVotorsByBirthday(`${moment(new Date()).format('MM-DD')}`)
-    .then((res) => {
-      const data = res?.data
-      setMetaData(res.meta.pagination)
-      setVoterList(data)
-      setLoading(false)
-    })
-    .catch((err) => {
-      console.log(err)
-      setLoading(false)
-      if (err?.response?.status === 403) {
-        setVoterList([])
-        return
-      }
-      setErrorMsg(true)
-    })
+    votersService
+      .getVotorsByBirthday(`${moment(new Date()).format('MM-DD')}`)
+      .then((res) => {
+        const data = res?.data
+        setMetaData(res.meta.pagination)
+        setVoterList(data)
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.log(err)
+        setLoading(false)
+        if (err?.response?.status === 403) {
+          setVoterList([])
+          return
+        }
+        setErrorMsg(true)
+      })
   }
   return (
     <div>
@@ -107,7 +111,6 @@ function BirthdaysPage() {
       <CCard className="mb-4">
         <CCardHeader style={{ display: 'flex', justifyContent: 'space-between' }}>
           <h5>Birthdays Managment</h5>
-         
         </CCardHeader>
         <CCardBody>
           <CRow className="mb-2">
@@ -135,20 +138,13 @@ function BirthdaysPage() {
               </CTableHead>
               <CTableBody>
                 {voterList.map((item, key) => (
-                  <CTableRow
-                    key={key}
-                    style={{ cursor: 'pointer' }}
-                  
-                  >
+                  <CTableRow key={key} style={{ cursor: 'pointer' }}>
                     <CTableDataCell width={50}>{key + 1}</CTableDataCell>
                     <CTableDataCell width={550}>{item?.attributes?.task}</CTableDataCell>
                     <CTableDataCell width={150}>
                       {moment(new Date(item?.attributes?.createdAt)).format('DD-MM-YYYY')}
                     </CTableDataCell>
                     <CTableDataCell width={150}>
-                  
-
-
                       <CIcon
                         icon={cilPen}
                         size="xl"
@@ -156,7 +152,6 @@ function BirthdaysPage() {
                         onClick={() => navigate(`/voters/edit/${item?.id}`)}
                         style={{ cursor: 'pointer', padding: '2px', paddingInline: '4px' }}
                       />
-                  
                     </CTableDataCell>
                   </CTableRow>
                 ))}
@@ -181,7 +176,7 @@ function BirthdaysPage() {
               </CPaginationItem>
             </CPagination>
           )}
-           <CRow className="mb-2">
+          <CRow className="mb-2">
             <span style={{ fontWeight: 'bold' }}>Organizers</span>
           </CRow>
           {loading ? (
@@ -206,20 +201,13 @@ function BirthdaysPage() {
               </CTableHead>
               <CTableBody>
                 {organizerList.map((item, key) => (
-                  <CTableRow
-                    key={key}
-                    style={{ cursor: 'pointer' }}
-                  
-                  >
+                  <CTableRow key={key} style={{ cursor: 'pointer' }}>
                     <CTableDataCell width={50}>{key + 1}</CTableDataCell>
                     <CTableDataCell width={550}>{item?.attributes?.task}</CTableDataCell>
                     <CTableDataCell width={150}>
                       {moment(new Date(item?.attributes?.createdAt)).format('DD-MM-YYYY')}
                     </CTableDataCell>
                     <CTableDataCell width={150}>
-                  
-
-
                       <CIcon
                         icon={cilPen}
                         size="xl"
@@ -227,7 +215,6 @@ function BirthdaysPage() {
                         onClick={() => navigate(`/voters/edit/${item?.id}`)}
                         style={{ cursor: 'pointer', padding: '2px', paddingInline: '4px' }}
                       />
-                  
                     </CTableDataCell>
                   </CTableRow>
                 ))}
@@ -252,6 +239,56 @@ function BirthdaysPage() {
               </CPaginationItem>
             </CPagination>
           )}
+
+          <div className="mt-4">
+            <hr />
+            <h3 className="mt-4">Birthday Campaigns</h3>
+            <CRow>
+              <CCol>
+                <CFormLabel htmlFor="columns-sel">
+                  Write the automatic message that you want to send for their birthdays:
+                </CFormLabel>
+                <CRow>
+                  <CCol>
+                    {' '}
+                    <CFormTextarea
+                      id="columns-sel"
+                      className="mb-4"
+                      floatingLabel="write voter's message here..."
+                      placeholder="write voter's message here..."
+                      value={votersMsg}
+                      style={{ height: '100px' }}
+                    />
+                  </CCol>
+                  <CCol>
+                    {' '}
+                    <CFormTextarea
+                      id="columns-sel"
+                      className="mb-4"
+                      floatingLabel="write organizer's message here..."
+                      placeholder="write organizer's message here..."
+                      value={organizersMsg}
+                      style={{ height: '100px' }}
+                    />
+                  </CCol>
+                </CRow>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol md={2} xs={6}>
+                <CButton
+                  disabled={loading}
+                  color="primary"
+                  style={{ width: '100%', backgroundColor: COLORS.MAIN, border: '0px' }}
+                  onClick={() => {
+                    window.location.reload(false)
+                  }}
+                >
+                  Save
+                </CButton>
+              </CCol>
+            </CRow>
+          </div>
         </CCardBody>
       </CCard>
       {/* <MoreInfoOffCanvas

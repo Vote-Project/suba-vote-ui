@@ -127,7 +127,7 @@ function ConsumerTasksCompleted() {
             open={errorMsg}
             onOpen={(value) => setErrorMsg(value)}
             title={'Failed Operation'}
-            description={MODAL_MSGES.ERROR_MSG}
+            description={MODAL_MSGES.NO_DATA_FOUND}
           />
           <CRow className="justify-content-center">
             <CCol md={8}>

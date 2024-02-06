@@ -196,7 +196,7 @@ function OrganizersPage() {
                   <CTableHeaderCell scope="col">Name</CTableHeaderCell>
                   <CTableHeaderCell scope="col">Contact No</CTableHeaderCell>
                   <CTableHeaderCell scope="col">Created Date</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Action</CTableHeaderCell>
+                  <CTableHeaderCell scope="col" style={{textAlign: 'center'}}>Action</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
               <CTableBody>
@@ -220,8 +220,8 @@ function OrganizersPage() {
                     <CTableDataCell width={150}>
                       {moment(new Date(item?.attributes?.createdAt)).format('DD-MM-YYYY')}
                     </CTableDataCell>
-                    <CTableDataCell width={150}>
-                      <CIcon
+                    <CTableDataCell width={150} style={{textAlign: 'center'}}>
+                      {/* <CIcon
                         icon={cilPeople}
                         size="xl"
                         className="text-info"
@@ -233,7 +233,7 @@ function OrganizersPage() {
                         size="xl"
                         className="text-info"
                         style={{ cursor: 'pointer', padding: '2px', paddingInline: '4px' }}
-                      />
+                      /> */}
                       <CIcon
                         icon={cilPen}
                         size="xl"

@@ -5,6 +5,7 @@ import {
   CCardHeader,
   CCol,
   CFormLabel,
+  CFormTextarea,
   CRow,
   CSpinner,
 } from '@coreui/react'
@@ -25,7 +26,6 @@ import Loading from 'src/components/Loading'
 import NoDataArt from 'src/components/NoDataArt'
 import { votersService } from 'src/services/voters.service'
 
-
 const INITIAL_VALUE = ''
 const sampleData = Array.from({ length: 50000 }, (_, index) => ({
   id: index,
@@ -40,7 +40,7 @@ const options = [
 ]
 
 function ReportsPage() {
-  const targetRef = useRef(null);
+  const targetRef = useRef(null)
 
   const [searchByCivilStatus, setSearchByCivilStatus] = useState(false)
 
@@ -177,10 +177,9 @@ function ReportsPage() {
 
   const scrollToTarget = () => {
     if (targetRef.current) {
-      targetRef.current.scrollIntoView({ behavior: 'smooth' });
+      targetRef.current.scrollIntoView({ behavior: 'smooth' })
     }
-  };
-
+  }
 
   const genarateReport = () => {
     setLoading(true)
@@ -219,8 +218,6 @@ function ReportsPage() {
       },
     ]
 
-
-
     if (selectedPersonType?.value.toLowerCase() == 'organizers') {
       OrganizersService.getOrganizersByFiltering(1, 10000000, filters)
         .then((res) => {
@@ -228,7 +225,7 @@ function ReportsPage() {
           console.log(res)
           setData(res.data)
           setLoading(false)
-          scrollToTarget();
+          scrollToTarget()
         })
         .catch((err) => {
           console.log(err)
@@ -238,7 +235,7 @@ function ReportsPage() {
           //   return
           // }
           // setErrorMsg(true)
-          scrollToTarget();
+          scrollToTarget()
         })
     } else {
       votersService
@@ -248,12 +245,12 @@ function ReportsPage() {
           console.log(res)
           setData(res.data)
           setLoading(false)
-          scrollToTarget();
+          scrollToTarget()
         })
         .catch((err) => {
           console.log(err)
           setLoading(false)
-          scrollToTarget();
+          scrollToTarget()
           // if (err?.response?.status === 403) {
           //   setOrganizersList([])
           //   return
@@ -510,7 +507,6 @@ function ReportsPage() {
             className="mt-4 gap-1 justify-content-end"
             style={{ position: 'sticky', bottom: '1rem', alignSelf: 'flex-end' }}
           >
-     
             <CCol md={2}>
               <CButton
                 disabled={loading}
@@ -535,20 +531,56 @@ function ReportsPage() {
             </CCol>
           </CRow>
           <div ref={targetRef}>
-          {!loading && data && data?.length != 0 && (
-            <CRow className="mt-4">
-              <hr />
-              <PdfDocument data={data} columns={selectedOption} type={selectedPersonType?.value.toLowerCase()} />
-            </CRow>
-          )}
-          {!loading && data?.length == 0 && (
-            <>
-              <hr />
-              <NoDataArt visible={true} description={MODAL_MSGES.SEARCH_NO_DATA_DOUND} size={10} />
-            </>
-          )}
-          {loading && <Loading loading={loading} />}
+            {!loading && data && data?.length != 0 && (
+              <CRow className="mt-4">
+                <hr />
+                <PdfDocument
+                  data={data}
+                  columns={selectedOption}
+                  type={selectedPersonType?.value.toLowerCase()}
+                />
+              </CRow>
+            )}
+            {!loading && data?.length == 0 && (
+              <>
+                <hr />
+                <NoDataArt
+                  visible={true}
+                  description={MODAL_MSGES.SEARCH_NO_DATA_DOUND}
+                  size={10}
+                />
+              </>
+            )}
+            {loading && <Loading loading={loading} />}
           </div>
+          {!loading && data && data?.length != 0 && (
+            <div className="mt-4">
+              <hr />
+              <h3  className="mt-4">Message Campaigns</h3>
+              <CRow>
+                <CCol>
+                  <CFormLabel htmlFor="columns-sel">
+                    Write a message that you want send for above selected records:
+                  </CFormLabel>
+                  <CFormTextarea id="columns-sel" className="mb-4" placeholder='write here...' style={{height: '100px'}}/>
+                </CCol>
+              </CRow>
+              <CRow>
+                <CCol md={2} xs={6}>
+                <CButton
+                disabled={loading}
+                color="primary"
+                style={{ width: '100%', backgroundColor: COLORS.MAIN, border: '0px' }}
+                onClick={() => {
+                  window.location.reload(false)
+                }}
+              >
+                Send Message
+              </CButton>
+                </CCol>
+              </CRow>
+            </div>
+          )}
         </CCardBody>
       </CCard>
     </div>
