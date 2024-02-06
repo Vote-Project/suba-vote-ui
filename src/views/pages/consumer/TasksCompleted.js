@@ -27,18 +27,23 @@ import ErrorModal from 'src/components/Modals/ErrorModal'
 import Loading from 'src/components/Loading'
 
 function ConsumerTasksCompleted() {
+  const [mainTaskList, setMainTaskList] = useState([])
   const [taskList, setTaskList] = useState([])
   const [errorMsg, setErrorMsg] = useState(false)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    getTaskList()
+    getMainTaskList()
   }, [])
+
+  useEffect(() => {
+    getTaskList()
+  }, [mainTaskList])
 
   const getTaskList = async () => {
     setLoading(true)
     await TasksService.getSubTasksByOrgID(TokenService.getUser()?.userData.id)
-      .then((res) => {
+      .then(async (res) => {
         const data = res?.data
         console.log(data)
         const filteredData = data.filter((item) => {
@@ -50,7 +55,17 @@ function ConsumerTasksCompleted() {
             return item
           }
         })
-        setTaskList(filteredData)
+
+        const updatedData = await Promise.all(filteredData.map(async (sub) => {
+          mainTaskList.forEach(item => {
+            if (sub.attributes.Task === item.id) {
+              sub.attributes.Task = item.attributes.task;
+            }
+          });
+          return sub;
+        }));
+        
+        setTaskList(updatedData)
         setLoading(false)
       })
       .catch((err) => {
@@ -58,6 +73,28 @@ function ConsumerTasksCompleted() {
         setLoading(false)
         if (err?.response?.status === 403) {
           setTaskList([])
+          return
+        }
+        setErrorMsg(true)
+      })
+  }
+
+  const getMainTaskList = async () => {
+    setLoading(true)
+    await TasksService.getMainTasks()
+      .then(async (res) => {
+        const data = res?.data
+        console.log(data)
+
+        setMainTaskList(data)
+
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.log(err)
+        setLoading(false)
+        if (err?.response?.status === 403) {
+          setMainTaskList([])
           return
         }
         setErrorMsg(true)
@@ -129,14 +166,28 @@ function ConsumerTasksCompleted() {
                         ) : (
                           <CListGroup>
                             {taskList.map((item, key) => (
-                              <CListGroupItem
-                                key={key}
-                                style={{ display: 'flex', justifyContent: 'space-between' }}
-                              >
-                                <span style={{textAlign: 'left'}}>{item?.attributes?.description}</span>
-                                {item?.attributes?.Status == "Successes" && <span style={{color: 'green', textAlign: 'right'}}>Completed</span>}
-                                {item?.attributes?.Status == "Partial-Successes" && <span style={{color: 'orange', textAlign: 'right'}}>Patially Completed</span>}
-                                {item?.attributes?.Status == "Un-Successes" && <span style={{color: COLORS.DANGER_BTN, textAlign: 'right'}}>Not Completed</span>}
+                              <CListGroupItem key={key}>
+                               <div style={{textAlign: 'start', fontWeight: 'bold'}}>{item?.attributes?.Task}</div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                  <span style={{ textAlign: 'left' }}>
+                                    {item?.attributes?.description}
+                                  </span>
+                                  {item?.attributes?.Status == 'Successes' && (
+                                    <span style={{ color: 'green', textAlign: 'right' }}>
+                                      Completed
+                                    </span>
+                                  )}
+                                  {item?.attributes?.Status == 'Partial-Successes' && (
+                                    <span style={{ color: 'orange', textAlign: 'right' }}>
+                                      Patially Completed
+                                    </span>
+                                  )}
+                                  {item?.attributes?.Status == 'Un-Successes' && (
+                                    <span style={{ color: COLORS.DANGER_BTN, textAlign: 'right' }}>
+                                      Not Completed
+                                    </span>
+                                  )}
+                                </div>
                               </CListGroupItem>
                             ))}
                           </CListGroup>

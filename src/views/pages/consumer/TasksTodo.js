@@ -27,20 +27,52 @@ import TokenService from 'src/services/TokenService'
 import NoDataArt from 'src/components/NoDataArt'
 import ErrorModal from 'src/components/Modals/ErrorModal'
 import Loading from 'src/components/Loading'
+import TodoActionsCanvas from 'src/components/TodoActionsCanvas'
 
 function ConsumerTasksTodo() {
+  const [mainTaskList, setMainTaskList] = useState([])
   const [taskList, setTaskList] = useState([])
   const [errorMsg, setErrorMsg] = useState(false)
   const [loading, setLoading] = useState(false)
 
+  const [page, setPage] = useState(1)
+  const [visibleCanvas, setVisibleCanvas] = useState(false)
+  const [selectedID, setSelectedID] = useState(null)
+
+  useEffect(() => {
+    getMainTaskList()
+  }, [])
+
   useEffect(() => {
     getTaskList()
-  }, [])
+  }, [mainTaskList])
+
+  const getMainTaskList = async () => {
+    setLoading(true)
+    await TasksService.getMainTasks()
+      .then(async (res) => {
+        const data = res?.data
+        console.log(data)
+
+        setMainTaskList(data)
+        
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.log(err)
+        setLoading(false)
+        if (err?.response?.status === 403) {
+          setMainTaskList([])
+          return
+        }
+        setErrorMsg(true)
+      })
+  }
 
   const getTaskList = async () => {
     setLoading(true)
     await TasksService.getSubTasksByOrgID(TokenService.getUser()?.userData.id)
-      .then((res) => {
+      .then(async (res) => {
         const data = res?.data
         console.log(data)
         const filteredData = data.filter((item) => {
@@ -48,7 +80,19 @@ function ConsumerTasksTodo() {
             return item
           }
         })
-        setTaskList(filteredData)
+
+        const updatedData = await Promise.all(filteredData.map(async (sub) => {
+          mainTaskList.forEach(item => {
+            if (sub.attributes.Task === item.id) {
+              sub.attributes.Task = item.attributes.task;
+            }
+          });
+          return sub;
+        }));
+
+        console.log(updatedData)
+
+        setTaskList(updatedData)
         setLoading(false)
       })
       .catch((err) => {
@@ -83,6 +127,16 @@ function ConsumerTasksTodo() {
         className="min-vh-100 d-flex flex-row align-items-center"
         style={{ background: `linear-gradient(${COLORS.MAIN}, ${COLORS.MID_LIGHT})` }}
       >
+        <TodoActionsCanvas
+          visible={visibleCanvas}
+          setVisible={(status) => setVisibleCanvas(status)}
+          id={selectedID}
+          page={page}
+          setAction={(status) => {
+            setVisibleCanvas(false)
+            updateStatus(selectedID, status)
+          }}
+        />
         <CContainer>
           <ErrorModal
             open={errorMsg}
@@ -93,97 +147,26 @@ function ConsumerTasksTodo() {
           <CRow className="justify-content-center">
             <CCol md={8}>
               <CCardGroup>
-                <CCard
-                  className="p-4"
-                  style={{ borderRadius: '20px', boxShadow: '1px 1px 15px black' }}
-                >
+                <CCard style={{ borderRadius: '20px', boxShadow: '1px 1px 15px black' }}>
                   <CCardBody style={{ alignSelf: 'center', textAlign: 'center' }}>
-                    <div style={{ alignSelf: 'center', textAlign: 'center' }}>
-                      <CImage
-                        src={logo}
-                        style={{ alignSelf: 'center', textAlign: 'center' }}
-                        height={70}
-                      />
-                      <p style={{ color: COLORS.MID_LIGHT, fontWeight: 'bold' }}>
-                        Tasks Management - Todo
+                    <div className="p-4">
+                      <div style={{ alignSelf: 'center', textAlign: 'center' }}>
+                        <CImage
+                          src={logo}
+                          style={{ alignSelf: 'center', textAlign: 'center' }}
+                          height={70}
+                        />
+                        <p style={{ color: COLORS.MID_LIGHT, fontWeight: 'bold' }}>
+                          Tasks Management - Todo
+                        </p>
+                      </div>
+                      <p>
+                        Stay organized and on top of your day with our task management feature!
+                        Easily track, and complete your to-do list on the go. Never miss a beat with
+                        our intuitive task system.
                       </p>
+                      <p>(Click tasks to perform actions)</p>
                     </div>
-                    <p>
-                      Stay organized and on top of your day with our task management feature! Easily
-                      track, and complete your to-do list on the go. Never miss a beat with our
-                      intuitive task system.
-                    </p>
-
-                    <CRow className="mb-2">
-                      <CCol style={{ textAlign: 'end' }}>
-                        <CPopover
-                          content={
-                            <>
-                              <div>
-                              <div
-                                  style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    gap: 35,
-                                  }}
-                                >
-                                  <span className="material-symbols-outlined">refresh</span>
-                                  <p style={{ textAlign: 'start' }}>Revert Task</p>
-                                </div>
-                                <div
-                                  style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    gap: 35,
-                                  }}
-                                >
-                                  <span className="material-symbols-outlined">play_circle</span>
-                                  <p style={{ textAlign: 'start' }}>Start Task</p>
-                                </div>
-                                <div
-                                  style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    gap: 35,
-                                  }}
-                                >
-                                  <span className="material-symbols-outlined">check_circle</span>
-                                  <p style={{ textAlign: 'start' }}>Complete</p>
-                                </div>
-                                <div
-                                  style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    gap: 35,
-                                  }}
-                                >
-                                  <span className="material-symbols-outlined" >flaky</span>
-                                  <p style={{ textAlign: 'start' }}>Partially Complete</p>
-                                </div>
-                                <div
-                                  style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    gap: 35,
-                                  }}
-                                >
-                                  <span className="material-symbols-outlined" style={{color: COLORS.DANGER_BTN}}>cancel</span>
-                                  <p style={{ textAlign: 'start' }}>Cannot Complete</p>
-                                </div>
-                              </div>
-                            </>
-                          }
-                          placement="top"
-                        >
-                          <span
-                            className="material-symbols-outlined"
-                            style={{ cursor: 'pointer', color: COLORS.MAIN, marginRight: 18 }}
-                          >
-                            info
-                          </span>
-                        </CPopover>
-                      </CCol>
-                    </CRow>
 
                     <CRow>
                       <CCol>
@@ -200,53 +183,29 @@ function ConsumerTasksTodo() {
                             {taskList.map((item, key) => (
                               <CListGroupItem
                                 key={key}
-                                style={{ display: 'flex', justifyContent: 'space-between' }}
+                                onClick={() => {
+                                  setPage(item?.attributes?.Status == 'Initiate' ? 1 : 2)
+                                  setSelectedID(item?.id)
+                                  setVisibleCanvas(true)
+                                }}
                               >
-                                <span style={{textAlign: 'left'}}>{item?.attributes?.description}</span>
-                                <div>
-                                  {' '}
-                                  {item?.attributes?.Status == 'Initiate' ? (
-                                    <>
-                                      <span
-                                        className="material-symbols-outlined"
-                                        onClick={() => updateStatus(item?.id, 'In-progress')}
-                                        style={{ cursor: 'pointer' }}
-                                      >
-                                        play_circle
-                                      </span>
-                                    </>
-                                  ) : (
-                                    <>
-                                       <span
-                                        className="material-symbols-outlined"
-                                        onClick={() => updateStatus(item?.id, 'Initiate')}
-                                        style={{ cursor: 'pointer' }}
-                                      >
-                                        refresh
-                                      </span>
-                                      <span
-                                        className="material-symbols-outlined"
-                                        onClick={() => updateStatus(item?.id, 'Successes')}
-                                        style={{ cursor: 'pointer' }}
-                                      >
-                                        check_circle
-                                      </span>
-                                      <span
-                                        className="material-symbols-outlined"
-                                        onClick={() => updateStatus(item?.id, 'Partial-Successes')}
-                                        style={{ cursor: 'pointer' }}
-                                      >
-                                        flaky
-                                      </span>
-                                      <span
-                                        className="material-symbols-outlined"
-                                        onClick={() => updateStatus(item?.id, 'Un-Successes')}
-                                        style={{ cursor: 'pointer', color: COLORS.DANGER_BTN }}
-                                      >
-                                        cancel
-                                      </span>
-                                    </>
-                                  )}
+                                <div style={{textAlign: 'start', fontWeight: 'bold'}}>{item?.attributes?.Task}</div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                  <span style={{ textAlign: 'left' }}>
+                                    {item?.attributes?.description}
+                                  </span>
+                                  <div>
+                                    {' '}
+                                    {item?.attributes?.Status == 'Initiate' ? (
+                                      <>
+                                        <span>Not Started</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <span style={{ color: 'orange' }}>In-Progress</span>
+                                      </>
+                                    )}
+                                  </div>
                                 </div>
                               </CListGroupItem>
                             ))}
