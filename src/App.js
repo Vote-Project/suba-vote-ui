@@ -125,7 +125,7 @@ function App() {
           <Route
             path="*"
             name="Dashboard"
-            element={userLogin && loggerType == 'admin' ? <DefaultLayout /> : <Login />}
+            element={userLogin ? loggerType == 'admin' ? <DefaultLayout /> : <ConsumerDashboard /> : <Login />}
           />
         </Routes>
       </Suspense>
