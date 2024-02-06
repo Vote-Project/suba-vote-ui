@@ -12,7 +12,7 @@ import {
 import React from 'react'
 import { COLORS } from 'src/common/const'
 
-function TodoActionsCanvas({ visible, setVisible, id = null, page = 1, setAction }) {
+function TodoActionsCanvas({ visible, setVisible, taskDetails = null, page = 1, setAction }) {
   return (
     <COffcanvas
       backdrop={true}
@@ -27,6 +27,9 @@ function TodoActionsCanvas({ visible, setVisible, id = null, page = 1, setAction
         <CCloseButton className="text-reset" onClick={() => setVisible(false)} />
       </COffcanvasHeader>
       <COffcanvasBody>
+        <CRow className='mb-3'>
+            <span>{taskDetails?.attributes?.Task} - {taskDetails?.attributes?.description}</span>
+        </CRow>
         <CRow>
           {page == 1 ? (
             <CCol>
@@ -75,7 +78,7 @@ function TodoActionsCanvas({ visible, setVisible, id = null, page = 1, setAction
                     refresh
                   </span>
                   <div>
-                    <span className="mt-3 fs-5" style={{ fontWeight: 'bold' }}>
+                    <span className="mt-3 fs-6" style={{ fontWeight: 'bold' }}>
                     Revert Task
                     </span>
                   </div>
@@ -103,7 +106,7 @@ function TodoActionsCanvas({ visible, setVisible, id = null, page = 1, setAction
                     check_circle
                   </span>
                   <div>
-                    <span className="mt-3 fs-5" style={{ fontWeight: 'bold' }}>
+                    <span className="mt-3 fs-6" style={{ fontWeight: 'bold' }}>
                     Complete Task
                     </span>
                   </div>
@@ -133,7 +136,7 @@ function TodoActionsCanvas({ visible, setVisible, id = null, page = 1, setAction
                     cancel
                   </span>
                   <div>
-                    <span className="mt-3 fs-5" style={{ fontWeight: 'bold' }}>
+                    <span className="mt-3 fs-6" style={{ fontWeight: 'bold' }}>
                       Cannot Complete
                     </span>
                   </div>
@@ -159,7 +162,7 @@ function TodoActionsCanvas({ visible, setVisible, id = null, page = 1, setAction
                     flaky
                   </span>
                   <div>
-                    <span className="mt-3 fs-5" style={{ fontWeight: 'bold' }}>
+                    <span className="mt-3 fs-6" style={{ fontWeight: 'bold' }}>
                       Partially Complete
                     </span>
                   </div>

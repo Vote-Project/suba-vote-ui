@@ -191,7 +191,7 @@ function OrganizersPage() {
             <CTable hover responsive small>
               <CTableHead color="light">
                 <CTableRow>
-                  <CTableHeaderCell scope="col">#</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">ORG ID</CTableHeaderCell>
                   <CTableHeaderCell scope="col">NIC</CTableHeaderCell>
                   <CTableHeaderCell scope="col">Name</CTableHeaderCell>
                   <CTableHeaderCell scope="col">Contact No</CTableHeaderCell>

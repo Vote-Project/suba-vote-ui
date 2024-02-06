@@ -37,7 +37,7 @@ function ConsumerTasksTodo() {
 
   const [page, setPage] = useState(1)
   const [visibleCanvas, setVisibleCanvas] = useState(false)
-  const [selectedID, setSelectedID] = useState(null)
+  const [selectedItem, setSelectedItem] = useState(null)
 
   useEffect(() => {
     getMainTaskList()
@@ -130,11 +130,11 @@ function ConsumerTasksTodo() {
         <TodoActionsCanvas
           visible={visibleCanvas}
           setVisible={(status) => setVisibleCanvas(status)}
-          id={selectedID}
+          taskDetails={selectedItem}
           page={page}
           setAction={(status) => {
             setVisibleCanvas(false)
-            updateStatus(selectedID, status)
+            updateStatus(selectedItem.id, status)
           }}
         />
         <CContainer>
@@ -185,7 +185,7 @@ function ConsumerTasksTodo() {
                                 key={key}
                                 onClick={() => {
                                   setPage(item?.attributes?.Status == 'Initiate' ? 1 : 2)
-                                  setSelectedID(item?.id)
+                                  setSelectedItem(item)
                                   setVisibleCanvas(true)
                                 }}
                               >
