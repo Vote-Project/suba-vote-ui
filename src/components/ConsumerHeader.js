@@ -33,7 +33,7 @@ const ConsumerHeader = () => {
  
 
         <CHeaderNav className="ms-3">
-          <AppHeaderDropdown />
+          <AppHeaderDropdown consumer={true} />
         </CHeaderNav>
       </CContainer>
     

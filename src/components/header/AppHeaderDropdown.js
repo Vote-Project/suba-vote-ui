@@ -9,18 +9,20 @@ import {
   CDropdownMenu,
   CDropdownToggle,
 } from '@coreui/react'
-import { cilLockLocked, cilUser, cilEnvelopeClosed } from '@coreui/icons'
+import { cilLockLocked, cilUser, cilEnvelopeClosed, cilBadge } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import avatar8 from './../../assets/images/avatars/8.jpg'
 import TokenService from 'src/services/TokenService'
 import { COLORS } from 'src/common/const'
 import { AuthService } from 'src/services/auth.service'
 
-const AppHeaderDropdown = (consumer = false) => {
+const AppHeaderDropdown = ({consumer = false}) => {
   const logOut = () => {
     AuthService.logout()
     window.location.reload(false)
   }
+
+  console.log(TokenService.getOrganizerName())
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
@@ -38,6 +40,21 @@ const AppHeaderDropdown = (consumer = false) => {
             <CDropdownItem>
               <CIcon icon={cilEnvelopeClosed} className="me-2" />
               {TokenService.getEmail()}
+            </CDropdownItem>
+            <CDropdownDivider />
+          </>
+        )}
+
+{consumer && (
+          <>
+            {' '}
+            <CDropdownItem>
+              <CIcon icon={cilUser} className="me-2" />
+              {TokenService.getOrganizerName()}
+            </CDropdownItem>
+            <CDropdownItem>
+              <CIcon icon={cilBadge} className="me-2" />
+              {TokenService.getOrganizerNic()}
             </CDropdownItem>
             <CDropdownDivider />
           </>

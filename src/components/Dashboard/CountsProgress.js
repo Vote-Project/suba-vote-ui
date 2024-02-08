@@ -90,9 +90,9 @@ function CountsProgress() {
               </div>
             </div>
             <div className="progress-group-bars">
-              <CProgress thin color="warning" className='mb-2' height={7} value={votMales} />
+              <CProgress thin color="warning" className='mb-2' height={12} value={votMales} />
              
-              <CProgress thin color="danger" height={7} value={orgMales} />
+              <CProgress thin color="danger" height={12} value={orgMales} />
               <div className="ms-auto fw-semibold" style={{ textAlign: 'end' }}>
                 {orgMales.toFixed(2)}%
               </div>
@@ -107,9 +107,9 @@ function CountsProgress() {
               </div>
             </div>
             <div className="progress-group-bars">
-              <CProgress thin color="warning" className='mb-2' height={7} value={votFemales} />
+              <CProgress thin color="warning" className='mb-2' height={12} value={votFemales} />
             
-              <CProgress thin color="danger" height={7} value={orgFemales} />
+              <CProgress thin color="danger" height={12} value={orgFemales} />
               <div className="ms-auto fw-semibold" style={{ textAlign: 'end' }}>
                 {orgFemales.toFixed(2)}%
               </div>

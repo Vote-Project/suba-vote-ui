@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom'
 import { COLORS } from 'src/common/const'
 import CorrectIconAnimation from 'src/assets/other/verified.gif'
 
-function WarningModal({ title, description, open, onOpen, okay }) {
+function WarningModal({ title, description, open, onOpen, okay, buttonTitle = 'Download' }) {
   const navigate = useNavigate()
   return (
     <CModal
@@ -49,7 +49,7 @@ function WarningModal({ title, description, open, onOpen, okay }) {
               onOpen(false)
             }}
           >
-            Download
+            {buttonTitle}
           </CButton>
       </CModalFooter>
     </CModal>

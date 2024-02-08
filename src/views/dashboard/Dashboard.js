@@ -55,6 +55,9 @@ import WidgetsBrand from '../widgets/WidgetsBrand'
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
 import Counts from 'src/components/Dashboard/Counts'
 import CountsProgress from 'src/components/Dashboard/CountsProgress'
+import BarChart from 'src/components/Dashboard/BarChartVoters'
+import BarChartVoters from 'src/components/Dashboard/BarChartVoters'
+import BarChartOrganizers from 'src/components/Dashboard/BarChartOrganizers'
 
 const Dashboard = () => {
   const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
@@ -188,6 +191,22 @@ const Dashboard = () => {
           <CountsProgress />
         </CCol>
       </CRow>
+      <CRow>
+        <CCol md={6}>
+          <CCard className="mb-4">
+            <CCardBody>
+              <BarChartVoters />
+            </CCardBody>
+          </CCard>
+        </CCol>
+        <CCol md={6}>
+          <CCard className="mb-4">
+            <CCardBody>
+              <BarChartOrganizers />
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
       {/* <WidgetsDropdown /> */}
       <CCard className="mb-4">
         <CCardBody>
@@ -317,8 +336,6 @@ const Dashboard = () => {
       </CCard>
 
       <WidgetsBrand withCharts />
-
-      
     </>
   )
 }

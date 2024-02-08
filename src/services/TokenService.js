@@ -27,6 +27,14 @@ const getUsername = () => {
   return JSON.parse(localStorage.getItem(localStorageName))?.user?.username;
 };
 
+const getOrganizerName = () => {
+  return JSON.parse(localStorage.getItem(localStorageName))?.userData?.Name;
+};
+
+const getOrganizerNic = () => {
+  return JSON.parse(localStorage.getItem(localStorageName))?.userData?.NIC_Number;
+};
+
 const getEmail = () => {
   return JSON.parse(localStorage.getItem(localStorageName))?.user?.email;
 };
@@ -72,7 +80,9 @@ const TokenService = {
   getUserLevel,
   getEmail,
   getClientDistricts,
-  getTokenDetails
+  getTokenDetails,
+  getOrganizerName,
+  getOrganizerNic
 };
 
 export default TokenService;

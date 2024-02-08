@@ -53,30 +53,39 @@ function ConsumerDashboard() {
                           style={{ border: `solid ${COLORS.MAIN}` }}
                           onClick={() => navigate('/consumer/tasks')}
                         >
-                          <CCardBody>
+                          <CCardBody style={{display: 'flex', justifyContent: 'center', gap: '20px'}}>
                             <span
                               className="material-symbols-outlined"
                               style={{ color: COLORS.MAIN, fontSize: '4em' }}
                             >
                               library_add_check
                             </span>
-                            <CCardTitle>Tasks</CCardTitle>
+                            <CCardTitle className='pt-3'>Tasks Management</CCardTitle>
+                          </CCardBody>
+                        </CCard>
+                      </CCol>
+                     
+                    </CRow>
+                    <CRow>
+                    <CCol>
+                        <CCard
+                          className="dash-card mb-3 p-3"
+                          style={{ border: `solid ${COLORS.MAIN}` }}
+                        >
+                          <CCardBody>
+                         
+                            <CCardTitle className='fs-6'>Start Work</CCardTitle>
                           </CCardBody>
                         </CCard>
                       </CCol>
                       <CCol>
                         <CCard
-                          className="dash-card mb-3 p-4"
+                          className="dash-card mb-3 p-3"
                           style={{ border: `solid ${COLORS.MAIN}` }}
                         >
                           <CCardBody>
-                            <span
-                              className="material-symbols-outlined"
-                              style={{ color: COLORS.MAIN, fontSize: '4em' }}
-                            >
-                              share_location
-                            </span>
-                            <CCardTitle>Tracking</CCardTitle>
+                      
+                            <CCardTitle className='fs-6'>Finish Work</CCardTitle>
                           </CCardBody>
                         </CCard>
                       </CCol>

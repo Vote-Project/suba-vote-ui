@@ -105,7 +105,7 @@ function ConsumerTasks() {
                     <CRow className="mt-5">
                       <CCol>
                         <CCard
-                          className=" mb-3 p-4"
+                          className="dash-card mb-3 p-4"
                           style={{ border: `solid green` }}
                           onClick={() => navigate('/consumer/tasks/completed')}
                         >
@@ -135,7 +135,7 @@ function ConsumerTasks() {
                       </CCol>
                       <CCol>
                         <CCard
-                          className=" mb-3 p-4"
+                          className="dash-card mb-3 p-4"
                           onClick={() => navigate('/consumer/tasks/todo')}
                           style={{ border: `solid ${COLORS.DANGER_BTN}` }}
                         >

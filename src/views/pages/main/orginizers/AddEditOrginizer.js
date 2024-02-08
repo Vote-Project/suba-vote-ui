@@ -270,6 +270,17 @@ function AddEditOrganizer() {
       Meeting_Complete: isMeetingComplete,
     }
 
+    if (/\s/.test(requiredData.NIC_Number)) {
+      setIsAlert(true)
+      setAlertMessage(
+        <div>
+          <p>Cannot include spaces for NIC number</p>
+        </div>
+      )
+      setLoading(false)
+      return
+    }
+
     const result = getNullOrUndefinedAttributes(requiredData)
 
     if (result.length > 0) {
@@ -337,6 +348,17 @@ function AddEditOrganizer() {
       Organizer_Category: organizerCategory.value,
       Level_of_Strength: levelOfStrength.value,
       Meeting_Complete: isMeetingComplete,
+    }
+
+    if (/\s/.test(requiredData.NIC_Number)) {
+      setIsAlert(true)
+      setAlertMessage(
+        <div>
+          <p>Cannot include spaces for NIC number</p>
+        </div>
+      )
+      setLoading(false)
+      return
     }
 
     const result = getNullOrUndefinedAttributes(requiredData)

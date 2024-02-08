@@ -138,6 +138,9 @@ function EditOrganizerTask({ open, onOpen, selectedMainID, reload, type = 'add' 
       backdrop="static"
       aria-labelledby="VerticallyCenteredExample"
     >
+      <CModalHeader>
+        <CModalTitle>Create Organizer Task</CModalTitle>
+      </CModalHeader>
       <CModalBody className="m-1">
         {type != 'edit' && (
           <CRow>
@@ -156,7 +159,8 @@ function EditOrganizerTask({ open, onOpen, selectedMainID, reload, type = 'add' 
             </CCol>
           </CRow>
         )}
-        <CRow>
+        <CRow className='mt-2 mb-2'>
+          <CCol>
           <CFormLabel htmlFor="staticEmail" className="col-form-label">
             Sub Task <span style={{ color: 'red' }}>*</span>
           </CFormLabel>
@@ -167,6 +171,7 @@ function EditOrganizerTask({ open, onOpen, selectedMainID, reload, type = 'add' 
             value={task}
             onChange={(e) => setTask(e.target.value)}
           />
+          </CCol>
         </CRow>
       </CModalBody>
       <CModalFooter>

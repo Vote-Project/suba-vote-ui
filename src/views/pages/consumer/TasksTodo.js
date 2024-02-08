@@ -182,6 +182,7 @@ function ConsumerTasksTodo() {
                           <CListGroup>
                             {taskList.map((item, key) => (
                               <CListGroupItem
+                              style={{cursor: 'pointer'}}
                                 key={key}
                                 onClick={() => {
                                   setPage(item?.attributes?.Status == 'Initiate' ? 1 : 2)

@@ -27,6 +27,7 @@ import CreateTaskModal from 'src/components/Modals/CreateTaskModal'
 import EditOrganizerTask from 'src/components/Modals/EditOrganizerTask'
 import ErrorModal from 'src/components/Modals/ErrorModal'
 import OrganizerTaskListModal from 'src/components/Modals/OrganizerTaskListModal'
+import WarningModal from 'src/components/Modals/WarningModal'
 import MoreInfoOffCanvas from 'src/components/MoreInfoOffCanvas'
 import NoDataArt from 'src/components/NoDataArt'
 import { TasksService } from 'src/services/tasks.service'
@@ -52,6 +53,7 @@ function TasksDashboard() {
   const [viewSubTasks, setViewSubTasks] = useState(false)
 
   const [selectedMainTaskID, setSelectedMainTaskID] = useState(null)
+  const [warningModalVisible, setWarningModalVisible] = useState(false)
 
   useEffect(() => {
     getMainTasks()
@@ -108,7 +110,7 @@ function TasksDashboard() {
         onOpen={(status) => setIsCreating(status)}
         reload={() => getMainTasks()}
         type={createType}
-        mainId={createType == 'edit' && selectedMainTaskID }
+        mainId={createType == 'edit' && selectedMainTaskID}
       />
       <ErrorModal
         open={errorMsg}
@@ -121,6 +123,18 @@ function TasksDashboard() {
         selectedMainID={selectedMainTaskID}
         open={viewSubTasks}
         onOpen={(status) => setViewSubTasks(status)}
+      />
+      <WarningModal
+        title="Action Required!"
+        open={warningModalVisible}
+        onOpen={(status) => setWarningModalVisible(status)}
+        okay={(status) => {
+          if (status) {
+            removeTask(selectedMainTaskID)
+          }
+        }}
+        buttonTitle={'Yes, Delete it'}
+        description={<div>Are you sure you want delete this task? This action will be delete the sub tasks as well.</div>}
       />
       <CCard className="mb-4">
         <CCardHeader style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -205,7 +219,10 @@ function TasksDashboard() {
                         icon={cilTrash}
                         size="xl"
                         className="text-danger"
-                        onClick={() => removeTask(item?.id)}
+                        onClick={() => {
+                          setSelectedMainTaskID(item?.id)
+                          setWarningModalVisible(true)
+                        }}
                         style={{
                           cursor: 'pointer',
                           padding: '2px',

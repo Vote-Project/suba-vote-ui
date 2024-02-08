@@ -7,6 +7,8 @@ import {
   CModal,
   CModalBody,
   CModalFooter,
+  CModalHeader,
+  CModalTitle,
   CPagination,
   CPaginationItem,
   CTable,
@@ -23,12 +25,13 @@ import moment from 'moment'
 import { TasksService } from 'src/services/tasks.service'
 import EditOrganizerTask from './EditOrganizerTask'
 import LocationCanvas from '../LocationCanvas'
+import WarningModal from './WarningModal'
 
 function OrganizerTaskListModal({ open, onOpen, selectedMainID }) {
   const [errorMsg, setErrorMsg] = useState(false)
   const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState([])
-
+  const [warningModalVisible, setWarningModalVisible] = useState(false)
   const [taskList, setTaskList] = useState([])
   const [selectedTask, setSelectedTask] = useState([])
 
@@ -95,8 +98,15 @@ function OrganizerTaskListModal({ open, onOpen, selectedMainID }) {
       backdrop="static"
       aria-labelledby="VerticallyCenteredExample"
     >
+      <CModalHeader>
+        <CModalTitle>Task List For Organizers</CModalTitle>
+      </CModalHeader>
       <CModalBody>
-        <LocationCanvas visibleLocation={selectedOrgId} setVisibleLocation={() => setSelectedOrgId(null)} orgID={selectedOrgId} />
+        <LocationCanvas
+          visibleLocation={selectedOrgId}
+          setVisibleLocation={() => setSelectedOrgId(null)}
+          orgID={selectedOrgId}
+        />
         <ErrorModal
           open={errorMsg}
           onOpen={(value) => setErrorMsg(value)}
@@ -110,6 +120,22 @@ function OrganizerTaskListModal({ open, onOpen, selectedMainID }) {
           selectedMainID={selectedSubID}
           type="edit"
         />
+        <WarningModal
+          title="Action Required!"
+          open={warningModalVisible}
+          onOpen={(status) => setWarningModalVisible(status)}
+          okay={(status) => {
+            if (status) {
+              removeSubTask(selectedSubID)
+            }
+          }}
+          buttonTitle={"Yes, Delete it"}
+          description={
+            <div>
+              Are you sure you want delete this task?
+            </div>
+          }
+        />
         {loading ? (
           <Loading loading={loading} />
         ) : taskList.length === 0 ? (
@@ -121,7 +147,7 @@ function OrganizerTaskListModal({ open, onOpen, selectedMainID }) {
             size={10}
           />
         ) : (
-          <CTable hover responsive small>
+          <CTable hover responsive small className="mt-3 mb-3">
             <CTableHead color="light">
               <CTableRow>
                 <CTableHeaderCell scope="col">#</CTableHeaderCell>
@@ -139,12 +165,8 @@ function OrganizerTaskListModal({ open, onOpen, selectedMainID }) {
                   <CTableDataCell width={200}>{item?.attributes?.orName}</CTableDataCell>
                   <CTableDataCell width={300}>{item?.attributes?.description}</CTableDataCell>
                   <CTableDataCell width={150}>
-                  {item?.attributes?.Status == 'Initiate' && (
-                      <span >Not Started</span>
-                    )}
-                      {item?.attributes?.Status == 'In-progress' && (
-                      <span >In Progress</span>
-                    )}
+                    {item?.attributes?.Status == 'Initiate' && <span>Not Started</span>}
+                    {item?.attributes?.Status == 'In-progress' && <span>In Progress</span>}
                     {item?.attributes?.Status == 'Successes' && (
                       <span style={{ color: 'green' }}>Completed</span>
                     )}
@@ -170,7 +192,7 @@ function OrganizerTaskListModal({ open, onOpen, selectedMainID }) {
                       }}
                       style={{ cursor: 'pointer', padding: '2px', paddingInline: '4px' }}
                     />
-                     <CIcon
+                    <CIcon
                       icon={cilLocationPin}
                       size="xl"
                       className="text-info"
@@ -179,13 +201,16 @@ function OrganizerTaskListModal({ open, onOpen, selectedMainID }) {
                         cursor: 'pointer',
                         padding: '2px',
                         paddingInline: '4px',
-                 
-                      }}/>
+                      }}
+                    />
                     <CIcon
                       icon={cilTrash}
                       size="xl"
                       className="text-danger"
-                      onClick={() => removeSubTask(item?.id)}
+                      onClick={() => {
+                        setSelectedSubID(item?.id)
+                        setWarningModalVisible(true)
+                      }}
                       style={{
                         cursor: 'pointer',
                         padding: '2px',
@@ -218,11 +243,6 @@ function OrganizerTaskListModal({ open, onOpen, selectedMainID }) {
           </CPagination>
         )}
       </CModalBody>
-      <CModalFooter>
-        <CButton color="light" onClick={() => onOpen(false)}>
-          Cancel
-        </CButton>
-      </CModalFooter>
     </CModal>
   )
 }
