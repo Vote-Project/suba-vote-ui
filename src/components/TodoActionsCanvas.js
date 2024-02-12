@@ -91,7 +91,7 @@ function TodoActionsCanvas({ visible, setVisible, taskDetails = null, page = 1, 
               <CCard
                 className=" mb-3 p-3"
                 style={{ border: `solid green` }}
-                onClick={() => setAction('Initiate')}
+                onClick={() => setAction('Successes')}
               >
                 <CCardBody
                   style={{
