@@ -9,10 +9,15 @@ import { votersService } from 'src/services/voters.service'
 function CountsProgress() {
   const [organizers, setOrganizers] = useState(0)
   const [orgMales, setOrgMales] = useState(0)
+  const [orgMalesCount, setOrgMalesCount] = useState(0)
   const [orgFemales, setOrgFemales] = useState(0)
+  const [orgFemalesCount, setOrgFemalesCount] = useState(0)
+  const [votMalesCount, setVotMalesCount] = useState(0)
+  const [votFemalesCount, setVotFemalesCount] = useState(0)
   const [votMales, setVotMales] = useState(0)
   const [votFemales, setVotFemales] = useState(0)
   const [voters, setVoters] = useState(0)
+  
 
   useEffect(() => {
     OrganizersService.getOrganizers(0, 0).then((res) => {
@@ -30,6 +35,8 @@ function CountsProgress() {
         const count = (res.meta.pagination.total / organizers) * 100
         setOrgFemales(count || 0)
         setOrgMales(100 - count || 0)
+        setOrgMalesCount(organizers - res.meta.pagination.total || 0)
+        setOrgFemalesCount(res.meta.pagination.total)
       },
     )
 
@@ -46,6 +53,8 @@ function CountsProgress() {
       const count = (res.meta.pagination.total / voters) * 100
       setVotFemales(count || 0)
       setVotMales(100 - count || 0)
+      setVotMalesCount(voters - res.meta.pagination.total || 0)
+      setVotFemalesCount(res.meta.pagination.total)
     })
   }, [voters])
 
@@ -86,7 +95,7 @@ function CountsProgress() {
               <CIcon className="me-2" icon={cilUser} size="lg" />
               <span>Male</span>
               <div className="ms-auto fw-semibold" style={{ textAlign: 'end' }}>
-                {votMales.toFixed(2)}%
+              ({votMalesCount}) {votMales.toFixed(2)}%
               </div>
             </div>
             <div className="progress-group-bars">
@@ -94,7 +103,7 @@ function CountsProgress() {
              
               <CProgress thin color="danger" height={12} value={orgMales} />
               <div className="ms-auto fw-semibold" style={{ textAlign: 'end' }}>
-                {orgMales.toFixed(2)}%
+              ({orgMalesCount}) {orgMales.toFixed(2)}%
               </div>
             </div>
           </div>
@@ -103,7 +112,7 @@ function CountsProgress() {
               <CIcon className="me-2" icon={cilUserFemale} size="lg" />
               <span>Female</span>
               <div className="ms-auto fw-semibold" style={{ textAlign: 'end' }}>
-                {votFemales.toFixed(2)}%
+              ({votFemalesCount}) {votFemales.toFixed(2)}%
               </div>
             </div>
             <div className="progress-group-bars">
@@ -111,7 +120,7 @@ function CountsProgress() {
             
               <CProgress thin color="danger" height={12} value={orgFemales} />
               <div className="ms-auto fw-semibold" style={{ textAlign: 'end' }}>
-                {orgFemales.toFixed(2)}%
+                ({orgFemalesCount}) {orgFemales.toFixed(2)}%
               </div>
             </div>
           </div>

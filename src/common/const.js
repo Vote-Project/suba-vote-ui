@@ -29,6 +29,7 @@ export const MODAL_MSGES = {
   SEARCH_NO_DATA_DOUND:
     "Sorry, we couldn't find any data matching your request!! Please check your search criteria or try again later.",
   NO_DATA_FOUND: 'No Data Found!! This might be because there is no data available at the moment',
+  NO_BIRTHDAYS: 'No Data Found!! There is no birthdays available at the moment',
 }
 
 export const COLORS = {

@@ -11,7 +11,7 @@ export const OrganizersService = {
   },
   getOrganizersByBirthday: async (birthday) => {
     try {
-      const response = await axiosInstance.get(`/organizers?filters[Date_of_Birth][$eq]=${birthday}&sort[0]=createdAt:desc`)
+      const response = await axiosInstance.get(`/organizers?filters[Date_of_Birth][$containsi]=${birthday}&sort[0]=createdAt:desc`)
       return response.data
     } catch (error) {
       throw error
@@ -63,54 +63,54 @@ export const OrganizersService = {
     }
   },
 
-  getOrganizersByDistrictId: async (districtId) => {
+  getOrganizersByDistrictId: async (districtId, page = 1, pageSize = 10000000) => {
     try {
-      const response = await axiosInstance.get(`/organizers?filters[District][$eq]=${districtId}`)
+      const response = await axiosInstance.get(`/organizers?filters[District][$eq]=${districtId}&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort[0]=createdAt:desc`)
       return response.data
     } catch (error) {
       throw error
     }
   },
 
-  getOrganizersBySeatId: async (seatId) => {
+  getOrganizersBySeatId: async (seatId, page = 1, pageSize = 10000000) => {
     try {
-      const response = await axiosInstance.get(`/organizers?filters[Seat][$eq]=${seatId}`)
+      const response = await axiosInstance.get(`/organizers?filters[Seat][$eq]=${seatId}&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort[0]=createdAt:desc`)
       return response.data
     } catch (error) {
       throw error
     }
   },
 
-  getOrganizersByGnDivisionId: async (gnId) => {
+  getOrganizersByGnDivisionId: async (gnId, page = 1, pageSize = 10000000) => {
     try {
-      const response = await axiosInstance.get(`/organizers?filters[GN_Division][$eq]=${gnId}`)
+      const response = await axiosInstance.get(`/organizers?filters[GN_Division][$eq]=${gnId}&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort[0]=createdAt:desc`)
       return response.data
     } catch (error) {
       throw error
     }
   },
 
-  getOrganizersByLocalAuthorityId: async (localAuthId) => {
+  getOrganizersByLocalAuthorityId: async (localAuthId, page = 1, pageSize = 10000000) => {
     try {
-      const response = await axiosInstance.get(`/organizers?filters[Local_Authority][$eq]=${localAuthId}`)
+      const response = await axiosInstance.get(`/organizers?filters[Local_Authority][$eq]=${localAuthId}&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort[0]=createdAt:desc`)
       return response.data
     } catch (error) {
       throw error
     }
   },
 
-  getOrganizersByWardId: async (wardId) => {
+  getOrganizersByWardId: async (wardId, page = 1, pageSize = 10000000) => {
     try {
-      const response = await axiosInstance.get(`/organizers?filters[Ward][$eq]=${wardId}`)
+      const response = await axiosInstance.get(`/organizers?filters[Ward][$eq]=${wardId}&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort[0]=createdAt:desc`)
       return response.data
     } catch (error) {
       throw error
     }
   },
 
-  getOrganizersByStreetId: async (streetId) => {
+  getOrganizersByStreetId: async (streetId, page = 1, pageSize = 10000000) => {
     try {
-      const response = await axiosInstance.get(`/organizers?filters[Street_Village][$eq]=${streetId}`)
+      const response = await axiosInstance.get(`/organizers?filters[Street_Village][$eq]=${streetId}&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort[0]=createdAt:desc`)
       return response.data
     } catch (error) {
       throw error

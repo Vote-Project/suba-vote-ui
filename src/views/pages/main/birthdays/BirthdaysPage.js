@@ -47,8 +47,13 @@ function BirthdaysPage() {
   const [voterList, setVoterList] = useState([])
   const [organizerList, setOrganizerList] = useState([])
 
-  const [votersMsg, setVotersMsg] = useState("🎉 Happy Birthday to You! 🎂 Your vote is the greatest gift you can give to shape our future. Thank you for being an active participant in our democracy! Wishing you a day filled with joy and celebration. 🥳 From Name")
-  const [organizersMsg, setOrganizersMsg] = useState("🎉 Happy Birthday to an incredible organizer! 🎂 Your dedication and hard work make our events unforgettable. Here's to another year of bringing people together and making a difference. Wishing you a day as amazing as you are! 🥳 From Name")
+  const [votersMsg, setVotersMsg] = useState(
+    '🎉 Happy Birthday to You! 🎂 Your vote is the greatest gift you can give to shape our future. Thank you for being an active participant in our democracy! Wishing you a day filled with joy and celebration. 🥳 From Name',
+  )
+  const [organizersMsg, setOrganizersMsg] = useState(
+    "🎉 Happy Birthday to an incredible organizer! 🎂 Your dedication and hard work make our events unforgettable. Here's to another year of bringing people together and making a difference. Wishing you a day as amazing as you are! 🥳 From Name",
+  )
+
 
   useEffect(() => {
     getOrganizers()
@@ -122,7 +127,7 @@ function BirthdaysPage() {
             <NoDataArt
               visible={true}
               description={
-                filters.length > 0 ? MODAL_MSGES.SEARCH_NO_DATA_DOUND : MODAL_MSGES.NO_DATA_FOUND
+                filters.length > 0 ? MODAL_MSGES.SEARCH_NO_DATA_DOUND : MODAL_MSGES.NO_BIRTHDAYS
               }
               size={10}
             />
@@ -131,27 +136,21 @@ function BirthdaysPage() {
               <CTableHead color="light">
                 <CTableRow>
                   <CTableHeaderCell scope="col">#</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Title</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Created Date</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Action</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Name</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">NIC</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Birth-Date</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Contact</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
               <CTableBody>
                 {voterList.map((item, key) => (
                   <CTableRow key={key} style={{ cursor: 'pointer' }}>
                     <CTableDataCell width={50}>{key + 1}</CTableDataCell>
-                    <CTableDataCell width={550}>{item?.attributes?.task}</CTableDataCell>
-                    <CTableDataCell width={150}>
-                      {moment(new Date(item?.attributes?.createdAt)).format('DD-MM-YYYY')}
-                    </CTableDataCell>
-                    <CTableDataCell width={150}>
-                      <CIcon
-                        icon={cilPen}
-                        size="xl"
-                        className="text-info"
-                        onClick={() => navigate(`/voters/edit/${item?.id}`)}
-                        style={{ cursor: 'pointer', padding: '2px', paddingInline: '4px' }}
-                      />
+                    <CTableDataCell width={550}>{item?.attributes?.Name}</CTableDataCell>
+                    <CTableDataCell width={550}>{item?.attributes?.NIC_Number}</CTableDataCell>
+                    <CTableDataCell width={550}>{moment(item?.attributes?.Date_of_Birth).format('DD/MM/YYYY')}</CTableDataCell>
+                    <CTableDataCell width={550}>
+                      {item?.attributes?.Mobile_Number_1 || item?.attributes?.Mobile_Number_2}
                     </CTableDataCell>
                   </CTableRow>
                 ))}
@@ -181,11 +180,11 @@ function BirthdaysPage() {
           </CRow>
           {loading ? (
             <Loading loading={loading} />
-          ) : voterList.length === 0 ? (
+          ) : organizerList.length === 0 ? (
             <NoDataArt
               visible={true}
               description={
-                filters.length > 0 ? MODAL_MSGES.SEARCH_NO_DATA_DOUND : MODAL_MSGES.NO_DATA_FOUND
+                filters.length > 0 ? MODAL_MSGES.SEARCH_NO_DATA_DOUND : MODAL_MSGES.NO_BIRTHDAYS
               }
               size={10}
             />
@@ -193,28 +192,22 @@ function BirthdaysPage() {
             <CTable hover responsive small>
               <CTableHead color="light">
                 <CTableRow>
-                  <CTableHeaderCell scope="col">#</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Title</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Created Date</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Action</CTableHeaderCell>
+                <CTableHeaderCell scope="col">#</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Name</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">NIC</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Birth-Date</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Contact</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
               <CTableBody>
                 {organizerList.map((item, key) => (
                   <CTableRow key={key} style={{ cursor: 'pointer' }}>
                     <CTableDataCell width={50}>{key + 1}</CTableDataCell>
-                    <CTableDataCell width={550}>{item?.attributes?.task}</CTableDataCell>
-                    <CTableDataCell width={150}>
-                      {moment(new Date(item?.attributes?.createdAt)).format('DD-MM-YYYY')}
-                    </CTableDataCell>
-                    <CTableDataCell width={150}>
-                      <CIcon
-                        icon={cilPen}
-                        size="xl"
-                        className="text-info"
-                        onClick={() => navigate(`/voters/edit/${item?.id}`)}
-                        style={{ cursor: 'pointer', padding: '2px', paddingInline: '4px' }}
-                      />
+                    <CTableDataCell width={550}>{item?.attributes?.Name}</CTableDataCell>
+                    <CTableDataCell width={550}>{item?.attributes?.NIC_Number}</CTableDataCell>
+                    <CTableDataCell width={550}>{moment(item?.attributes?.Date_of_Birth).format('DD/MM/YYYY')}</CTableDataCell>
+                    <CTableDataCell width={550}>
+                      {item?.attributes?.Mobile_Number_1 || item?.attributes?.Mobile_Number_2}
                     </CTableDataCell>
                   </CTableRow>
                 ))}
